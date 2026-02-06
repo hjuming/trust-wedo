@@ -12,6 +12,7 @@ from trust_wedo.core.citation_evaluator import CitationEvaluator
 from trust_wedo.core.graph_builder import GraphBuilder
 from trust_wedo.core.report_generator import ReportGenerator
 from trust_wedo.core.capture_manager import CaptureManager
+from trust_wedo.core.diff_analyzer import DiffAnalyzer
 from trust_wedo.validators.schema_validator import SchemaValidator
 
 
@@ -294,6 +295,70 @@ def capture(ctx: click.Context, afb_id: str, ai_output: str, source: str, output
     
     validator = SchemaValidator()
     is_valid, error = validator.validate_file(latest_file, "capture")
+    if is_valid:
+        click.echo("✅ Schema 驗證成功")
+    else:
+        click.echo(f"❌ Schema 驗證失敗: {error}")
+        ctx.exit(1)
+
+
+@main.command()
+@click.argument("afb_id")
+@click.option("--captures-dir", default="output/captures", help="Capture 輸出目錄")
+@click.option("--output", "-o", default="output/diffs", help="輸出目錄")
+@click.pass_context
+def diff(ctx: click.Context, afb_id: str, captures_dir: str, output: str) -> None:
+    """比對 AFB 與 Capture 的差異。
+    
+    輸出：output/diffs/diff_<afb_id>_<timestamp>.json
+    """
+    click.echo(f"🔍 開始差異分析: {afb_id}")
+    
+    # 1. Load AFB
+    afb_path = Path("output/afb.json") # Default for MVP
+    if not afb_path.exists():
+        click.echo(f"❌ 找不到 AFB 檔案: {afb_path}")
+        ctx.exit(1)
+        
+    with open(afb_path) as f:
+        afb_data = json.load(f)
+        
+    if afb_data.get("afb_id") != afb_id:
+        click.echo(f"⚠️  警告: 檔案內的 AFB ID ({afb_data.get('afb_id')}) 與參數 ({afb_id}) 不符")
+    
+    # 2. Load related Captures
+    captures = []
+    for cap_file in Path(captures_dir).glob("capture_*.json"):
+        with open(cap_file) as f:
+            cap_data = json.load(f)
+            if cap_data.get("afb_id") == afb_id:
+                captures.append(cap_data)
+                
+    if not captures:
+        click.echo(f"❌ 找不到與 {afb_id} 相關的 Capture 檔案")
+        ctx.exit(1)
+        
+    click.echo(f"📂 找到 {len(captures)} 個相關 Capture")
+    
+    # 3. Analyze
+    analyzer = DiffAnalyzer(afb_data, captures)
+    result = analyzer.analyze(input_source=afb_id)
+    
+    # 4. Save
+    output_path = Path(output)
+    output_path.mkdir(parents=True, exist_ok=True)
+    import datetime
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    clean_afb = afb_id.replace(":", "-")
+    diff_json_path = output_path / f"diff_{clean_afb}_{timestamp}.json"
+    
+    with open(diff_json_path, "w") as f:
+        json.dump(result, f, indent=2, ensure_ascii=False)
+        
+    click.echo(f"📄 已產生 Diff 檔案: {diff_json_path}")
+    
+    validator = SchemaValidator()
+    is_valid, error = validator.validate_file(diff_json_path, "diff")
     if is_valid:
         click.echo("✅ Schema 驗證成功")
     else:

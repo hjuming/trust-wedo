@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Diff Analysis",
+  "description": "AFB 與 Capture 的差異分析",
+  "type": "object",
+  "required": ["diff_id", "afb_id", "afb_answer", "comparisons", "summary", "meta"],
+  "properties": {
+    "diff_id": {
+      "type": "string",
+      "pattern": "^diff:",
+      "description": "差異分析 ID，格式：diff:001"
+    },
+    "afb_id": {
+      "type": "string",
+      "pattern": "^afb:",
+      "description": "關聯的 AFB ID"
+    },
+    "afb_answer": {
+      "type": "string",
+      "description": "AFB 的原始答案內容"
+    },
+    "comparisons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["capture_id", "source", "ai_output", "similarity_score"],
+        "properties": {
+          "capture_id": {
+            "type": "string",
+            "pattern": "^cap:"
+          },
+          "source": {
+            "type": "string"
+          },
+          "ai_output": {
+            "type": "string"
+          },
+          "similarity_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "differences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hallucination_risk": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total_captures", "avg_similarity"],
+      "properties": {
+        "total_captures": {
+          "type": "integer"
+        },
+        "avg_similarity": {
+          "type": "number"
+        },
+        "best_source": {
+          "type": "string"
+        },
+        "worst_source": {
+          "type": "string"
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "required": ["generated_at", "tool_version", "input_source"],
+      "properties": {
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tool_version": {
+          "type": "string"
+        },
+        "input_source": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

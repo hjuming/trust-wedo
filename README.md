@@ -64,6 +64,9 @@ tw report output/
 
 # 7. 捕獲 AI 輸出 (Phase 3)
 tw capture afb:page:example --ai-output "AI 的回答內容" --source "chatgpt-4"
+
+# 8. 差異分析 (Phase 4)
+tw diff afb:page:example
 ```
 
 ---
@@ -79,6 +82,7 @@ tw capture afb:page:example --ai-output "AI 的回答內容" --source "chatgpt-4
 | `tw graph build <bundle/>` | 建立實體關係圖 | `output/entity_graph.json` |
 | `tw report <bundle/>` | 產生最終報告 | `output/trust-wedo-report.md` |
 | `tw capture <afb_id> --ai-output <text>` | 捕獲 AI 輸出 | `output/captures/*.json` |
+| `tw diff <afb_id>` | 差異分析 | `output/diffs/*.json` |
 
 ---
 

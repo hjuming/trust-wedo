@@ -93,6 +93,15 @@ tw capture afb:trust-wedo:definition --ai-output "Trust WEDO 是一個信任工�
 echo "✅ capture 完成"
 
 echo ""
+echo "步驟 8/8: 差異分析 (Phase 4)"
+echo "--------------------------------------"
+tw diff afb:trust-wedo:definition --captures-dir "$OUT/captures" -o "$OUT/diffs" || {
+    echo "❌ diff 失敗"
+    exit 1
+}
+echo "✅ diff 完成"
+
+echo ""
 echo "======================================"
 echo "📋 驗證 JSON Schema"
 echo "======================================"
@@ -156,6 +165,25 @@ else:
             print(f'✅ {cap_file.name} 通過 schema 驗證')
         except Exception as e:
             print(f'❌ {cap_file.name} 驗證失敗: {str(e)}')
+            failed = True
+
+# 驗證 Diff
+diff_files = list((output_dir / 'diffs').glob('*.json'))
+if not diff_files:
+    print('❌ 未發現 diff 檔案')
+    failed = True
+else:
+    diff_schema_path = Path('schemas/diff.schema.json')
+    with open(diff_schema_path) as f:
+        diff_schema = json.load(f)
+    for diff_file in diff_files:
+        try:
+            with open(diff_file) as f:
+                data = json.load(f)
+            validate(instance=data, schema=diff_schema)
+            print(f'✅ {diff_file.name} 通過 schema 驗證')
+        except Exception as e:
+            print(f'❌ {diff_file.name} 驗證失敗: {str(e)}')
             failed = True
 
 if failed:

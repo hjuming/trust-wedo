@@ -32,6 +32,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-02-06
+
+### Added
+- Diff Analysis: New `tw diff` command to compare AFB answers with AI captures.
+- Similarity Calculation: Integrated `difflib.SequenceMatcher` for calculating similarity scores.
+- Hallucination Risk Detection: Basic logic to identify low, medium, and high risk based on similarity.
+- Diff Schema: Defined `schemas/diff.schema.json` for analysis reports.
+- Comprehensive Analysis Reports: Aggregate comparisons across multiple AI sources (e.g., best/worst source).
+
+### Changed
+- CLI: Integrated `tw diff` and updated `schema_validator` to support new schemas.
+- Meta: All diff reports include standard metadata.
+
+## [0.3.0] - 2026-02-06
+
+### Added
+- AI Capture: New `tw capture` command to manually record AI outputs for specific AFBs.
+- Capture Schema: Defined `schemas/capture.schema.json` to store AI responses and metadata.
+- Incremental IDs: Automatically assigns unique, ordered IDs to captures (e.g., `cap:001`).
+- Metadata Integration: Captures now track source, timestamp, and tool version.
+
+### Changed
+- CLI: Expanded CLI with capture capabilities and validation.
+- Pipeline: Content → AFB → Capture flow is now fully operational.
+
 ## [0.2.0] - 2026-02-06
 
 ### Added

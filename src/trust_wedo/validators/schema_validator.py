@@ -24,6 +24,7 @@ class SchemaValidator:
             "citation": "citation_eval.schema.json",
             "graph": "entity_graph.schema.json",
             "capture": "capture.schema.json",
+            "diff": "diff.schema.json",
         }
 
         for name, filename in schema_files.items():

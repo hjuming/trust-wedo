@@ -28,6 +28,9 @@ tw report <bundle/>
 
 tw capture <afb_id> --ai-output <text> [--source <name>]
 → output/captures/capture_<afb_id>_<source>_<timestamp>.json
+
+tw diff <afb_id> [--captures-dir <path>]
+→ output/diffs/diff_<afb_id>_<timestamp>.json
 ```
 
 ---
@@ -307,6 +310,50 @@ tw capture afb:page-1:definition --ai-output "AI 回答的內容..." --source "c
     "tool_version": "0.3.0",
     "input_source": "cli:manual"
   }
+}
+```
+
+---
+
+### 8. `tw diff` - 差異分析
+
+**用途**：比對 AFB 的原始答案與捕獲的 AI 輸出，計算相似度並識別幻覺風險
+
+**語法**：
+```bash
+tw diff <afb_id> [options]
+```
+
+**參數**：
+- `<afb_id>`：要分析的 AFB ID（必填）
+- `--captures-dir`：Capture 檔案存放目錄（預設：`output/captures/`）
+- `--output, -o`：輸出目錄（預設：`output/diffs/`）
+
+**範例**：
+```bash
+tw diff afb:page-1:definition
+```
+
+**輸出**：`output/diffs/diff_<afb_id>_<timestamp>.json`
+
+```json
+{
+  "diff_id": "diff:001",
+  "afb_id": "afb:page-1:definition",
+  "afb_answer": "原始答案內容...",
+  "comparisons": [
+    {
+      "capture_id": "cap:001",
+      "source": "chatgpt-4",
+      "similarity_score": 0.85,
+      "hallucination_risk": "low"
+    }
+  ],
+  "summary": {
+    "avg_similarity": 0.82,
+    "best_source": "chatgpt-4"
+  },
+  "meta": { ... }
 }
 ```
 
