@@ -1,0 +1,56 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Answer",
+  "@id": "https://example.com/answers/what-is-ai-citation-engineering",
+  "text": "AI Citation Engineering 是一套優化內容以進入 AI 答案層的系統化方法，核心是建立可計算的信任基礎設施。",
+  "datePublished": "2026-02-06",
+  "dateModified": "2026-02-06",
+  "author": {
+    "@id": "https://example.com/entity/zhang-expert"
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "AI Citation Engineering"
+  },
+  "answerExplanation": {
+    "@type": "WebContent",
+    "text": "與傳統 SEO 優化搜尋結果頁排名不同，AI Citation Engineering 專注於讓內容成為 AI（如 ChatGPT、Perplexity）生成答案時的引用來源。它透過 Entity Optimization、Answer-First Block 設計、Machine-Readable Citations 三個核心系統，讓內容具備可被 AI 信任、抽取、引用的能力。"
+  },
+  "citation": [
+    {
+      "@type": "CreativeWork",
+      "@id": "cite-2026-001",
+      "name": "AI Citation Engineering Phase 0-2 Technical Specification",
+      "url": "https://example.com/docs/specification"
+    }
+  ],
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "entity_confidence",
+      "value": "0.87"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "citation_sources",
+      "value": "3"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "last_verified",
+      "value": "2026-02-06"
+    }
+  ],
+  "contextFit": {
+    "適用問題類型": [
+      "definition - 什麼是 AI Citation Engineering？",
+      "comparison - AI Citation Engineering 與 SEO 的差異",
+      "overview - AI Citation Engineering 如何運作"
+    ],
+    "不適用情境": [
+      "⚠️ 尋求快速 SEO 技巧（應使用傳統 SEO）",
+      "⚠️ 追求短期流量增長（ROI 週期較長）",
+      "⚠️ 無法提供專業可驗證內容"
+    ]
+  }
+}

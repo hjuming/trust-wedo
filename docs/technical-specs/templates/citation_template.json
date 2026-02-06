@@ -1,0 +1,63 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Citation",
+  "citation_id": "cite-[YYYY]-[001]",
+  "dateCreated": "[YYYY-MM-DD]",
+  "source_entity": {
+    "@type": "Organization",
+    "@id": "https://[authoritative-source].com/entity",
+    "name": "[來源機構名稱]",
+    "url": "https://[authoritative-source].com"
+  },
+  "claim": "[具體聲明內容 - 清晰、可驗證、有邊界]",
+  "evidence_type": "[選擇：peer_reviewed, official_report, standards_spec, first_party_data_with_method, reputable_media, expert_interview, community_consensus, anonymous_or_unverified]",
+  "source_url": "https://[完整來源 URL]",
+  "publication_date": "[YYYY-MM-DD]",
+  "verification_status": "[選擇：verified, pending, contested, outdated, unverifiable]",
+  "confidence": 0.00,
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "corroboration_score",
+      "value": "0.00",
+      "description": "交叉驗證強度"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "evidence_strength",
+      "value": "0.00",
+      "description": "證據類型強度"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "source_reputation",
+      "value": "0.00",
+      "description": "來源信譽"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "recency_decay",
+      "value": "0.00",
+      "description": "時效衰減"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "claim_specificity",
+      "value": "0.00",
+      "description": "主張可驗證程度"
+    }
+  ],
+  "corroboration_sources": [
+    {
+      "@type": "CreativeWork",
+      "name": "[交叉驗證來源 1]",
+      "url": "https://[url]"
+    }
+  ],
+  "methodology": {
+    "sample_size": "[N = ?]",
+    "method": "[研究方法]",
+    "time_range": "[時間範圍]",
+    "limitations": "[邊界條件]"
+  }
+}

@@ -25,6 +25,9 @@ tw graph build <bundle/>
 tw report <bundle/>
 → output/trust-wedo-report.md
 → output/trust-wedo-report.json
+
+tw capture <afb_id> --ai-output <text> [--source <name>]
+→ output/captures/capture_<afb_id>_<source>_<timestamp>.json
 ```
 
 ---
@@ -267,6 +270,45 @@ tw report ./results --format md
 **輸出**：
 - `output/trust-wedo-report.md`（Markdown 格式）
 - `output/trust-wedo-report.json`（JSON 格式）
+
+---
+
+### 7. `tw capture` - AI 輸出捕獲
+
+**用途**：捕獲 AI 的回答內容，為後續對比分析累積資料
+
+**語法**：
+```bash
+tw capture <afb_id> --ai-output <text> [options]
+```
+
+**參數**：
+- `<afb_id>`：關聯的 AFB ID（必填）
+- `--ai-output`：AI 的回答內容（必填）
+- `--source`：AI 來源名稱（預設：`unknown`）
+- `--output, -o`：輸出目錄（預設：`output/captures/`）
+
+**範例**：
+```bash
+tw capture afb:page-1:definition --ai-output "AI 回答的內容..." --source "chatgpt-4"
+```
+
+**輸出**：`output/captures/capture_<afb_id>_<source>_<timestamp>.json`
+
+```json
+{
+  "capture_id": "cap:001",
+  "afb_id": "afb:page-1:definition",
+  "ai_output": "AI 回答的內容...",
+  "source": "chatgpt-4",
+  "captured_at": "2024-01-15T10:30:00Z",
+  "meta": {
+    "generated_at": "2024-01-15T10:30:00Z",
+    "tool_version": "0.3.0",
+    "input_source": "cli:manual"
+  }
+}
+```
 
 ---
 

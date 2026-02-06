@@ -1,6 +1,7 @@
 """Citation evaluator module for Trust WEDO."""
 
 from typing import Dict, List, Any
+from trust_wedo.utils.meta import get_meta
 
 
 class CitationEvaluator:
@@ -10,7 +11,7 @@ class CitationEvaluator:
         self.afb_id = afb_id
         self.citations = citations
 
-    def evaluate(self) -> Dict[str, Any]:
+    def evaluate(self, input_source: str = "afb.json") -> Dict[str, Any]:
         """Evaluate all citations."""
         evaluated_citations = []
         overall_ccs = 0.0
@@ -37,7 +38,7 @@ class CitationEvaluator:
             failure_states = []
             if ccs < 0.60:
                 status = "reject"
-                failure_states.append("ccs_below_threshold")
+                failure_states.append(f"CCS below threshold: {ccs:.2f} < 0.60")
             elif ccs < 0.75:
                 status = "downgrade"
             
@@ -57,15 +58,18 @@ class CitationEvaluator:
             avg_ccs = overall_ccs / len(evaluated_citations)
             if all(c["status"] == "reject" for c in evaluated_citations):
                 decision = "reject"
+                reasons = ["All citations rejected due to low CCS"]
             elif any(c["status"] == "reject" for c in evaluated_citations):
                 decision = "downgrade"
+                reasons = ["Some citations rejected"]
             else:
                 decision = "accept"
-            reasons = []
+                reasons = []
 
         return {
             "afb_id": self.afb_id,
             "citations": evaluated_citations,
             "decision": decision,
-            "reasons": reasons
+            "reasons": reasons,
+            "meta": get_meta(input_source)
         }

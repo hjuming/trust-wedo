@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 from typing import Dict, List, Any
+from trust_wedo.utils.meta import get_meta
 
 
 class ReportGenerator:
@@ -31,6 +32,7 @@ class ReportGenerator:
     def generate_json(self) -> Dict[str, Any]:
         """Generate aggregated JSON report."""
         return {
+            "meta": get_meta(str(self.bundle_path)),
             "summary": {
                 "entity_id": self.data.get("entity", {}).get("entity_id"),
                 "ec_score": self.data.get("entity", {}).get("entity_confidence"),

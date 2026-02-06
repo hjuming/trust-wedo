@@ -1,0 +1,48 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Answer",
+  "@id": "https://yoursite.com/answers/[answer-id]",
+  "text": "[AI Quick Answer - 30 字以內的完整答案]",
+  "datePublished": "[YYYY-MM-DD]",
+  "dateModified": "[YYYY-MM-DD]",
+  "author": {
+    "@id": "https://yoursite.com/entity/[your-name]"
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "[主題名稱]"
+  },
+  "answerExplanation": {
+    "@type": "WebContent",
+    "text": "[詳細解釋]"
+  },
+  "citation": [
+    {
+      "@type": "CreativeWork",
+      "@id": "[citation_id]",
+      "name": "[引用來源標題]",
+      "url": "[來源 URL]"
+    }
+  ],
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "entity_confidence",
+      "value": "0.87"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "citation_sources",
+      "value": "3"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "last_verified",
+      "value": "[YYYY-MM-DD]"
+    }
+  ],
+  "contextFit": {
+    "适用問題類型": ["definition", "how_to", "comparison"],
+    "不適用情境": ["[具體說明不適用的場景]"]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Citation",
+  "citation_id": "cite-2025-stanford-001",
+  "dateCreated": "2026-02-06",
+  "source_entity": {
+    "@type": "Organization",
+    "@id": "https://ai.stanford.edu/entity",
+    "name": "Stanford Artificial Intelligence Laboratory",
+    "url": "https://ai.stanford.edu"
+  },
+  "claim": "結構化的答案模組（Answer-First Block）可將 AI 引用機率提升 3.4 倍（N=500，p<0.001）",
+  "evidence_type": "peer_reviewed",
+  "source_url": "https://ai.stanford.edu/research/2025/answer-block-effectiveness",
+  "publication_date": "2025-12-01",
+  "verification_status": "verified",
+  "confidence": 0.92,
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "corroboration_score",
+      "value": "0.85",
+      "description": "交叉驗證強度 - 2 個獨立實驗室驗證"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "evidence_strength",
+      "value": "1.00",
+      "description": "證據類型強度 - 同儕審查期刊"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "source_reputation",
+      "value": "0.98",
+      "description": "來源信譽 - 史丹佛 AI 實驗室"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "recency_decay",
+      "value": "0.95",
+      "description": "時效衰減 - 發布 2 個月"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "claim_specificity",
+      "value": "1.00",
+      "description": "主張可驗證程度 - 有明確數據、方法、樣本"
+    }
+  ],
+  "corroboration_sources": [
+    {
+      "@type": "CreativeWork",
+      "name": "MIT Media Lab - Answer Extraction Study",
+      "url": "https://media.mit.edu/research/answer-extraction-2025"
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "OpenAI - Citation Behavior Analysis",
+      "url": "https://openai.com/research/citation-behavior-2025"
+    }
+  ],
+  "methodology": {
+    "sample_size": "N = 500 網頁",
+    "method": "對照實驗（A/B testing），使用 GPT-4 與 Perplexity 進行 5,000 次查詢",
+    "time_range": "2025-09 至 2025-11（3 個月）",
+    "limitations": "僅測試英文內容；未涵蓋圖片/影片類內容；AI 模型版本可能影響結果"
+  }
+}

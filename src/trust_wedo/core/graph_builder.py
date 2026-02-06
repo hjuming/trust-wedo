@@ -1,6 +1,7 @@
 """Graph builder module for Trust WEDO."""
 
 from typing import Dict, List, Any
+from trust_wedo.utils.meta import get_meta
 
 
 class GraphBuilder:
@@ -11,7 +12,7 @@ class GraphBuilder:
         self.afb = bundle_data.get("afb", {})
         self.citation_eval = bundle_data.get("citation", {})
 
-    def build(self) -> Dict[str, Any]:
+    def build(self, input_source: str = "bundle") -> Dict[str, Any]:
         """Build Graph JSON."""
         entity_id = self.entity_profile.get("entity_id", "ent:unknown")
         
@@ -30,5 +31,6 @@ class GraphBuilder:
                 "distinct_sources": distinct_sources,
                 "is_isolated": is_isolated,
                 "single_source_risk": single_source_risk
-            }
+            },
+            "meta": get_meta(input_source)
         }

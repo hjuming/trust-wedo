@@ -1,6 +1,7 @@
 """Entity scorer module for Trust WEDO."""
 
 from typing import Dict, List, Any
+from trust_wedo.utils.meta import get_meta
 
 
 class EntityScorer:
@@ -11,7 +12,7 @@ class EntityScorer:
         self.pages = site_data.get("pages", [])
         self.checks = site_data.get("checks", {})
 
-    def calculate_score(self) -> Dict[str, Any]:
+    def calculate_score(self, input_source: str = "site.json") -> Dict[str, Any]:
         """Calculate EC and signals."""
         if not self.pages:
             return {
@@ -24,7 +25,8 @@ class EntityScorer:
                     "frequency": 0.0,
                     "social": 0.0
                 },
-                "eligibility": "fail"
+                "eligibility": "fail",
+                "meta": get_meta(input_source)
             }
 
         # 1. Consistency: meta/title missing rate
@@ -68,5 +70,6 @@ class EntityScorer:
                 "frequency": round(frequency, 2),
                 "social": round(social, 2)
             },
-            "eligibility": eligibility
+            "eligibility": eligibility,
+            "meta": get_meta(input_source)
         }

@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AI Output Capture",
+  "description": "捕獲的 AI 輸出資料",
+  "type": "object",
+  "required": ["capture_id", "afb_id", "ai_output", "captured_at", "meta"],
+  "properties": {
+    "capture_id": {
+      "type": "string",
+      "pattern": "^cap:",
+      "description": "捕獲 ID，格式：cap:001"
+    },
+    "afb_id": {
+      "type": "string",
+      "pattern": "^afb:",
+      "description": "關聯的 AFB ID"
+    },
+    "ai_output": {
+      "type": "string",
+      "description": "AI 的回答內容"
+    },
+    "source": {
+      "type": "string",
+      "description": "AI 來源（chatgpt-4, claude-3.5, gemini-pro 等）"
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "捕獲時間（ISO 8601）"
+    },
+    "meta": {
+      "type": "object",
+      "required": ["generated_at", "tool_version", "input_source"],
+      "properties": {
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tool_version": {
+          "type": "string"
+        },
+        "input_source": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -84,6 +84,15 @@ tw report "$OUT" -o "$OUT" || {
 echo "✅ report 完成"
 
 echo ""
+echo "步驟 7/7: 捕獲 AI 輸出 (Phase 3)"
+echo "--------------------------------------"
+tw capture afb:trust-wedo:definition --ai-output "Trust WEDO 是一個信任工程系統" --source "test-ai" -o "$OUT/captures" || {
+    echo "❌ capture 失敗"
+    exit 1
+}
+echo "✅ capture 完成"
+
+echo ""
 echo "======================================"
 echo "📋 驗證 JSON Schema"
 echo "======================================"
@@ -129,6 +138,25 @@ for output_file, schema_file in schemas.items():
     except Exception as e:
         print(f'❌ {output_file} 驗證時發生錯誤: {str(e)}')
         failed = True
+
+# 驗證 Capture
+capture_files = list((output_dir / 'captures').glob('*.json'))
+if not capture_files:
+    print('❌ 未發現 capture 檔案')
+    failed = True
+else:
+    capture_schema_path = Path('schemas/capture.schema.json')
+    with open(capture_schema_path) as f:
+        capture_schema = json.load(f)
+    for cap_file in capture_files:
+        try:
+            with open(cap_file) as f:
+                data = json.load(f)
+            validate(instance=data, schema=capture_schema)
+            print(f'✅ {cap_file.name} 通過 schema 驗證')
+        except Exception as e:
+            print(f'❌ {cap_file.name} 驗證失敗: {str(e)}')
+            failed = True
 
 if failed:
     sys.exit(1)

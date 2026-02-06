@@ -11,6 +11,7 @@ from trust_wedo.core.afb_builder import AFBBuilder
 from trust_wedo.core.citation_evaluator import CitationEvaluator
 from trust_wedo.core.graph_builder import GraphBuilder
 from trust_wedo.core.report_generator import ReportGenerator
+from trust_wedo.core.capture_manager import CaptureManager
 from trust_wedo.validators.schema_validator import SchemaValidator
 
 
@@ -84,7 +85,7 @@ def entity_score(ctx: click.Context, site_json: str, output: str) -> None:
         site_data = json.load(f)
     
     scorer = EntityScorer(site_data)
-    result = scorer.calculate_score()
+    result = scorer.calculate_score(input_source=site_json)
     
     output_path = Path(output)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -114,30 +115,24 @@ def afb(ctx: click.Context) -> None:
 
 @afb.command(name="build")
 @click.argument("page_html", type=click.Path(exists=True))
-@click.option("--entity", required=True, type=click.Path(exists=True), help="實體信任檔案")
+@click.option("--entity", "entity_file", required=True, type=click.Path(exists=True), help="實體信任檔案")
 @click.option("--output", "-o", default="output", help="輸出目錄")
 @click.pass_context
-def afb_build(ctx: click.Context, page_html: str, entity: str, output: str) -> None:
+def afb_build(ctx: click.Context, page_html: str, entity_file: str, output: str) -> None:
     """產生 Answer-First Block。
     
     輸出：output/afb.json
     """
     click.echo(f"🎯 產生 AFB: {page_html}")
     
-    with open(entity) as f:
+    with open(entity_file) as f:
         entity_profile = json.load(f)
-    
-    # Check EC gate
-    ec = entity_profile.get("entity_confidence", 0.0)
-    if ec < 0.60:
-        click.echo(f"⚠️  實體信任分過低 (EC={ec:.2f} < 0.60)，拒絕產生 AFB")
-        ctx.exit(1)
     
     with open(page_html, encoding="utf-8") as f:
         html_content = f.read()
     
     builder = AFBBuilder(html_content, entity_profile)
-    result = builder.build()
+    result = builder.build(input_source=page_html)
     
     output_path = Path(output)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -147,6 +142,9 @@ def afb_build(ctx: click.Context, page_html: str, entity: str, output: str) -> N
         json.dump(result, f, indent=2, ensure_ascii=False)
     
     click.echo(f"📄 已產生 AFB 檔案: {afb_json_path}")
+    
+    if result.get("eligibility") == "fail":
+        click.echo(f"⚠️  實體信任分過低 (EC={result['confidence_signals']['entity_confidence']:.2f} < 0.60)，AFB 已標記為 fail")
     
     validator = SchemaValidator()
     is_valid, error = validator.validate_file(afb_json_path, "afb")
@@ -194,7 +192,7 @@ def citation_eval(ctx: click.Context, afb_json: str, output: str) -> None:
         ]
     
     evaluator = CitationEvaluator(afb_id, citations)
-    result = evaluator.evaluate()
+    result = evaluator.evaluate(input_source=afb_json)
     
     output_path = Path(output)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -251,7 +249,7 @@ def graph_build(ctx: click.Context, bundle_dir: str, output: str) -> None:
             click.echo(f"⚠️  找不到 {filename}")
     
     builder = GraphBuilder(bundle_data)
-    result = builder.build()
+    result = builder.build(input_source=bundle_dir)
     
     output_path = Path(output)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -266,6 +264,36 @@ def graph_build(ctx: click.Context, bundle_dir: str, output: str) -> None:
     
     validator = SchemaValidator()
     is_valid, error = validator.validate_file(graph_json_path, "graph")
+    if is_valid:
+        click.echo("✅ Schema 驗證成功")
+    else:
+        click.echo(f"❌ Schema 驗證失敗: {error}")
+        ctx.exit(1)
+
+
+@main.command()
+@click.argument("afb_id")
+@click.option("--ai-output", required=True, help="AI 的回答內容")
+@click.option("--source", default="unknown", help="AI 來源名稱")
+@click.option("--output", "-o", default="output/captures", help="輸出目錄")
+@click.pass_context
+def capture(ctx: click.Context, afb_id: str, ai_output: str, source: str, output: str) -> None:
+    """捕獲 AI 輸出資料。
+    
+    輸出：output/captures/capture_<afb_id>_<source>_<timestamp>.json
+    """
+    click.echo(f"📥 捕獲 AI 輸出: {afb_id} (來源: {source})")
+    
+    manager = CaptureManager(output_dir=output)
+    result = manager.capture(afb_id, ai_output, source)
+    
+    # Find the latest file in output directory
+    latest_file = max(Path(output).glob("capture_*.json"), key=lambda p: p.stat().st_mtime)
+    
+    click.echo(f"📄 已儲存至: {latest_file}")
+    
+    validator = SchemaValidator()
+    is_valid, error = validator.validate_file(latest_file, "capture")
     if is_valid:
         click.echo("✅ Schema 驗證成功")
     else:
