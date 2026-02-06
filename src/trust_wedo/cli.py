@@ -6,6 +6,8 @@ import asyncio
 from pathlib import Path
 from trust_wedo import __version__
 from trust_wedo.parsers.site_parser import SiteParser
+from trust_wedo.core.entity_scorer import EntityScorer
+from trust_wedo.core.afb_builder import AFBBuilder
 from trust_wedo.validators.schema_validator import SchemaValidator
 
 
@@ -67,8 +69,30 @@ def entity(ctx: click.Context, site_json: str, output: str) -> None:
     輸出：output/entity_profile.json
     """
     click.echo(f"📊 計算實體信任評分: {site_json}")
-    click.echo(f"📁 輸出目錄: {output}")
-    click.echo("⚠️  此功能尚未實作")
+    
+    with open(site_json) as f:
+        site_data = json.load(f)
+    
+    scorer = EntityScorer(site_data)
+    result = scorer.calculate_score()
+    
+    output_path = Path(output)
+    output_path.mkdir(parents=True, exist_ok=True)
+    entity_json_path = output_path / "entity_profile.json"
+    
+    with open(entity_json_path, "w") as f:
+        json.dump(result, f, indent=2, ensure_ascii=False)
+    
+    click.echo(f"👤 已產生實體檔案: {entity_json_path}")
+    click.echo(f"📈 信任評分 (EC): {result['entity_confidence']} ({result['eligibility']})")
+    
+    validator = SchemaValidator()
+    is_valid, error = validator.validate_file(entity_json_path, "entity")
+    if is_valid:
+        click.echo("✅ Schema 驗證成功")
+    else:
+        click.echo(f"❌ Schema 驗證失敗: {error}")
+        ctx.exit(1)
 
 
 @main.command()
@@ -82,9 +106,38 @@ def afb(ctx: click.Context, page_html: str, entity: str, output: str) -> None:
     輸出：output/afb.json
     """
     click.echo(f"🎯 產生 AFB: {page_html}")
-    click.echo(f"👤 實體檔案: {entity}")
-    click.echo(f"📁 輸出目錄: {output}")
-    click.echo("⚠️  此功能尚未實作")
+    
+    with open(entity) as f:
+        entity_profile = json.load(f)
+    
+    # Check EC gate
+    ec = entity_profile.get("entity_confidence", 0.0)
+    if ec < 0.60:
+        click.echo(f"⚠️  實體信任分過低 (EC={ec:.2f} < 0.60)，拒絕產生 AFB")
+        ctx.exit(1)
+    
+    with open(page_html, encoding="utf-8") as f:
+        html_content = f.read()
+    
+    builder = AFBBuilder(html_content, entity_profile)
+    result = builder.build()
+    
+    output_path = Path(output)
+    output_path.mkdir(parents=True, exist_ok=True)
+    afb_json_path = output_path / "afb.json"
+    
+    with open(afb_json_path, "w") as f:
+        json.dump(result, f, indent=2, ensure_ascii=False)
+    
+    click.echo(f"📄 已產生 AFB 檔案: {afb_json_path}")
+    
+    validator = SchemaValidator()
+    is_valid, error = validator.validate_file(afb_json_path, "afb")
+    if is_valid:
+        click.echo("✅ Schema 驗證成功")
+    else:
+        click.echo(f"❌ Schema 驗證失敗: {error}")
+        ctx.exit(1)
 
 
 @main.command()
