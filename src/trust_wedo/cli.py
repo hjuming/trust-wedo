@@ -1,7 +1,12 @@
 """CLI entry point for Trust WEDO."""
 
 import click
+import json
+import asyncio
+from pathlib import Path
 from trust_wedo import __version__
+from trust_wedo.parsers.site_parser import SiteParser
+from trust_wedo.validators.schema_validator import SchemaValidator
 
 
 @click.group()
@@ -30,9 +35,26 @@ def scan(ctx: click.Context, url: str, output: str, max_pages: int) -> None:
     輸出：output/site.json
     """
     click.echo(f"🔍 掃描網站: {url}")
-    click.echo(f"📁 輸出目錄: {output}")
-    click.echo(f"📄 最大頁面數: {max_pages}")
-    click.echo("⚠️  此功能尚未實作")
+    
+    parser = SiteParser(url, max_pages=max_pages)
+    result = asyncio.run(parser.scan())
+    
+    output_path = Path(output)
+    output_path.mkdir(parents=True, exist_ok=True)
+    site_json_path = output_path / "site.json"
+    
+    with open(site_json_path, "w") as f:
+        json.dump(result, f, indent=2, ensure_ascii=False)
+    
+    click.echo(f"📁 已儲存至: {site_json_path}")
+    
+    validator = SchemaValidator()
+    is_valid, error = validator.validate_file(site_json_path, "site")
+    if is_valid:
+        click.echo("✅ Schema 驗證成功")
+    else:
+        click.echo(f"❌ Schema 驗證失敗: {error}")
+        ctx.exit(1)
 
 
 @main.command()

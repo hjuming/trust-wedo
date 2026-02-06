@@ -13,6 +13,11 @@ This tool converts content into verifiable, rejectable, and AI-usable answer obj
 ### 安裝
 
 ```bash
+# 建立虛擬環境
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 安裝套件
 pip install -e .
 ```
 
