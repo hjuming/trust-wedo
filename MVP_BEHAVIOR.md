@@ -52,22 +52,63 @@ scan → afb (固定模板) → entity → citation → graph → report
 ✅ **必須做：**
 - 讀取 HTML，抽取正文（先用簡單 heuristic：`<article>` 或 `<main>` 或 `<body>` text）
 - 檢查 `entity_confidence < 0.60`：
-  - 如果是 → 直接退出並輸出 error（或產出 `afb.json` 帶 `eligibility=fail`）
+  - **統一行為（v0.2 決策）**：永遠產出 `afb.json`，但標記 `eligibility: "fail"` + `reasons: [...]`
+  - 不要直接退出，確保 Phase 3 可以讀到完整資料
 - 產出 AFB JSON：
   - `ai_quick_answer`：先用模板（例如取前 1–2 句摘要 + entity label）
   - `context_fit`：先固定 mapping（definition / how_to / comparison）
+  - `eligibility`：`pass` / `fail`（依 EC 門檻）
+  - `reasons`：失敗原因（`eligibility=fail` 時必填）
   - `payload`：固定 `@type`, `answer`, `entity_id`
+  - `meta`：`generated_at`, `tool_version`, `input_source`
 - 輸出 `output/afb.json` 並通過 schema 驗證
 
 ❌ **不必做：**
 - LLM 摘要（先模板）
 - 多語言判斷（先 zh/en 都當作 text）
 
+### Gate 行為範例
+
+#### EC >= 0.60（pass）
+```json
+{
+  "afb_id": "afb:page-1:definition",
+  "entity_id": "ent:example",
+  "ai_quick_answer": "Trust WEDO 是一套...",
+  "eligibility": "pass",
+  "reasons": [],
+  "payload": { ... },
+  "meta": {
+    "generated_at": "2024-01-15T10:30:00Z",
+    "tool_version": "0.2.0",
+    "input_source": "file:///path/to/sample_page.html"
+  }
+}
+```
+
+#### EC < 0.60（fail）
+```json
+{
+  "afb_id": "afb:page-1:definition",
+  "entity_id": "ent:example",
+  "ai_quick_answer": "",
+  "eligibility": "fail",
+  "reasons": ["Entity confidence below threshold: 0.55 < 0.60"],
+  "payload": {},
+  "meta": {
+    "generated_at": "2024-01-15T10:30:00Z",
+    "tool_version": "0.2.0",
+    "input_source": "file:///path/to/sample_page.html"
+  }
+}
+```
+
 ### Definition of Done
 
 - [ ] 能讀取 HTML 並抽取正文
-- [ ] 實作 EC < 0.60 的拒絕邏輯
+- [ ] 實作 EC < 0.60 的 Gate 邏輯（產出 fail JSON）
 - [ ] 使用模板產生 `ai_quick_answer`
+- [ ] 所有輸出都包含 `meta` 欄位
 - [ ] 輸出的 `afb.json` 通過 `afb.schema.json` 驗證
 
 ---

@@ -5,9 +5,30 @@
     "type": "object",
     "required": [
         "entity",
-        "metrics"
+        "metrics",
+        "meta"
     ],
     "properties": {
+        "meta": {
+            "type": "object",
+            "required": [
+                "generated_at",
+                "tool_version",
+                "input_source"
+            ],
+            "properties": {
+                "generated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "tool_version": {
+                    "type": "string"
+                },
+                "input_source": {
+                    "type": "string"
+                }
+            }
+        },
         "entity": {
             "type": "string",
             "pattern": "^ent:",

@@ -3,8 +3,33 @@
   "title": "Site Scan Result",
   "description": "網站掃描結果，包含頁面列表與基礎檢查",
   "type": "object",
-  "required": ["site", "pages", "checks"],
+  "required": [
+    "site",
+    "pages",
+    "checks",
+    "meta"
+  ],
   "properties": {
+    "meta": {
+      "type": "object",
+      "required": [
+        "generated_at",
+        "tool_version",
+        "input_source"
+      ],
+      "properties": {
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tool_version": {
+          "type": "string"
+        },
+        "input_source": {
+          "type": "string"
+        }
+      }
+    },
     "site": {
       "type": "string",
       "format": "uri",
@@ -15,7 +40,12 @@
       "description": "掃描到的頁面列表",
       "items": {
         "type": "object",
-        "required": ["url", "fetched", "has_jsonld", "has_meta"],
+        "required": [
+          "url",
+          "fetched",
+          "has_jsonld",
+          "has_meta"
+        ],
         "properties": {
           "url": {
             "type": "string",
@@ -40,7 +70,10 @@
     "checks": {
       "type": "object",
       "description": "基礎檢查結果",
-      "required": ["robots_ok", "sitemap_ok"],
+      "required": [
+        "robots_ok",
+        "sitemap_ok"
+      ],
       "properties": {
         "robots_ok": {
           "type": "boolean",

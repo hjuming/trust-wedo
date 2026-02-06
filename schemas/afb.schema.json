@@ -7,9 +7,33 @@
         "afb_id",
         "entity_id",
         "ai_quick_answer",
-        "payload"
+        "payload",
+        "meta"
     ],
     "properties": {
+        "meta": {
+            "type": "object",
+            "required": [
+                "generated_at",
+                "tool_version",
+                "input_source"
+            ],
+            "properties": {
+                "generated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "產生時間（ISO 8601）"
+                },
+                "tool_version": {
+                    "type": "string",
+                    "description": "工具版本"
+                },
+                "input_source": {
+                    "type": "string",
+                    "description": "輸入來源（檔案路徑或 URL）"
+                }
+            }
+        },
         "afb_id": {
             "type": "string",
             "pattern": "^afb:",
@@ -59,6 +83,21 @@
                     "minimum": 0
                 }
             }
+        },
+        "eligibility": {
+            "type": "string",
+            "enum": [
+                "pass",
+                "fail"
+            ],
+            "description": "資格判定（pass: EC >= 0.60, fail: EC < 0.60）"
+        },
+        "reasons": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "失敗或警告原因（eligibility=fail 時必填）"
         },
         "payload": {
             "type": "object",

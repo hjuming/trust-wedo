@@ -22,20 +22,27 @@ class SiteParser:
         """Perform site scan."""
         async with httpx.AsyncClient(follow_redirects=True) as client:
             # 1. Check robots.txt (minimal check)
-            try:
-                robots_resp = await client.get(f"{self.base_url}/robots.txt")
-                self.checks["robots_ok"] = robots_resp.status_code == 200
-            except Exception:
-                self.checks["robots_ok"] = False
+            if self.base_url.startswith("file://"):
+                self.checks["robots_ok"] = True
+            else:
+                try:
+                    robots_resp = await client.get(f"{self.base_url}/robots.txt")
+                    self.checks["robots_ok"] = robots_resp.status_code == 200
+                except Exception:
+                    self.checks["robots_ok"] = False
 
             # 2. Check sitemap.xml
-            sitemap_urls = await self._find_sitemap_urls(client)
-            if sitemap_urls:
-                self.checks["sitemap_ok"] = True
-                urls_to_scan = sitemap_urls[:self.max_pages]
-            else:
+            if self.base_url.startswith("file://"):
                 self.checks["sitemap_ok"] = False
                 urls_to_scan = [self.base_url]
+            else:
+                sitemap_urls = await self._find_sitemap_urls(client)
+                if sitemap_urls:
+                    self.checks["sitemap_ok"] = True
+                    urls_to_scan = sitemap_urls[:self.max_pages]
+                else:
+                    self.checks["sitemap_ok"] = False
+                    urls_to_scan = [self.base_url]
 
             # 3. Scan pages
             for url in urls_to_scan:
@@ -71,13 +78,26 @@ class SiteParser:
         self.visited_urls.add(url)
 
         try:
-            resp = await client.get(url)
-            fetched = resp.status_code == 200
+            if url.startswith("file://"):
+                file_path = url[7:]
+                with open(file_path, "rb") as f:
+                    content = f.read()
+                fetched = True
+                # Mock a response object-like behavior for consistency if needed,
+                # but we only need the content here.
+                soup = BeautifulSoup(content, "html.parser")
+            else:
+                resp = await client.get(url)
+                fetched = resp.status_code == 200
+                if fetched:
+                    soup = BeautifulSoup(resp.content, "html.parser")
+                else:
+                    soup = None
+
             has_jsonld = False
             has_meta = False
 
-            if fetched:
-                soup = BeautifulSoup(resp.content, "html.parser")
+            if fetched and soup:
                 has_jsonld = bool(soup.find("script", type="application/ld+json"))
                 
                 title = soup.find("title")

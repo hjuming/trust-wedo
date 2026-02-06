@@ -7,9 +7,33 @@
         "entity_id",
         "entity_confidence",
         "signals",
-        "eligibility"
+        "eligibility",
+        "meta"
     ],
     "properties": {
+        "meta": {
+            "type": "object",
+            "required": [
+                "generated_at",
+                "tool_version",
+                "input_source"
+            ],
+            "properties": {
+                "generated_at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "產生時間（ISO 8601）"
+                },
+                "tool_version": {
+                    "type": "string",
+                    "description": "工具版本"
+                },
+                "input_source": {
+                    "type": "string",
+                    "description": "輸入來源（檔案路徑或 URL）"
+                }
+            }
+        },
         "entity_id": {
             "type": "string",
             "pattern": "^ent:",

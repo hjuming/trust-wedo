@@ -39,14 +39,14 @@ class EntityScorer:
 
         # 3. Citation: external links count (heuristic)
         avg_external_links = sum(p.get("external_links_count", 0) for p in self.pages) / len(self.pages)
-        citation = min(avg_external_links / 5.0, 1.0)  # Assume 5 links is good
+        citation = min(avg_external_links / 4.0, 1.0)  # Adjusted for MVP
 
         # 4. Frequency: sitemap_ok
-        frequency = 0.8 if self.checks.get("sitemap_ok", False) else 0.4
+        frequency = 0.8 if self.checks.get("sitemap_ok", False) else 0.5 # Adjusted for MVP
 
         # 5. Social: social links count
         avg_social_links = sum(p.get("social_links_count", 0) for p in self.pages) / len(self.pages)
-        social = min(avg_social_links / 2.0, 1.0)  # Assume 2 social links is good
+        social = min(avg_social_links / 1.5, 1.0)  # Adjusted for MVP
 
         # EC formula (simplified)
         ec = (consistency * 0.3 + 

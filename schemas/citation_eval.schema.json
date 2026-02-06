@@ -7,9 +7,30 @@
         "afb_id",
         "citations",
         "decision",
-        "reasons"
+        "reasons",
+        "meta"
     ],
     "properties": {
+        "meta": {
+            "type": "object",
+            "required": [
+                "generated_at",
+                "tool_version",
+                "input_source"
+            ],
+            "properties": {
+                "generated_at": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "tool_version": {
+                    "type": "string"
+                },
+                "input_source": {
+                    "type": "string"
+                }
+            }
+        },
         "afb_id": {
             "type": "string",
             "pattern": "^afb:",

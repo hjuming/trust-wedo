@@ -8,6 +8,26 @@ This tool converts content into verifiable, rejectable, and AI-usable answer obj
 
 ---
 
+## 📌 唯一真理文件（工程規格來源）
+
+> **PR 討論若與以下文件衝突，以這三份為準。**
+
+1. **[DEVELOPMENT_BLUEPRINT.md](DEVELOPMENT_BLUEPRINT.md)** - 流程與驗收入口
+2. **[MVP_BEHAVIOR.md](MVP_BEHAVIOR.md)** - 每個指令的最小行為規格
+3. **[ISSUES.md](ISSUES.md)** - 工程任務拆分與 DoD
+
+**工程 KPI（v0.2 最小成功定義）：**
+- ✅ `./scripts/verify_mvp.sh` exit code = 0
+- ✅ `output/` 產出所有必要 JSON 檔案
+- ✅ EC gate / CCS gate / single_source_risk 都能被測試觸發
+
+**硬規則：任何 PR 沒讓 `./scripts/verify_mvp.sh` 更接近全綠，就不合併。**
+
+---
+
+
+---
+
 ## 快速開始
 
 ### 安裝
