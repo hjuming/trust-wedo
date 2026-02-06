@@ -1,0 +1,88 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Answer-First Block",
+    "description": "可被 AI 安全使用的答案物件",
+    "type": "object",
+    "required": [
+        "afb_id",
+        "entity_id",
+        "ai_quick_answer",
+        "payload"
+    ],
+    "properties": {
+        "afb_id": {
+            "type": "string",
+            "pattern": "^afb:",
+            "description": "AFB ID，格式：afb:page:type"
+        },
+        "entity_id": {
+            "type": "string",
+            "pattern": "^ent:",
+            "description": "關聯的實體 ID"
+        },
+        "ai_quick_answer": {
+            "type": "string",
+            "minLength": 1,
+            "description": "AI 快速答案"
+        },
+        "context_fit": {
+            "type": "object",
+            "description": "使用情境限制",
+            "properties": {
+                "use_when": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "適用情境"
+                },
+                "do_not_use_when": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "不適用情境"
+                }
+            }
+        },
+        "confidence_signals": {
+            "type": "object",
+            "description": "信任信號",
+            "properties": {
+                "entity_confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "citation_count": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "payload": {
+            "type": "object",
+            "description": "結構化答案 payload",
+            "required": [
+                "@type",
+                "answer",
+                "entity_id"
+            ],
+            "properties": {
+                "@type": {
+                    "type": "string",
+                    "description": "答案類型"
+                },
+                "answer": {
+                    "type": "string",
+                    "description": "答案內容"
+                },
+                "entity_id": {
+                    "type": "string",
+                    "pattern": "^ent:",
+                    "description": "實體 ID"
+                }
+            }
+        }
+    }
+}

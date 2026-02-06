@@ -1,0 +1,12 @@
+{
+    "entity_id": "ent:trust-wedo",
+    "entity_confidence": 0.78,
+    "signals": {
+        "consistency": 0.8,
+        "authority": 0.7,
+        "citation": 0.6,
+        "frequency": 0.9,
+        "social": 0.7
+    },
+    "eligibility": "pass"
+}

@@ -1,0 +1,8 @@
+{
+    "entity": "ent:trust-wedo",
+    "metrics": {
+        "distinct_sources": 2,
+        "is_isolated": false,
+        "single_source_risk": false
+    }
+}

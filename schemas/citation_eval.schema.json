@@ -1,0 +1,77 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Citation Evaluation",
+    "description": "引用評估結果",
+    "type": "object",
+    "required": [
+        "afb_id",
+        "citations",
+        "decision",
+        "reasons"
+    ],
+    "properties": {
+        "afb_id": {
+            "type": "string",
+            "pattern": "^afb:",
+            "description": "關聯的 AFB ID"
+        },
+        "citations": {
+            "type": "array",
+            "description": "引用列表",
+            "items": {
+                "type": "object",
+                "required": [
+                    "citation_id",
+                    "ccs",
+                    "status",
+                    "failure_states"
+                ],
+                "properties": {
+                    "citation_id": {
+                        "type": "string",
+                        "pattern": "^cite:",
+                        "description": "引用 ID，格式：cite:xxx"
+                    },
+                    "ccs": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "description": "Citation Confidence Score（0-1）"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "accept",
+                            "downgrade",
+                            "reject"
+                        ],
+                        "description": "引用狀態"
+                    },
+                    "failure_states": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "失敗原因列表"
+                    }
+                }
+            }
+        },
+        "decision": {
+            "type": "string",
+            "enum": [
+                "accept",
+                "downgrade",
+                "reject"
+            ],
+            "description": "整體決策"
+        },
+        "reasons": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "決策理由"
+        }
+    }
+}

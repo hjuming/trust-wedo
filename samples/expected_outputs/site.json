@@ -1,0 +1,21 @@
+{
+    "site": "https://trust-wedo.dev",
+    "pages": [
+        {
+            "url": "https://trust-wedo.dev/",
+            "fetched": true,
+            "has_jsonld": true,
+            "has_meta": true
+        },
+        {
+            "url": "https://trust-wedo.dev/docs",
+            "fetched": true,
+            "has_jsonld": false,
+            "has_meta": true
+        }
+    ],
+    "checks": {
+        "robots_ok": true,
+        "sitemap_ok": true
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Entity Graph",
+    "description": "實體關係圖與風險檢測",
+    "type": "object",
+    "required": [
+        "entity",
+        "metrics"
+    ],
+    "properties": {
+        "entity": {
+            "type": "string",
+            "pattern": "^ent:",
+            "description": "實體 ID"
+        },
+        "metrics": {
+            "type": "object",
+            "description": "圖譜指標",
+            "required": [
+                "distinct_sources",
+                "is_isolated",
+                "single_source_risk"
+            ],
+            "properties": {
+                "distinct_sources": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "不同來源數量"
+                },
+                "is_isolated": {
+                    "type": "boolean",
+                    "description": "是否為孤立實體（無外部引用）"
+                },
+                "single_source_risk": {
+                    "type": "boolean",
+                    "description": "是否存在單一來源風險"
+                }
+            }
+        }
+    }
+}

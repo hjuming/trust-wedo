@@ -1,0 +1,19 @@
+{
+    "afb_id": "afb:trust-wedo:definition",
+    "citations": [
+        {
+            "citation_id": "cite:001",
+            "ccs": 0.82,
+            "status": "accept",
+            "failure_states": []
+        },
+        {
+            "citation_id": "cite:002",
+            "ccs": 0.75,
+            "status": "accept",
+            "failure_states": []
+        }
+    ],
+    "decision": "accept",
+    "reasons": []
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Site Scan Result",
+  "description": "網站掃描結果，包含頁面列表與基礎檢查",
+  "type": "object",
+  "required": ["site", "pages", "checks"],
+  "properties": {
+    "site": {
+      "type": "string",
+      "format": "uri",
+      "description": "掃描的網站 URL"
+    },
+    "pages": {
+      "type": "array",
+      "description": "掃描到的頁面列表",
+      "items": {
+        "type": "object",
+        "required": ["url", "fetched", "has_jsonld", "has_meta"],
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "頁面 URL"
+          },
+          "fetched": {
+            "type": "boolean",
+            "description": "是否成功抓取"
+          },
+          "has_jsonld": {
+            "type": "boolean",
+            "description": "是否包含 JSON-LD"
+          },
+          "has_meta": {
+            "type": "boolean",
+            "description": "是否包含 meta tags"
+          }
+        }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "description": "基礎檢查結果",
+      "required": ["robots_ok", "sitemap_ok"],
+      "properties": {
+        "robots_ok": {
+          "type": "boolean",
+          "description": "robots.txt 是否正常"
+        },
+        "sitemap_ok": {
+          "type": "boolean",
+          "description": "sitemap.xml 是否正常"
+        }
+      }
+    }
+  }
+}

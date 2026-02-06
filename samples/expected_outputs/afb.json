@@ -1,0 +1,26 @@
+{
+    "afb_id": "afb:trust-wedo:definition",
+    "entity_id": "ent:trust-wedo",
+    "ai_quick_answer": "Trust WEDO 是一套讓內容可被 AI 安全使用的信任系統，透過可驗證的答案物件建立信任基礎設施。",
+    "context_fit": {
+        "use_when": [
+            "definition",
+            "explanation",
+            "overview"
+        ],
+        "do_not_use_when": [
+            "legal_advice",
+            "medical_advice",
+            "financial_advice"
+        ]
+    },
+    "confidence_signals": {
+        "entity_confidence": 0.78,
+        "citation_count": 2
+    },
+    "payload": {
+        "@type": "AnswerObject",
+        "answer": "Trust WEDO 是一套讓內容可被 AI 安全使用的信任系統。它透過建立可驗證、可拒絕、可引用的答案物件（Answer-First Block, AFB），為生成式 AI 系統提供信任基礎設施。",
+        "entity_id": "ent:trust-wedo"
+    }
+}

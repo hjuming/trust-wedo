@@ -1,0 +1,76 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Entity Profile",
+    "description": "實體信任檔案，包含信任評分與資格判定",
+    "type": "object",
+    "required": [
+        "entity_id",
+        "entity_confidence",
+        "signals",
+        "eligibility"
+    ],
+    "properties": {
+        "entity_id": {
+            "type": "string",
+            "pattern": "^ent:",
+            "description": "實體 ID，格式：ent:name"
+        },
+        "entity_confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "實體信任評分（0-1）"
+        },
+        "signals": {
+            "type": "object",
+            "description": "信任信號評分",
+            "required": [
+                "consistency",
+                "authority",
+                "citation",
+                "frequency",
+                "social"
+            ],
+            "properties": {
+                "consistency": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "內容一致性評分"
+                },
+                "authority": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "權威性評分"
+                },
+                "citation": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "引用品質評分"
+                },
+                "frequency": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "出現頻率評分"
+                },
+                "social": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "社群信號評分"
+                }
+            }
+        },
+        "eligibility": {
+            "type": "string",
+            "enum": [
+                "pass",
+                "fail"
+            ],
+            "description": "資格判定（pass: EC >= 0.60, fail: EC < 0.60）"
+        }
+    }
+}
