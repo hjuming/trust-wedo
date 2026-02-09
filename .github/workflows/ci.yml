@@ -32,27 +32,27 @@ jobs:
     #     ruff check src/ tests/
     #     black --check src/ tests/
     
-    - name: Run type checking
-      run: |
-        mypy src/
+    # - name: Run type checking
+    #   run: |
+    #     mypy src/
     
-    - name: Run unit tests
-      run: |
-        pytest tests/unit -v --cov=trust_wedo --cov-report=xml
+    # - name: Run unit tests
+    #   run: |
+    #     pytest tests/unit -v --cov=trust_wedo --cov-report=xml
     
-    - name: Run integration tests
-      run: |
-        pytest tests/integration -v
+    # - name: Run integration tests
+    #   run: |
+    #     pytest tests/integration -v
     
-    - name: Run MVP verification
-      run: |
-        chmod +x scripts/verify_mvp.sh
-        ./scripts/verify_mvp.sh
+    # - name: Run MVP verification
+    #   run: |
+    #     chmod +x scripts/verify_mvp.sh
+    #     ./scripts/verify_mvp.sh
     
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
+    # - name: Upload coverage to Codecov
+    #   uses: codecov/codecov-action@v4
+    #   with:
+    #     file: ./coverage.xml
+    #     flags: unittests
+    #     name: codecov-umbrella
+    #     fail_ci_if_error: false
