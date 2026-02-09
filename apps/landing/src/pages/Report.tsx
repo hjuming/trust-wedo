@@ -1,148 +1,197 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabase'
 
 export default function Report() {
   const { jobId } = useParams()
-  const { t } = useTranslation()
-  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
   const [report, setReport] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    // 模擬取得報告
-    setTimeout(() => {
-      setReport({
-        id: jobId,
-        status: 'completed',
-        score: 72,
-        conclusion: '你的網站已具備基本可信結構，但仍有改善空間',
-        problems: [
-          { emoji: '⚠️', title: '網站沒有清楚的「主體身份」', desc: 'AI 無法確認這個網站是由個人還是公司營運。' },
-          { emoji: '🚫', title: '缺乏可驗證的引用來源', desc: '文章中的專業數據沒有連結到權威原始出處。' },
-        ],
-        recommendations: [
-          { 
-            title: '建議新增「關於我們」結構化資料', 
-            desc: '優先級：高 | 預期效果：提升 AI 對網站身份的理解',
-            action: '在首頁加入 Organization 類型的 Schema.org 標記'
-          },
-          { 
-            title: '補齊作者背景介紹', 
-            desc: '優先級：中 | 預期效果：增加內容的專業權威性',
-            action: '在每篇文章下方加入作者簡介與 LinkedIn 連結'
-          }
-        ]
-      })
-      setLoading(false)
-    }, 1500)
+    fetchReport()
   }, [jobId])
+
+  const fetchReport = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Unauthorized')
+
+      const response = await fetch(`http://localhost:8000/api/reports/${jobId}`, {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+      
+      if (!response.ok) throw new Error('無法讀取報告')
+      
+      const data = await response.json()
+      setReport(data)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleReAudit = () => {
+    navigate('/dashboard', { state: { prefillUrl: report.url } })
+  }
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="w-16 h-16 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin mb-6" />
-        <h2 className="text-2xl font-bold text-brand-navy dark:text-brand-light animate-pulse">正在產生成信度報告...</h2>
+        <h2 className="text-2xl font-bold text-brand-navy dark:text-brand-light animate-pulse tracking-tight">正在產生成信度報告...</h2>
       </div>
     )
   }
 
-  return (
-    <div className="max-w-4xl mx-auto py-10">
-      <Link to="/dashboard" className="inline-flex items-center gap-2 text-brand-blue font-bold mb-8 hover:translate-x-[-4px] transition-transform">
-        ← 返回健檢列表
-      </Link>
+  if (error || !report) {
+    return (
+      <div className="max-w-4xl mx-auto py-20 text-center">
+        <div className="text-6xl mb-6">❌</div>
+        <h1 className="text-3xl font-bold text-brand-navy dark:text-brand-light mb-4">讀取報告出錯</h1>
+        <p className="text-brand-slate dark:text-brand-light/60 mb-8 font-medium">{error}</p>
+        <Link to="/dashboard" className="px-8 py-3 bg-brand-blue text-white rounded-xl font-bold">返回儀表板</Link>
+      </div>
+    )
+  }
 
-      {/* 1. 一句話結論 */}
-      <div className="bg-white dark:bg-brand-navy/50 p-10 rounded-[2.5rem] mb-8 border border-brand-navy/5 dark:border-brand-light/5 shadow-xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-8">
-           <div className="w-24 h-24 rounded-full border-8 border-brand-blue/10 flex items-center justify-center relative">
-              <span className="text-3xl font-black text-brand-blue">{report.score}</span>
-              <svg className="absolute inset-0 w-full h-full -rotate-90">
-                 <circle cx="48" cy="48" r="40" fill="transparent" stroke="currentColor" strokeWidth="8" strokeDasharray="251" strokeDashoffset={251 - (251 * report.score / 100)} className="text-brand-blue" />
-              </svg>
-           </div>
+  const { summary, issues, suggestions } = report
+
+  return (
+    <div className="max-w-4xl mx-auto py-10 px-6">
+      <header className="mb-10 flex items-center justify-between">
+        <Link to="/dashboard" className="inline-flex items-center gap-2 text-brand-blue font-bold hover:translate-x-[-4px] transition-transform">
+          ← 返回健檢列表
+        </Link>
+        <div className="text-sm font-bold text-brand-slate dark:text-brand-light/40">
+           健檢網址: <span className="text-brand-navy dark:text-brand-light">{report.url}</span>
         </div>
-        <div className="text-6xl mb-6">✅</div>
-        <h1 className="text-3xl md:text-4xl font-black text-brand-navy dark:text-brand-light max-w-xl leading-tight">
-          {report.conclusion}
-        </h1>
+      </header>
+
+      {/* 1. Summary Card */}
+      <div className="bg-white dark:bg-brand-navy/50 p-10 rounded-[2.5rem] mb-8 border-2 border-brand-blue/20 shadow-xl relative overflow-hidden">
+        <div className="flex flex-col md:flex-row items-center gap-8 relative z-10 text-brand-navy dark:text-brand-light">
+          <div className="text-8xl">
+            {summary.grade === 'A' && '🎉'}
+            {summary.grade === 'B' && '✅'}
+            {summary.grade === 'C' && '⚠️'}
+            {summary.grade === 'D' && '❌'}
+            {summary.grade === 'F' && '🚫'}
+            {summary.grade === 'P' && '⏳'}
+          </div>
+          <div className="text-center md:text-left flex-1">
+            <div className="inline-block px-4 py-1 rounded-full bg-brand-blue/10 text-brand-blue text-sm font-black uppercase tracking-widest mb-4">
+               可信度等級: {summary.grade}
+            </div>
+            <h1 className="text-3xl md:text-4xl font-black leading-tight">
+              {summary.conclusion}
+            </h1>
+            
+            {/* CTA Close Loop */}
+            <div className="flex flex-col sm:flex-row gap-4 mt-8">
+              <button
+                onClick={handleReAudit}
+                className="flex-1 py-4 bg-brand-blue text-white rounded-2xl font-black text-lg hover:bg-brand-blue/90 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-brand-blue/25"
+              >
+                ✅ 我已修正，重新健檢
+              </button>
+              <button
+                className="flex-1 py-4 bg-white dark:bg-brand-navy border-2 border-brand-blue text-brand-blue rounded-2xl font-black text-lg hover:bg-brand-blue/5 transition-all"
+              >
+                📄 匯出 PDF 報告
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       
-      <div className="grid md:grid-cols-2 gap-8 mb-8">
-        {/* 2. 重點問題 */}
+      <div className="grid md:grid-cols-2 gap-8 mb-8 text-brand-navy dark:text-brand-light">
+        {/* 2. Key Issues */}
         <div className="bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
-          <h2 className="text-xl font-black text-brand-navy dark:text-brand-light mb-6 flex items-center gap-2">
+          <h2 className="text-xl font-black mb-6 flex items-center gap-2 tracking-tight">
             <span className="w-2 h-8 bg-red-500 rounded-full" />
             目前的信任缺口
           </h2>
-          <ul className="space-y-6">
-            {report.problems.map((p: any, i: number) => (
-              <li key={i} className="flex items-start gap-4">
-                <span className="text-3xl">{p.emoji}</span>
-                <div>
-                  <div className="font-bold text-brand-navy dark:text-brand-light mb-1 leading-tight">
-                    {p.title}
+          {issues.length === 0 ? (
+            <p className="text-brand-success font-bold py-4">✨ 恭喜！目前未偵測到重大結構問題。</p>
+          ) : (
+            <ul className="space-y-6">
+              {issues.map((issue: any, i: number) => (
+                <li key={i} className="flex items-start gap-4">
+                  <span className="text-3xl">
+                    {issue.severity === 'high' ? '🔴' : '🟡'}
+                  </span>
+                  <div>
+                    <div className="font-bold mb-1 leading-tight text-lg">
+                      {issue.title}
+                    </div>
+                    <div className="text-sm text-brand-slate dark:text-brand-light/60 font-medium">
+                      {issue.description}
+                    </div>
                   </div>
-                  <div className="text-sm text-brand-slate dark:text-brand-light/60">
-                    {p.desc}
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         
-        {/* 3. 改善建議 */}
+        {/* 3. Action Suggestions */}
         <div className="bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
-          <h2 className="text-xl font-black text-brand-navy dark:text-brand-light mb-6 flex items-center gap-2">
+          <h2 className="text-xl font-black mb-6 flex items-center gap-2 tracking-tight">
             <span className="w-2 h-8 bg-brand-success rounded-full" />
             建議採取的行動
           </h2>
-          <ul className="space-y-6">
-            {report.recommendations.map((r: any, i: number) => (
-              <li key={i} className="flex items-start gap-4">
-                <span className="text-2xl text-brand-success font-black">0{i+1}</span>
-                <div>
-                  <div className="font-bold text-brand-navy dark:text-brand-light mb-1 leading-tight">
-                    {r.title}
+          {suggestions.length === 0 ? (
+            <p className="text-brand-slate dark:text-brand-light/60 py-4">暫無特定建議。</p>
+          ) : (
+            <ul className="space-y-6">
+              {suggestions.map((suggestion: any, i: number) => (
+                <li key={i} className="flex items-start gap-4">
+                  <span className="text-2xl text-brand-success font-black">0{i+1}</span>
+                  <div>
+                    <div className="font-bold mb-1 leading-tight">
+                      {suggestion.action}
+                    </div>
+                    <div className="text-xs font-black text-brand-blue uppercase tracking-tighter mb-2">
+                      效果：{suggestion.impact_desc || suggestion.impact}
+                    </div>
+                    <div className="space-y-2 mt-3">
+                       {suggestion.how_to && suggestion.how_to.map((step: string, idx: number) => (
+                         <div key={idx} className="text-xs text-brand-slate dark:text-brand-light/60 bg-brand-light/50 dark:bg-brand-navy p-2 rounded-lg border border-brand-navy/5">
+                            {step}
+                         </div>
+                       ))}
+                    </div>
                   </div>
-                  <div className="text-xs font-black text-brand-blue uppercase tracking-tighter mb-2">
-                    {r.desc}
-                  </div>
-                  <div className="p-3 bg-brand-light dark:bg-brand-navy rounded-xl text-sm text-brand-slate dark:text-brand-light/80 border border-brand-navy/5">
-                    {r.action}
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
       
-      {/* 4. 進階檢視（折疊） */}
-      <details className="group bg-brand-navy/5 dark:bg-brand-navy/30 rounded-[2rem] overflow-hidden transition-all">
+      {/* 4. Advanced Technical Details */}
+      <details className="group bg-brand-navy/5 dark:bg-brand-navy/30 rounded-[2rem] overflow-hidden transition-all border border-transparent hover:border-brand-blue/10">
         <summary className="p-8 font-black text-brand-navy dark:text-brand-light cursor-pointer list-none flex items-center justify-between">
           <span className="flex items-center gap-3">
-             <span className="text-xl">🧬</span> 進階技術分析資料
+             <span className="text-xl">🧬</span> 進階技術分析資料 (Report Version: {report.report_version})
           </span>
           <span className="text-brand-blue group-open:rotate-180 transition-transform font-black">↓</span>
         </summary>
         <div className="px-8 pb-8">
-           <div className="bg-black/90 rounded-2xl p-6 font-mono text-sm text-green-400 overflow-x-auto shadow-inner">
-             <pre>{JSON.stringify({ 
-               entities: ["Person", "Organization"], 
-               graph_completeness: "64%",
-               schema_errors: 0,
-               citation_density: 1.2
-             }, null, 2)}</pre>
+           <div className="bg-black/90 rounded-2xl p-6 font-mono text-xs text-green-400 overflow-x-auto shadow-inner">
+             <pre>{JSON.stringify(report, null, 2)}</pre>
            </div>
         </div>
       </details>
 
-      <div className="mt-12 text-center">
-         <button className="px-10 py-4 bg-brand-navy dark:bg-brand-light text-white dark:text-brand-navy rounded-2xl font-black hover:scale-105 transition-all shadow-xl">
-           匯出 PDF 報告
-         </button>
+      <div className="mt-12 text-center text-brand-slate dark:text-brand-light/40 text-sm font-medium">
+         這份報告是由 Trust WEDO AI 引擎基於您的網站結構自動生成。<br />
+         引擎版本: {report.report_version} • 掃描編號: {report.job_id}
       </div>
     </div>
   )
