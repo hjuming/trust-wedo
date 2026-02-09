@@ -1,0 +1,49 @@
+{
+    "nav": {
+        "docs": "文件",
+        "pricing": "定價",
+        "playground": "試用",
+        "getStarted": "立即開始"
+    },
+    "hero": {
+        "badge": "v0.4.0 Beta 現已上線",
+        "headline1": "交付無懈可擊的程式碼",
+        "headline2": "無需人工監督 AI。",
+        "subheadline": "唯一能自我驗證每一行程式碼的 AI 代理。我們不僅生成程式碼；在您看到 PR 之前，我們已證明它能運作。",
+        "ctaPrimary": "免費開始使用",
+        "ctaSecondary": "查看文件"
+    },
+    "features": {
+        "verification": {
+            "title": "自我驗證迴圈",
+            "desc": "每項任務都內建自動化測試與驗證。若測試失敗，我們會持續修正直到通過。"
+        },
+        "context": {
+            "title": "深度情境感知",
+            "desc": "我們索引您的整個程式碼庫，理解專案結構與標準。"
+        },
+        "autonomy": {
+            "title": "多步驟自主性",
+            "desc": "從規劃到 PR，處理複雜工作流程而無需持續監督。"
+        }
+    },
+    "footer": {
+        "description": "值得信賴的 AI 編碼夥伴，掌控您的程式碼庫並自我驗證每項變更。",
+        "product": "產品",
+        "company": "公司",
+        "community": "社群",
+        "features": "功能",
+        "pricing": "定價",
+        "docs": "文件",
+        "changelog": "更新日誌",
+        "about": "關於",
+        "blog": "部落格",
+        "privacy": "隱私權",
+        "terms": "條款",
+        "github": "GitHub",
+        "discord": "Discord",
+        "twitter": "Twitter",
+        "copyright": "© 2024 Trust WEDO. 版權所有。",
+        "version": "版本：Landing v1.0 (Beta)"
+    }
+}

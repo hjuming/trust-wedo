@@ -1,23 +1,25 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Navigation } from '../components/Navigation'
 import { Hero } from '../components/Hero'
 import { Footer } from '../components/Footer'
 
 const Features = () => {
+  const { t } = useTranslation()
   const features = [
     {
-      title: 'Self-Verification Loop',
-      desc: 'Automated testing and verification built into every task. If it fails, we fix it.',
+      title: t('features.verification.title'),
+      desc: t('features.verification.desc'),
       icon: '🔄',
     },
     {
-      title: 'Deep Context Awareness',
-      desc: 'We index your entire repository to understand your project structure and standards.',
+      title: t('features.context.title'),
+      desc: t('features.context.desc'),
       icon: '🧠',
     },
     {
-      title: 'Multi-Step Autonomy',
-      desc: 'From planning to PR, handle complex workflows without constant supervision.',
+      title: t('features.autonomy.title'),
+      desc: t('features.autonomy.desc'),
       icon: '🚀',
     },
   ]

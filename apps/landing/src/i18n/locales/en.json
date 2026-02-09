@@ -1,0 +1,49 @@
+{
+    "nav": {
+        "docs": "Docs",
+        "pricing": "Pricing",
+        "playground": "Playground",
+        "getStarted": "Get Started"
+    },
+    "hero": {
+        "badge": "v0.4.0 Beta Now Live",
+        "headline1": "Ship bulletproof code",
+        "headline2": "without the AI babysitting.",
+        "subheadline": "The only AI agent that self-verifies every line it writes. We don't just generate code; we prove it works before you ever see a PR.",
+        "ctaPrimary": "Get Started for Free",
+        "ctaSecondary": "View Documentation"
+    },
+    "features": {
+        "verification": {
+            "title": "Self-Verification Loop",
+            "desc": "Automated testing and verification built into every task. If it fails, we fix it."
+        },
+        "context": {
+            "title": "Deep Context Awareness",
+            "desc": "We index your entire repository to understand your project structure and standards."
+        },
+        "autonomy": {
+            "title": "Multi-Step Autonomy",
+            "desc": "From planning to PR, handle complex workflows without constant supervision."
+        }
+    },
+    "footer": {
+        "description": "The trustworthy agentic coding partner that takes ownership of your codebase and self-verifies every change.",
+        "product": "Product",
+        "company": "Company",
+        "community": "Community",
+        "features": "Features",
+        "pricing": "Pricing",
+        "docs": "Documentation",
+        "changelog": "Changelog",
+        "about": "About",
+        "blog": "Blog",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "github": "GitHub",
+        "discord": "Discord",
+        "twitter": "Twitter",
+        "copyright": "© 2024 Trust WEDO. All rights reserved.",
+        "version": "Version: Landing v1.0 (Beta)"
+    }
+}
