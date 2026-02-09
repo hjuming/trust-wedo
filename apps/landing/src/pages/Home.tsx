@@ -7,6 +7,7 @@ import { ProblemSection } from '../components/ProblemSection'
 import { HowItWorks } from '../components/HowItWorks'
 import { PricingSection } from '../components/PricingSection'
 import { FinalCTA } from '../components/FinalCTA'
+import { TrustSignals } from '../components/TrustSignals'
 
 const Features = () => {
   const { t } = useTranslation()
@@ -27,12 +28,17 @@ const Features = () => {
       desc: t('features.autonomy.desc'),
       icon: '🚀',
     },
+    {
+      title: t('features.security.title'),
+      desc: t('features.security.desc'),
+      icon: '🛡️',
+    },
   ]
 
   return (
     <section className="py-24 bg-white dark:bg-brand-navy/30">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid md:grid-cols-3 gap-12">
+        <div className="grid md:grid-cols-2 gap-12">
           {features.map((f) => (
             <div key={f.title} className="p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 hover:border-brand-blue/20 transition-all group">
               <div className="text-4xl mb-6 group-hover:scale-110 transition-transform inline-block">
@@ -58,6 +64,7 @@ export default function Home() {
       <Navigation />
       <main>
         <Hero />
+        <TrustSignals />
         <ProblemSection />
         <Features />
         <HowItWorks />

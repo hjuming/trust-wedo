@@ -25,6 +25,24 @@
         "autonomy": {
             "title": "多步驟自主性",
             "desc": "從規劃到 PR，處理複雜工作流程而無需持續監督。"
+        },
+        "security": {
+            "title": "安全性與合規",
+            "desc": "每項變更都會掃描漏洞與機密資訊。我們確保您的程式碼遵循最佳實踐並符合專案標準。"
+        }
+    },
+    "trustSignals": {
+        "signal1": {
+            "value": "8/8 ✅",
+            "label": "驗收測試通過"
+        },
+        "signal2": {
+            "value": "20+",
+            "label": "每項任務自動驗證次數"
+        },
+        "signal3": {
+            "value": "工程師打造",
+            "label": "為工程師而生"
         }
     },
     "problem": {

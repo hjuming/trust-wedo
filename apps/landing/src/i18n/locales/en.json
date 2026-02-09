@@ -25,6 +25,24 @@
         "autonomy": {
             "title": "Multi-Step Autonomy",
             "desc": "From planning to PR, handle complex workflows without constant supervision."
+        },
+        "security": {
+            "title": "Security & Compliance",
+            "desc": "Every change is scanned for vulnerabilities and secrets. We ensure your code follows best practices and stays compliant with your project standards."
+        }
+    },
+    "trustSignals": {
+        "signal1": {
+            "value": "8/8 ✅",
+            "label": "Acceptance Tests Passed"
+        },
+        "signal2": {
+            "value": "20+",
+            "label": "Automated Verifications per Task"
+        },
+        "signal3": {
+            "value": "For Engineers",
+            "label": "Built by Engineers"
         }
     },
     "problem": {
