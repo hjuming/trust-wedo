@@ -1,0 +1,11 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield Background -->
+  <path d="M256 48L80 128V240C80 348.8 154.4 449.6 256 480C357.6 449.6 432 348.8 432 240V128L256 48Z" fill="#1A2332"/>
+  
+  <!-- Stylized W / Checkmark -->
+  <path d="M160 240L220 300L352 160" stroke="#06B6D4" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M160 240L220 300L280 240L340 300" stroke="#06B6D4" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"/>
+  
+  <!-- Accent Dots -->
+  <circle cx="256" cy="400" r="10" fill="#2563EB"/>
+</svg>

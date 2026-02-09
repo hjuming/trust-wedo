@@ -1,0 +1,7 @@
+<svg width="400" height="100" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="70" font-family="Arial, sans-serif" font-weight="900" font-size="60" fill="#1A2332">
+    Trust <tspan fill="#2563EB">WEDO</tspan>
+  </text>
+  <!-- Decorative underscore or dot -->
+  <rect x="0" y="85" width="380" height="4" fill="#06B6D4" opacity="0.5"/>
+</svg>
