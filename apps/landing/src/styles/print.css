@@ -1,0 +1,91 @@
+/* ============================================
+   Trust WEDO Print Styles
+   ============================================ */
+
+@media print {
+  /* 隱藏所有 UI 元素 */
+  .no-print,
+  nav,
+  aside,
+  header:not(.print-header),
+  footer:not(.print-footer),
+  button,
+  [data-no-print="true"] {
+    display: none !important;
+  }
+
+  /* 重設頁面 */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* 移除 Tailwind 的 dark mode 影響 */
+  .dark {
+    color-scheme: light !important;
+  }
+  
+  .dark body {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  /* 報告容器 */
+  .print-container {
+    width: 100% !important;
+    max-width: 210mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    position: static !important;
+    display: block !important;
+  }
+
+  /* 調整側邊欄縮進（如果在列印時仍有 ml-64 等類名） */
+  main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 避免卡片被切頁 */
+  .print-avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+  }
+
+  /* 確保顏色正確顯示 */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 移除陰影與圓角（節省墨水並確保列印清晰） */
+  .shadow-xl,
+  .shadow-lg,
+  .shadow-2xl,
+  .shadow-sm {
+    box-shadow: none !important;
+    border: 1px solid #eee !important;
+  }
+
+  .rounded-3xl,
+  .rounded-2xl,
+  .rounded-xl,
+  .rounded-\[2\.5rem\] {
+    border-radius: 8px !important;
+  }
+  
+  /* 確保文字顏色在列印時足夠深 */
+  .text-brand-slate, .text-brand-light\/60, .text-brand-light\/40 {
+    color: #4b5563 !important;
+  }
+}
+
+/* 紙張設定 */
+@page {
+  size: A4;
+  margin: 15mm;
+}

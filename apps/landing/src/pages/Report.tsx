@@ -40,17 +40,8 @@ export default function Report() {
   }
 
   const handleExportPDF = () => {
-    // 隱藏不需要列印的元素
-    const elementsToHide = document.querySelectorAll('.no-print')
-    elementsToHide.forEach(el => el.classList.add('hidden'))
-
-    // 觸發列印
+    // 觸發列印，CSS 會處理隱藏與格式
     window.print()
-
-    // 恢復隱藏的元素
-    setTimeout(() => {
-      elementsToHide.forEach(el => el.classList.remove('hidden'))
-    }, 100)
   }
 
   if (loading) {
@@ -76,7 +67,7 @@ export default function Report() {
   const { summary, issues, suggestions } = report
 
   return (
-    <div className="max-w-4xl mx-auto py-10 px-6">
+    <div className="print-container max-w-4xl mx-auto py-10 px-6">
       <header className="mb-10 flex items-center justify-between">
         <Link to="/dashboard" className="no-print inline-flex items-center gap-2 text-brand-blue font-bold hover:translate-x-[-4px] transition-transform">
           ← 返回健檢列表
@@ -87,7 +78,7 @@ export default function Report() {
       </header>
 
       {/* 1. Summary Card */}
-      <div className="bg-white dark:bg-brand-navy/50 p-10 rounded-[2.5rem] mb-8 border-2 border-brand-blue/20 shadow-xl relative overflow-hidden">
+      <div className="print-avoid-break bg-white dark:bg-brand-navy/50 p-10 rounded-[2.5rem] mb-8 border-2 border-brand-blue/20 shadow-xl relative overflow-hidden">
         <div className="flex flex-col md:flex-row items-center gap-8 relative z-10 text-brand-navy dark:text-brand-light">
           <div className="text-8xl">
             {summary.grade === 'A' && '🎉'}
@@ -106,7 +97,7 @@ export default function Report() {
             </h1>
 
             {/* CTA Close Loop */}
-            <div className="flex flex-col sm:flex-row gap-4 mt-8">
+            <div className="no-print flex flex-col sm:flex-row gap-4 mt-8">
               <button
                 onClick={handleReAudit}
                 className="flex-1 py-4 bg-brand-blue text-white rounded-2xl font-black text-lg hover:bg-brand-blue/90 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-brand-blue/25"
@@ -126,7 +117,7 @@ export default function Report() {
 
       <div className="grid md:grid-cols-2 gap-8 mb-8 text-brand-navy dark:text-brand-light">
         {/* 2. Key Issues */}
-        <div className="bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
+        <div className="print-avoid-break bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
           <h2 className="text-xl font-black mb-6 flex items-center gap-2 tracking-tight">
             <span className="w-2 h-8 bg-red-500 rounded-full" />
             目前的信任缺口
@@ -155,7 +146,7 @@ export default function Report() {
         </div>
 
         {/* 3. Action Suggestions */}
-        <div className="bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
+        <div className="print-avoid-break bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
           <h2 className="text-xl font-black mb-6 flex items-center gap-2 tracking-tight">
             <span className="w-2 h-8 bg-brand-success rounded-full" />
             建議採取的行動
@@ -190,7 +181,7 @@ export default function Report() {
       </div>
 
       {/* 4. Advanced Technical Details */}
-      <details className="group bg-brand-navy/5 dark:bg-brand-navy/30 rounded-[2rem] overflow-hidden transition-all border border-transparent hover:border-brand-blue/10">
+      <details className="no-print group bg-brand-navy/5 dark:bg-brand-navy/30 rounded-[2rem] overflow-hidden transition-all border border-transparent hover:border-brand-blue/10">
         <summary className="p-8 font-black text-brand-navy dark:text-brand-light cursor-pointer list-none flex items-center justify-between">
           <span className="flex items-center gap-3">
             <span className="text-xl">🧬</span> 進階技術分析資料 (Report Version: {report.report_version})

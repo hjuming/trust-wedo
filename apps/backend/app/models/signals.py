@@ -16,6 +16,7 @@ class SiteSignals(BaseModel):
     has_person: bool = False
     has_website: bool = False
     has_article: bool = False
+    has_jsonld: bool = False
     
     # 作者與關於
     has_author: bool = False
@@ -42,83 +43,53 @@ class SiteSignals(BaseModel):
     
     @classmethod
     def from_artifacts(cls, artifacts: List[Dict[str, Any]]) -> "SiteSignals":
-        """從 artifacts 提取 signals"""
+        """從 artifacts 提取 signals（修復版）"""
         signals = cls()
         
         # 從 scan artifact 提取
         scan_artifact = next((a for a in artifacts if a['stage'] == 'scan'), None)
-        if scan_artifact:
-            payload = scan_artifact['jsonb_payload']
-            metadata = payload.get('metadata', {})
-            
-            signals.has_title = bool(metadata.get('title'))
-            signals.has_description = bool(metadata.get('description'))
-            signals.has_favicon = bool(metadata.get('favicon'))
-            signals.has_https = payload.get('url', '').startswith('https://')
-            
-            # Schema.org 檢測
-            schemas = payload.get('schemas', [])
-            signals.schema_count = len(schemas)
-            signals.schema_types = [s.get('@type') for s in schemas if s.get('@type')]
-            signals.has_organization = any(s.get('@type') == 'Organization' for s in schemas)
-            signals.has_person = any(s.get('@type') == 'Person' for s in schemas)
-            signals.has_website = any(s.get('@type') == 'WebSite' for s in schemas)
-            signals.has_article = any(s.get('@type') == 'Article' for s in schemas)
-            
-            # 作者檢測
-            authors = set()
-            if metadata.get('author'):
-                authors.add(metadata['author'])
-            
-            for schema in schemas:
-                if schema.get('@type') in ['Article', 'BlogPosting']:
-                    author = schema.get('author', {})
-                    if isinstance(author, dict):
-                        author_name = author.get('name')
-                        if author_name:
-                            authors.add(author_name)
-                    elif isinstance(author, str):
-                        authors.add(author)
-            
-            signals.author_names = list(authors)
-            signals.author_count = len(authors)
-            signals.has_author = len(authors) > 0
-            
-            # 連結分析
-            links = payload.get('links', [])
-            signals.outbound_links_count = len([l for l in links if l.get('type') == 'external'])
-            
-            # 社群連結分析
-            social_domains = {
-                'facebook.com': 'facebook',
-                'twitter.com': 'twitter',
-                'x.com': 'twitter',
-                'linkedin.com': 'linkedin',
-                'instagram.com': 'instagram'
-            }
-            
-            social_platforms = set()
-            for link in links:
-                link_url = link.get('url', '')
-                for domain, platform in social_domains.items():
-                    if domain in link_url:
-                        social_platforms.add(platform)
-            
-            signals.social_platforms = list(social_platforms)
-            signals.social_links_count = len(social_platforms)
-            signals.has_social_proof = len(social_platforms) >= 2
-            
-            # 權威連結分析
-            authority_domain_patterns = {'.gov', '.edu', 'wikipedia.org', 'nytimes.com'}
-            found_authorities = set()
-            for link in links:
-                if link.get('type') == 'external':
-                    link_url = link.get('url', '')
-                    for authority in authority_domain_patterns:
-                        if authority in link_url:
-                            found_authorities.add(authority)
-            
-            signals.authority_domains = list(found_authorities)
-            signals.has_authority_links = len(found_authorities) > 0
+        if not scan_artifact:
+            return signals
+        
+        payload = scan_artifact['jsonb_payload']
+        
+        # ✅ 正確：從 site URL 判斷 HTTPS
+        site_url = payload.get('site', '')
+        signals.has_https = site_url.startswith('https://')
+        
+        # ✅ 正確：從 pages 陣列提取資訊
+        pages = payload.get('pages', [])
+        if not pages:
+            return signals
+        
+        # 使用第一個頁面（通常是首頁）
+        first_page = pages[0]
+        
+        # 基礎信號
+        signals.has_title = not first_page.get('title_missing', True)
+        signals.has_description = not first_page.get('meta_missing', True)
+        signals.has_favicon = first_page.get('has_favicon', False)
+        
+        # Schema.org 檢測
+        signals.has_jsonld = first_page.get('has_jsonld', False)
+        # TODO: 當 CLI 提供更多 schemas 資訊時擴充 schema_types, schema_count 等
+        
+        # 作者檢測
+        signals.has_author = first_page.get('is_about_author', False)
+        
+        # 連結統計
+        signals.outbound_links_count = first_page.get('external_links_count', 0)
+        signals.social_links_count = first_page.get('social_links_count', 0)
+        signals.has_social_proof = signals.social_links_count >= 2
+        
+        # About 頁面檢測
+        signals.has_about_page = any(
+            page.get('is_about_author', False) for page in pages
+        )
+        
+        # Contact 頁面檢測（簡化判斷）
+        signals.has_contact = any(
+            'contact' in page.get('url', '').lower() for page in pages
+        )
         
         return signals
