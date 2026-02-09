@@ -1,0 +1,139 @@
+﻿2026-02-09T09:19:30.2129437Z ##[group]Run python -m pip install --upgrade pip
+2026-02-09T09:19:30.2130929Z [36;1mpython -m pip install --upgrade pip[0m
+2026-02-09T09:19:30.2132161Z [36;1mpip install -e ".[dev]"[0m
+2026-02-09T09:19:30.2217593Z shell: /usr/bin/bash -e {0}
+2026-02-09T09:19:30.2218582Z env:
+2026-02-09T09:19:30.2219561Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.12/x64
+2026-02-09T09:19:30.2221343Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.12/x64/lib/pkgconfig
+2026-02-09T09:19:30.2223156Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.12/x64
+2026-02-09T09:19:30.2224917Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.12/x64
+2026-02-09T09:19:30.2226542Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.12/x64
+2026-02-09T09:19:30.2228174Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.12/x64/lib
+2026-02-09T09:19:30.2229548Z ##[endgroup]
+2026-02-09T09:19:32.4939651Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.12.12/x64/lib/python3.12/site-packages (26.0)
+2026-02-09T09:19:32.5926592Z Collecting pip
+2026-02-09T09:19:32.6959868Z   Downloading pip-26.0.1-py3-none-any.whl.metadata (4.7 kB)
+2026-02-09T09:19:32.7322764Z Downloading pip-26.0.1-py3-none-any.whl (1.8 MB)
+2026-02-09T09:19:33.0297855Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 6.7 MB/s  0:00:00
+2026-02-09T09:19:33.0579314Z Installing collected packages: pip
+2026-02-09T09:19:33.0580422Z   Attempting uninstall: pip
+2026-02-09T09:19:33.0600793Z     Found existing installation: pip 26.0
+2026-02-09T09:19:33.1241787Z     Uninstalling pip-26.0:
+2026-02-09T09:19:33.1308230Z       Successfully uninstalled pip-26.0
+2026-02-09T09:19:33.9884022Z Successfully installed pip-26.0.1
+2026-02-09T09:19:34.9024058Z Obtaining file:///home/runner/work/trust-wedo/trust-wedo
+2026-02-09T09:19:34.9045957Z   Installing build dependencies: started
+2026-02-09T09:19:36.3424429Z   Installing build dependencies: finished with status 'done'
+2026-02-09T09:19:36.3430102Z   Checking if build backend supports build_editable: started
+2026-02-09T09:19:36.6672400Z   Checking if build backend supports build_editable: finished with status 'done'
+2026-02-09T09:19:36.6681770Z   Getting requirements to build editable: started
+2026-02-09T09:19:36.9953748Z   Getting requirements to build editable: finished with status 'done'
+2026-02-09T09:19:36.9962384Z   Preparing editable metadata (pyproject.toml): started
+2026-02-09T09:19:37.1861494Z   Preparing editable metadata (pyproject.toml): finished with status 'done'
+2026-02-09T09:19:37.2628107Z Collecting click>=8.1.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:37.3508531Z   Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+2026-02-09T09:19:37.3678578Z Collecting httpx>=0.27.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:37.3819856Z   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+2026-02-09T09:19:37.3988094Z Collecting beautifulsoup4>=4.12.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:37.4129310Z   Downloading beautifulsoup4-4.14.3-py3-none-any.whl.metadata (3.8 kB)
+2026-02-09T09:19:37.4336939Z Collecting jsonschema>=4.20.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:37.4476887Z   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+2026-02-09T09:19:37.6339478Z Collecting lxml>=5.0.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:37.6488838Z   Downloading lxml-6.0.2-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.6 kB)
+2026-02-09T09:19:37.6785859Z Collecting pytest>=8.0.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:37.6924959Z   Downloading pytest-9.0.2-py3-none-any.whl.metadata (7.6 kB)
+2026-02-09T09:19:37.7079302Z Collecting pytest-cov>=4.1.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:37.7218960Z   Downloading pytest_cov-7.0.0-py3-none-any.whl.metadata (31 kB)
+2026-02-09T09:19:37.7739810Z Collecting black>=24.0.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:37.7890788Z   Downloading black-26.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (88 kB)
+2026-02-09T09:19:38.1107700Z Collecting ruff>=0.2.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:38.1262764Z   Downloading ruff-0.15.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (26 kB)
+2026-02-09T09:19:38.2138154Z Collecting mypy>=1.8.0 (from trust-wedo==0.1.0)
+2026-02-09T09:19:38.2281474Z   Downloading mypy-1.19.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.2 kB)
+2026-02-09T09:19:38.2455332Z Collecting soupsieve>=1.6.1 (from beautifulsoup4>=4.12.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.2592916Z   Downloading soupsieve-2.8.3-py3-none-any.whl.metadata (4.6 kB)
+2026-02-09T09:19:38.2749781Z Collecting typing-extensions>=4.0.0 (from beautifulsoup4>=4.12.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.2888405Z   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+2026-02-09T09:19:38.3008292Z Collecting mypy-extensions>=0.4.3 (from black>=24.0.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.3145290Z   Downloading mypy_extensions-1.1.0-py3-none-any.whl.metadata (1.1 kB)
+2026-02-09T09:19:38.3280522Z Collecting packaging>=22.0 (from black>=24.0.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.3291929Z   Using cached packaging-26.0-py3-none-any.whl.metadata (3.3 kB)
+2026-02-09T09:19:38.3389319Z Collecting pathspec>=1.0.0 (from black>=24.0.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.3553362Z   Downloading pathspec-1.0.4-py3-none-any.whl.metadata (13 kB)
+2026-02-09T09:19:38.3741846Z Collecting platformdirs>=2 (from black>=24.0.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.3883658Z   Downloading platformdirs-4.5.1-py3-none-any.whl.metadata (12 kB)
+2026-02-09T09:19:38.4270609Z Collecting pytokens>=0.3.0 (from black>=24.0.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.4413128Z   Downloading pytokens-0.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (3.8 kB)
+2026-02-09T09:19:38.4603285Z Collecting anyio (from httpx>=0.27.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.4745854Z   Downloading anyio-4.12.1-py3-none-any.whl.metadata (4.3 kB)
+2026-02-09T09:19:38.4934001Z Collecting certifi (from httpx>=0.27.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.5073709Z   Downloading certifi-2026.1.4-py3-none-any.whl.metadata (2.5 kB)
+2026-02-09T09:19:38.5235117Z Collecting httpcore==1.* (from httpx>=0.27.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.5373252Z   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+2026-02-09T09:19:38.5517625Z Collecting idna (from httpx>=0.27.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.5656870Z   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+2026-02-09T09:19:38.5773383Z Collecting h11>=0.16 (from httpcore==1.*->httpx>=0.27.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.5911668Z   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+2026-02-09T09:19:38.6057230Z Collecting attrs>=22.2.0 (from jsonschema>=4.20.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.6197153Z   Downloading attrs-25.4.0-py3-none-any.whl.metadata (10 kB)
+2026-02-09T09:19:38.6328472Z Collecting jsonschema-specifications>=2023.03.6 (from jsonschema>=4.20.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.6465823Z   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+2026-02-09T09:19:38.6662688Z Collecting referencing>=0.28.4 (from jsonschema>=4.20.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.6801888Z   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+2026-02-09T09:19:38.9230853Z Collecting rpds-py>=0.25.0 (from jsonschema>=4.20.0->trust-wedo==0.1.0)
+2026-02-09T09:19:38.9374080Z   Downloading rpds_py-0.30.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+2026-02-09T09:19:39.0295614Z Collecting librt>=0.6.2 (from mypy>=1.8.0->trust-wedo==0.1.0)
+2026-02-09T09:19:39.0437869Z   Downloading librt-0.7.8-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (1.3 kB)
+2026-02-09T09:19:39.0566446Z Collecting iniconfig>=1.0.1 (from pytest>=8.0.0->trust-wedo==0.1.0)
+2026-02-09T09:19:39.0809445Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+2026-02-09T09:19:39.0925288Z Collecting pluggy<2,>=1.5 (from pytest>=8.0.0->trust-wedo==0.1.0)
+2026-02-09T09:19:39.1065816Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+2026-02-09T09:19:39.1241588Z Collecting pygments>=2.7.2 (from pytest>=8.0.0->trust-wedo==0.1.0)
+2026-02-09T09:19:39.1380704Z   Downloading pygments-2.19.2-py3-none-any.whl.metadata (2.5 kB)
+2026-02-09T09:19:39.5089411Z Collecting coverage>=7.10.6 (from coverage[toml]>=7.10.6->pytest-cov>=4.1.0->trust-wedo==0.1.0)
+2026-02-09T09:19:39.5232583Z   Downloading coverage-7.13.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (8.5 kB)
+2026-02-09T09:19:39.5567703Z Downloading beautifulsoup4-4.14.3-py3-none-any.whl (107 kB)
+2026-02-09T09:19:39.5757043Z Downloading black-26.1.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.8 MB)
+2026-02-09T09:19:39.6195942Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 51.8 MB/s  0:00:00
+2026-02-09T09:19:39.6342536Z Downloading click-8.3.1-py3-none-any.whl (108 kB)
+2026-02-09T09:19:39.6513563Z Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+2026-02-09T09:19:39.6679022Z Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+2026-02-09T09:19:39.6844430Z Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+2026-02-09T09:19:39.7006333Z Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+2026-02-09T09:19:39.7170114Z Downloading attrs-25.4.0-py3-none-any.whl (67 kB)
+2026-02-09T09:19:39.7331901Z Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+2026-02-09T09:19:39.7492833Z Downloading lxml-6.0.2-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.3 MB)
+2026-02-09T09:19:39.7803294Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.3/5.3 MB 176.4 MB/s  0:00:00
+2026-02-09T09:19:39.7948236Z Downloading mypy-1.19.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (13.6 MB)
+2026-02-09T09:19:39.8557479Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 13.6/13.6 MB 229.0 MB/s  0:00:00
+2026-02-09T09:19:39.8698802Z Downloading librt-0.7.8-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (192 kB)
+2026-02-09T09:19:39.8870941Z Downloading mypy_extensions-1.1.0-py3-none-any.whl (5.0 kB)
+2026-02-09T09:19:39.8903930Z Using cached packaging-26.0-py3-none-any.whl (74 kB)
+2026-02-09T09:19:39.9045208Z Downloading pathspec-1.0.4-py3-none-any.whl (55 kB)
+2026-02-09T09:19:39.9218016Z Downloading platformdirs-4.5.1-py3-none-any.whl (18 kB)
+2026-02-09T09:19:39.9411233Z Downloading pytest-9.0.2-py3-none-any.whl (374 kB)
+2026-02-09T09:19:39.9776804Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+2026-02-09T09:19:40.2404736Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+2026-02-09T09:19:40.2567621Z Downloading pygments-2.19.2-py3-none-any.whl (1.2 MB)
+2026-02-09T09:19:40.2654870Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 159.2 MB/s  0:00:00
+2026-02-09T09:19:40.2795687Z Downloading pytest_cov-7.0.0-py3-none-any.whl (22 kB)
+2026-02-09T09:19:40.2978071Z Downloading coverage-7.13.3-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (254 kB)
+2026-02-09T09:19:40.3147358Z Downloading pytokens-0.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (269 kB)
+2026-02-09T09:19:40.3366030Z Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+2026-02-09T09:19:40.3537901Z Downloading rpds_py-0.30.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (394 kB)
+2026-02-09T09:19:40.3712475Z Downloading ruff-0.15.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (11.1 MB)
+2026-02-09T09:19:40.4349874Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.1/11.1 MB 177.6 MB/s  0:00:00
+2026-02-09T09:19:40.4491073Z Downloading soupsieve-2.8.3-py3-none-any.whl (37 kB)
+2026-02-09T09:19:40.4661606Z Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+2026-02-09T09:19:40.4822107Z Downloading anyio-4.12.1-py3-none-any.whl (113 kB)
+2026-02-09T09:19:40.4984149Z Downloading idna-3.11-py3-none-any.whl (71 kB)
+2026-02-09T09:19:40.5147007Z Downloading certifi-2026.1.4-py3-none-any.whl (152 kB)
+2026-02-09T09:19:40.5744371Z Building wheels for collected packages: trust-wedo
+2026-02-09T09:19:40.5752493Z   Building editable for trust-wedo (pyproject.toml): started
+2026-02-09T09:19:40.7893000Z   Building editable for trust-wedo (pyproject.toml): finished with status 'done'
+2026-02-09T09:19:40.7898807Z   Created wheel for trust-wedo: filename=trust_wedo-0.1.0-0.editable-py3-none-any.whl size=3743 sha256=e6669deabfc2cc07fb11640ca75382b199ca1637db46ec5be8b5a49b0c5a84a9
+2026-02-09T09:19:40.7900935Z   Stored in directory: /tmp/pip-ephem-wheel-cache-8v8odx1v/wheels/19/bd/85/5e31ee9781d1d018defba1d811007cdb8a13fedb1affda2910
+2026-02-09T09:19:40.7920782Z Successfully built trust-wedo
+2026-02-09T09:19:40.8483434Z Installing collected packages: typing-extensions, soupsieve, ruff, rpds-py, pytokens, pygments, pluggy, platformdirs, pathspec, packaging, mypy-extensions, lxml, librt, iniconfig, idna, h11, coverage, click, certifi, attrs, referencing, pytest, mypy, httpcore, black, beautifulsoup4, anyio, pytest-cov, jsonschema-specifications, httpx, jsonschema, trust-wedo
+2026-02-09T09:19:44.5168774Z 
+2026-02-09T09:19:44.5202940Z Successfully installed anyio-4.12.1 attrs-25.4.0 beautifulsoup4-4.14.3 black-26.1.0 certifi-2026.1.4 click-8.3.1 coverage-7.13.3 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.11 iniconfig-2.3.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 librt-0.7.8 lxml-6.0.2 mypy-1.19.1 mypy-extensions-1.1.0 packaging-26.0 pathspec-1.0.4 platformdirs-4.5.1 pluggy-1.6.0 pygments-2.19.2 pytest-9.0.2 pytest-cov-7.0.0 pytokens-0.4.1 referencing-0.37.0 rpds-py-0.30.0 ruff-0.15.0 soupsieve-2.8.3 trust-wedo-0.1.0 typing-extensions-4.15.0

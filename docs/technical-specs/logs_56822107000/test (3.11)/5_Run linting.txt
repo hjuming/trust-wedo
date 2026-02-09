@@ -1,0 +1,2722 @@
+﻿2026-02-09T09:19:42.3064960Z ##[group]Run ruff check src/ tests/
+2026-02-09T09:19:42.3065295Z [36;1mruff check src/ tests/[0m
+2026-02-09T09:19:42.3065558Z [36;1mblack --check src/ tests/[0m
+2026-02-09T09:19:42.3099391Z shell: /usr/bin/bash -e {0}
+2026-02-09T09:19:42.3099628Z env:
+2026-02-09T09:19:42.3099924Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-09T09:19:42.3100358Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib/pkgconfig
+2026-02-09T09:19:42.3100757Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-09T09:19:42.3101114Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-09T09:19:42.3101493Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.14/x64
+2026-02-09T09:19:42.3101857Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.14/x64/lib
+2026-02-09T09:19:42.3102160Z ##[endgroup]
+2026-02-09T09:19:42.3263688Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3264406Z   --> src/trust_wedo/cli.py:3:1
+2026-02-09T09:19:42.3264810Z    |
+2026-02-09T09:19:42.3265232Z  1 |   """CLI entry point for Trust WEDO."""
+2026-02-09T09:19:42.3265664Z  2 |
+2026-02-09T09:19:42.3265940Z  3 | / import click
+2026-02-09T09:19:42.3266250Z  4 | | import json
+2026-02-09T09:19:42.3266555Z  5 | | import asyncio
+2026-02-09T09:19:42.3266919Z  6 | | from pathlib import Path
+2026-02-09T09:19:42.3267338Z  7 | | from trust_wedo import __version__
+2026-02-09T09:19:42.3267895Z  8 | | from trust_wedo.parsers.site_parser import SiteParser
+2026-02-09T09:19:42.3268546Z  9 | | from trust_wedo.core.entity_scorer import EntityScorer
+2026-02-09T09:19:42.3269325Z 10 | | from trust_wedo.core.afb_builder import AFBBuilder
+2026-02-09T09:19:42.3270020Z 11 | | from trust_wedo.core.citation_evaluator import CitationEvaluator
+2026-02-09T09:19:42.3270727Z 12 | | from trust_wedo.core.graph_builder import GraphBuilder
+2026-02-09T09:19:42.3271407Z 13 | | from trust_wedo.core.report_generator import ReportGenerator
+2026-02-09T09:19:42.3272106Z 14 | | from trust_wedo.core.capture_manager import CaptureManager
+2026-02-09T09:19:42.3272782Z 15 | | from trust_wedo.core.diff_analyzer import DiffAnalyzer
+2026-02-09T09:19:42.3273815Z 16 | | from trust_wedo.validators.schema_validator import SchemaValidator
+2026-02-09T09:19:42.3274528Z    | |__________________________________________________________________^
+2026-02-09T09:19:42.3275035Z    |
+2026-02-09T09:19:42.3275312Z help: Organize imports
+2026-02-09T09:19:42.3275538Z 
+2026-02-09T09:19:42.3275689Z W293 Blank line contains whitespace
+2026-02-09T09:19:42.3276111Z   --> src/trust_wedo/cli.py:26:1
+2026-02-09T09:19:42.3276487Z    |
+2026-02-09T09:19:42.3276937Z 24 | def main(ctx: click.Context, verbose: bool, quiet: bool) -> None:
+2026-02-09T09:19:42.3277685Z 25 |     """Trust WEDO - Answer Trust Infrastructure for Generative Systems.
+2026-02-09T09:19:42.3278283Z 26 |     
+2026-02-09T09:19:42.3278573Z    | ^^^^
+2026-02-09T09:19:42.3279423Z 27 |     把網站內容轉換為「AI 可評估、可拒絕、可引用」的答案物件。
+2026-02-09T09:19:42.3279830Z 28 |     """
+2026-02-09T09:19:42.3280107Z    |
+2026-02-09T09:19:42.3280423Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3280737Z 
+2026-02-09T09:19:42.3280896Z W293 Blank line contains whitespace
+2026-02-09T09:19:42.3281325Z   --> src/trust_wedo/cli.py:41:1
+2026-02-09T09:19:42.3281697Z    |
+2026-02-09T09:19:42.3282183Z 39 | def scan(ctx: click.Context, url: str, output: str, max_pages: int) -> None:
+2026-02-09T09:19:42.3282924Z 40 |     """掃描網站內容並抽取基礎結構。
+2026-02-09T09:19:42.3283270Z 41 |     
+2026-02-09T09:19:42.3283533Z    | ^^^^
+2026-02-09T09:19:42.3283897Z 42 |     輸出：output/site.json
+2026-02-09T09:19:42.3284239Z 43 |     """
+2026-02-09T09:19:42.3284512Z    |
+2026-02-09T09:19:42.3284806Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3285122Z 
+2026-02-09T09:19:42.3285273Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3285712Z   --> src/trust_wedo/cli.py:45:1
+2026-02-09T09:19:42.3286079Z    |
+2026-02-09T09:19:42.3286334Z 43 |     """
+2026-02-09T09:19:42.3286728Z 44 |     click.echo(f"🔍 掃描網站: {url}")
+2026-02-09T09:19:42.3287388Z 45 |     
+2026-02-09T09:19:42.3287644Z    | ^^^^
+2026-02-09T09:19:42.3288001Z 46 |     parser = SiteParser(url, max_pages=max_pages)
+2026-02-09T09:19:42.3288540Z 47 |     result = asyncio.run(parser.scan())
+2026-02-09T09:19:42.3289046Z    |
+2026-02-09T09:19:42.3289628Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3289940Z 
+2026-02-09T09:19:42.3290093Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3290534Z   --> src/trust_wedo/cli.py:48:1
+2026-02-09T09:19:42.3290895Z    |
+2026-02-09T09:19:42.3291244Z 46 |     parser = SiteParser(url, max_pages=max_pages)
+2026-02-09T09:19:42.3291764Z 47 |     result = asyncio.run(parser.scan())
+2026-02-09T09:19:42.3292177Z 48 |     
+2026-02-09T09:19:42.3292443Z    | ^^^^
+2026-02-09T09:19:42.3292728Z 49 |     output_path = Path(output)
+2026-02-09T09:19:42.3293216Z 50 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3293680Z    |
+2026-02-09T09:19:42.3293986Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3294307Z 
+2026-02-09T09:19:42.3294460Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3294902Z   --> src/trust_wedo/cli.py:52:1
+2026-02-09T09:19:42.3295289Z    |
+2026-02-09T09:19:42.3295633Z 50 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3296176Z 51 |     site_json_path = output_path / "site.json"
+2026-02-09T09:19:42.3296618Z 52 |     
+2026-02-09T09:19:42.3296882Z    | ^^^^
+2026-02-09T09:19:42.3297189Z 53 |     with open(site_json_path, "w") as f:
+2026-02-09T09:19:42.3297730Z 54 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3298225Z    |
+2026-02-09T09:19:42.3298525Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3298830Z 
+2026-02-09T09:19:42.3298992Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3299635Z   --> src/trust_wedo/cli.py:55:1
+2026-02-09T09:19:42.3300016Z    |
+2026-02-09T09:19:42.3300320Z 53 |     with open(site_json_path, "w") as f:
+2026-02-09T09:19:42.3300863Z 54 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3301368Z 55 |     
+2026-02-09T09:19:42.3301637Z    | ^^^^
+2026-02-09T09:19:42.3302321Z 56 |     click.echo(f"📁 已儲存至: {site_json_path}")
+2026-02-09T09:19:42.3302762Z    |
+2026-02-09T09:19:42.3303060Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3303370Z 
+2026-02-09T09:19:42.3303521Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3303959Z   --> src/trust_wedo/cli.py:57:1
+2026-02-09T09:19:42.3304342Z    |
+2026-02-09T09:19:42.3304759Z 56 |     click.echo(f"📁 已儲存至: {site_json_path}")
+2026-02-09T09:19:42.3305195Z 57 |     
+2026-02-09T09:19:42.3305454Z    | ^^^^
+2026-02-09T09:19:42.3305750Z 58 |     validator = SchemaValidator()
+2026-02-09T09:19:42.3306340Z 59 |     is_valid, error = validator.validate_file(site_json_path, "site")
+2026-02-09T09:19:42.3306924Z    |
+2026-02-09T09:19:42.3307214Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3307517Z 
+2026-02-09T09:19:42.3307668Z W293 Blank line contains whitespace
+2026-02-09T09:19:42.3308097Z   --> src/trust_wedo/cli.py:80:1
+2026-02-09T09:19:42.3308466Z    |
+2026-02-09T09:19:42.3308945Z 78 | def entity_score(ctx: click.Context, site_json: str, output: str) -> None:
+2026-02-09T09:19:42.3309844Z 79 |     """計算實體信任評分。
+2026-02-09T09:19:42.3310167Z 80 |     
+2026-02-09T09:19:42.3310439Z    | ^^^^
+2026-02-09T09:19:42.3310817Z 81 |     輸出：output/entity_profile.json
+2026-02-09T09:19:42.3311229Z 82 |     """
+2026-02-09T09:19:42.3311502Z    |
+2026-02-09T09:19:42.3311799Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3312109Z 
+2026-02-09T09:19:42.3312266Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3312697Z   --> src/trust_wedo/cli.py:84:1
+2026-02-09T09:19:42.3313076Z    |
+2026-02-09T09:19:42.3313321Z 82 |     """
+2026-02-09T09:19:42.3313753Z 83 |     click.echo(f"📊 計算實體信任評分: {site_json}")
+2026-02-09T09:19:42.3314392Z 84 |     
+2026-02-09T09:19:42.3314570Z    | ^^^^
+2026-02-09T09:19:42.3314752Z 85 |     with open(site_json) as f:
+2026-02-09T09:19:42.3315008Z 86 |         site_data = json.load(f)
+2026-02-09T09:19:42.3315444Z    |
+2026-02-09T09:19:42.3315627Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3315816Z 
+2026-02-09T09:19:42.3315913Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3316162Z   --> src/trust_wedo/cli.py:87:1
+2026-02-09T09:19:42.3316378Z    |
+2026-02-09T09:19:42.3316542Z 85 |     with open(site_json) as f:
+2026-02-09T09:19:42.3316781Z 86 |         site_data = json.load(f)
+2026-02-09T09:19:42.3317003Z 87 |     
+2026-02-09T09:19:42.3317158Z    | ^^^^
+2026-02-09T09:19:42.3317338Z 88 |     scorer = EntityScorer(site_data)
+2026-02-09T09:19:42.3317653Z 89 |     result = scorer.calculate_score(input_source=site_json)
+2026-02-09T09:19:42.3317957Z    |
+2026-02-09T09:19:42.3318128Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3318305Z 
+2026-02-09T09:19:42.3318392Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3318632Z   --> src/trust_wedo/cli.py:90:1
+2026-02-09T09:19:42.3318841Z    |
+2026-02-09T09:19:42.3319016Z 88 |     scorer = EntityScorer(site_data)
+2026-02-09T09:19:42.3319569Z 89 |     result = scorer.calculate_score(input_source=site_json)
+2026-02-09T09:19:42.3319874Z 90 |     
+2026-02-09T09:19:42.3320019Z    | ^^^^
+2026-02-09T09:19:42.3320195Z 91 |     output_path = Path(output)
+2026-02-09T09:19:42.3320470Z 92 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3320738Z    |
+2026-02-09T09:19:42.3320908Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3321081Z 
+2026-02-09T09:19:42.3321167Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3321415Z   --> src/trust_wedo/cli.py:94:1
+2026-02-09T09:19:42.3321629Z    |
+2026-02-09T09:19:42.3321832Z 92 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3322192Z 93 |     entity_json_path = output_path / "entity_profile.json"
+2026-02-09T09:19:42.3322487Z 94 |     
+2026-02-09T09:19:42.3322643Z    | ^^^^
+2026-02-09T09:19:42.3322828Z 95 |     with open(entity_json_path, "w") as f:
+2026-02-09T09:19:42.3323149Z 96 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3323425Z    |
+2026-02-09T09:19:42.3323744Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3323914Z 
+2026-02-09T09:19:42.3324008Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3324255Z   --> src/trust_wedo/cli.py:97:1
+2026-02-09T09:19:42.3324471Z    |
+2026-02-09T09:19:42.3324648Z 95 |     with open(entity_json_path, "w") as f:
+2026-02-09T09:19:42.3324956Z 96 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3325231Z 97 |     
+2026-02-09T09:19:42.3325382Z    | ^^^^
+2026-02-09T09:19:42.3325674Z 98 |     click.echo(f"👤 已產生實體檔案: {entity_json_path}")
+2026-02-09T09:19:42.3326703Z 99 |     click.echo(f"📈 信任評分 (EC): {result['entity_confidence']} ({result['eligibility']})")
+2026-02-09T09:19:42.3327334Z    |
+2026-02-09T09:19:42.3327633Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3327935Z 
+2026-02-09T09:19:42.3328056Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3328333Z    --> src/trust_wedo/cli.py:100:1
+2026-02-09T09:19:42.3328557Z     |
+2026-02-09T09:19:42.3328825Z  98 |     click.echo(f"👤 已產生實體檔案: {entity_json_path}")
+2026-02-09T09:19:42.3329498Z  99 |     click.echo(f"📈 信任評分 (EC): {result['entity_confidence']} ({result['eligibility']})")
+2026-02-09T09:19:42.3329874Z 100 |     
+2026-02-09T09:19:42.3330026Z     | ^^^^
+2026-02-09T09:19:42.3330208Z 101 |     validator = SchemaValidator()
+2026-02-09T09:19:42.3330562Z 102 |     is_valid, error = validator.validate_file(entity_json_path, "entity")
+2026-02-09T09:19:42.3330911Z     |
+2026-02-09T09:19:42.3331089Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3331266Z 
+2026-02-09T09:19:42.3331350Z E501 Line too long (106 > 100)
+2026-02-09T09:19:42.3331585Z    --> src/trust_wedo/cli.py:119:97
+2026-02-09T09:19:42.3331809Z     |
+2026-02-09T09:19:42.3331975Z 117 | @afb.command(name="build")
+2026-02-09T09:19:42.3332278Z 118 | @click.argument("page_html", type=click.Path(exists=True))
+2026-02-09T09:19:42.3333047Z 119 | @click.option("--entity", "entity_file", required=True, type=click.Path(exists=True), help="實體信任檔案")
+2026-02-09T09:19:42.3333571Z     |                                                                                                     ^^^^^^
+2026-02-09T09:19:42.3334057Z 120 | @click.option("--output", "-o", default="output", help="輸出目錄")
+2026-02-09T09:19:42.3334393Z 121 | @click.pass_context
+2026-02-09T09:19:42.3334593Z     |
+2026-02-09T09:19:42.3334691Z 
+2026-02-09T09:19:42.3334782Z W293 Blank line contains whitespace
+2026-02-09T09:19:42.3335037Z    --> src/trust_wedo/cli.py:124:1
+2026-02-09T09:19:42.3335254Z     |
+2026-02-09T09:19:42.3335590Z 122 | def afb_build(ctx: click.Context, page_html: str, entity_file: str, output: str) -> None:
+2026-02-09T09:19:42.3336214Z 123 |     """產生 Answer-First Block。
+2026-02-09T09:19:42.3336449Z 124 |     
+2026-02-09T09:19:42.3336601Z     | ^^^^
+2026-02-09T09:19:42.3336806Z 125 |     輸出：output/afb.json
+2026-02-09T09:19:42.3337009Z 126 |     """
+2026-02-09T09:19:42.3337182Z     |
+2026-02-09T09:19:42.3337366Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3337546Z 
+2026-02-09T09:19:42.3337635Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3337890Z    --> src/trust_wedo/cli.py:128:1
+2026-02-09T09:19:42.3338103Z     |
+2026-02-09T09:19:42.3338256Z 126 |     """
+2026-02-09T09:19:42.3338499Z 127 |     click.echo(f"🎯 產生 AFB: {page_html}")
+2026-02-09T09:19:42.3338749Z 128 |     
+2026-02-09T09:19:42.3338898Z     | ^^^^
+2026-02-09T09:19:42.3339075Z 129 |     with open(entity_file) as f:
+2026-02-09T09:19:42.3339500Z 130 |         entity_profile = json.load(f)
+2026-02-09T09:19:42.3339741Z     |
+2026-02-09T09:19:42.3339917Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3340086Z 
+2026-02-09T09:19:42.3340173Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3340420Z    --> src/trust_wedo/cli.py:131:1
+2026-02-09T09:19:42.3340629Z     |
+2026-02-09T09:19:42.3340798Z 129 |     with open(entity_file) as f:
+2026-02-09T09:19:42.3341048Z 130 |         entity_profile = json.load(f)
+2026-02-09T09:19:42.3341282Z 131 |     
+2026-02-09T09:19:42.3341571Z     | ^^^^
+2026-02-09T09:19:42.3341782Z 132 |     with open(page_html, encoding="utf-8") as f:
+2026-02-09T09:19:42.3342069Z 133 |         html_content = f.read()
+2026-02-09T09:19:42.3342283Z     |
+2026-02-09T09:19:42.3342463Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3342632Z 
+2026-02-09T09:19:42.3342720Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3342970Z    --> src/trust_wedo/cli.py:134:1
+2026-02-09T09:19:42.3343179Z     |
+2026-02-09T09:19:42.3343382Z 132 |     with open(page_html, encoding="utf-8") as f:
+2026-02-09T09:19:42.3343655Z 133 |         html_content = f.read()
+2026-02-09T09:19:42.3343875Z 134 |     
+2026-02-09T09:19:42.3344028Z     | ^^^^
+2026-02-09T09:19:42.3344248Z 135 |     builder = AFBBuilder(html_content, entity_profile)
+2026-02-09T09:19:42.3344598Z 136 |     result = builder.build(input_source=page_html)
+2026-02-09T09:19:42.3344875Z     |
+2026-02-09T09:19:42.3345064Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3345245Z 
+2026-02-09T09:19:42.3345333Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3345587Z    --> src/trust_wedo/cli.py:137:1
+2026-02-09T09:19:42.3345806Z     |
+2026-02-09T09:19:42.3346026Z 135 |     builder = AFBBuilder(html_content, entity_profile)
+2026-02-09T09:19:42.3346371Z 136 |     result = builder.build(input_source=page_html)
+2026-02-09T09:19:42.3346637Z 137 |     
+2026-02-09T09:19:42.3346796Z     | ^^^^
+2026-02-09T09:19:42.3346968Z 138 |     output_path = Path(output)
+2026-02-09T09:19:42.3347252Z 139 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3347515Z     |
+2026-02-09T09:19:42.3347691Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3347861Z 
+2026-02-09T09:19:42.3348228Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3348480Z    --> src/trust_wedo/cli.py:141:1
+2026-02-09T09:19:42.3348702Z     |
+2026-02-09T09:19:42.3348902Z 139 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3349513Z 140 |     afb_json_path = output_path / "afb.json"
+2026-02-09T09:19:42.3349777Z 141 |     
+2026-02-09T09:19:42.3349933Z     | ^^^^
+2026-02-09T09:19:42.3350111Z 142 |     with open(afb_json_path, "w") as f:
+2026-02-09T09:19:42.3350430Z 143 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3350718Z     |
+2026-02-09T09:19:42.3350898Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3351067Z 
+2026-02-09T09:19:42.3351161Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3351411Z    --> src/trust_wedo/cli.py:144:1
+2026-02-09T09:19:42.3351629Z     |
+2026-02-09T09:19:42.3351807Z 142 |     with open(afb_json_path, "w") as f:
+2026-02-09T09:19:42.3352115Z 143 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3352392Z 144 |     
+2026-02-09T09:19:42.3352547Z     | ^^^^
+2026-02-09T09:19:42.3352816Z 145 |     click.echo(f"📄 已產生 AFB 檔案: {afb_json_path}")
+2026-02-09T09:19:42.3353084Z     |
+2026-02-09T09:19:42.3353259Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3353436Z 
+2026-02-09T09:19:42.3353520Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3353771Z    --> src/trust_wedo/cli.py:146:1
+2026-02-09T09:19:42.3353988Z     |
+2026-02-09T09:19:42.3354245Z 145 |     click.echo(f"📄 已產生 AFB 檔案: {afb_json_path}")
+2026-02-09T09:19:42.3354506Z 146 |     
+2026-02-09T09:19:42.3354661Z     | ^^^^
+2026-02-09T09:19:42.3354853Z 147 |     if result.get("eligibility") == "fail":
+2026-02-09T09:19:42.3355462Z 148 |         click.echo(f"⚠️  實體信任分過低 (EC={result['confidence_signals']['entity_confidence']:.2f} < 0.60)，AFB 已標記為 fail")
+2026-02-09T09:19:42.3355917Z     |
+2026-02-09T09:19:42.3356092Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3356265Z 
+2026-02-09T09:19:42.3356356Z E501 Line too long (127 > 100)
+2026-02-09T09:19:42.3356583Z    --> src/trust_wedo/cli.py:148:95
+2026-02-09T09:19:42.3356813Z     |
+2026-02-09T09:19:42.3357000Z 147 |     if result.get("eligibility") == "fail":
+2026-02-09T09:19:42.3357584Z 148 |         click.echo(f"⚠️  實體信任分過低 (EC={result['confidence_signals']['entity_confidence']:.2f} < 0.60)，AFB 已標記為 fail")
+2026-02-09T09:19:42.3358272Z     |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3358604Z 149 |     
+2026-02-09T09:19:42.3358788Z 150 |     validator = SchemaValidator()
+2026-02-09T09:19:42.3359019Z     |
+2026-02-09T09:19:42.3359342Z 
+2026-02-09T09:19:42.3359456Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3359722Z    --> src/trust_wedo/cli.py:149:1
+2026-02-09T09:19:42.3359951Z     |
+2026-02-09T09:19:42.3360141Z 147 |     if result.get("eligibility") == "fail":
+2026-02-09T09:19:42.3360735Z 148 |         click.echo(f"⚠️  實體信任分過低 (EC={result['confidence_signals']['entity_confidence']:.2f} < 0.60)，AFB 已標記為 fail")
+2026-02-09T09:19:42.3361184Z 149 |     
+2026-02-09T09:19:42.3361335Z     | ^^^^
+2026-02-09T09:19:42.3361528Z 150 |     validator = SchemaValidator()
+2026-02-09T09:19:42.3361857Z 151 |     is_valid, error = validator.validate_file(afb_json_path, "afb")
+2026-02-09T09:19:42.3362192Z     |
+2026-02-09T09:19:42.3362363Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3362535Z 
+2026-02-09T09:19:42.3362623Z W293 Blank line contains whitespace
+2026-02-09T09:19:42.3362867Z    --> src/trust_wedo/cli.py:172:1
+2026-02-09T09:19:42.3363083Z     |
+2026-02-09T09:19:42.3363371Z 170 | def citation_eval(ctx: click.Context, afb_json: str, output: str) -> None:
+2026-02-09T09:19:42.3363764Z 171 |     """評估引用可信度。
+2026-02-09T09:19:42.3363952Z 172 |     
+2026-02-09T09:19:42.3364108Z     | ^^^^
+2026-02-09T09:19:42.3364323Z 173 |     輸出：output/citation_eval.json
+2026-02-09T09:19:42.3364550Z 174 |     """
+2026-02-09T09:19:42.3364717Z     |
+2026-02-09T09:19:42.3364886Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3365060Z 
+2026-02-09T09:19:42.3365147Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3365564Z    --> src/trust_wedo/cli.py:176:1
+2026-02-09T09:19:42.3365781Z     |
+2026-02-09T09:19:42.3365939Z 174 |     """
+2026-02-09T09:19:42.3366173Z 175 |     click.echo(f"📝 評估引用: {afb_json}")
+2026-02-09T09:19:42.3366414Z 176 |     
+2026-02-09T09:19:42.3366562Z     | ^^^^
+2026-02-09T09:19:42.3366729Z 177 |     with open(afb_json) as f:
+2026-02-09T09:19:42.3366957Z 178 |         afb_data = json.load(f)
+2026-02-09T09:19:42.3367177Z     |
+2026-02-09T09:19:42.3367351Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3367525Z 
+2026-02-09T09:19:42.3367612Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3367859Z    --> src/trust_wedo/cli.py:179:1
+2026-02-09T09:19:42.3368070Z     |
+2026-02-09T09:19:42.3368355Z 177 |     with open(afb_json) as f:
+2026-02-09T09:19:42.3368753Z 178 |         afb_data = json.load(f)
+2026-02-09T09:19:42.3369361Z 179 |     
+2026-02-09T09:19:42.3369640Z     | ^^^^
+2026-02-09T09:19:42.3369863Z 180 |     afb_id = afb_data.get("afb_id", "afb:unknown")
+2026-02-09T09:19:42.3370176Z     |
+2026-02-09T09:19:42.3370365Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3370550Z 
+2026-02-09T09:19:42.3370644Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3370894Z    --> src/trust_wedo/cli.py:181:1
+2026-02-09T09:19:42.3371116Z     |
+2026-02-09T09:19:42.3371320Z 180 |     afb_id = afb_data.get("afb_id", "afb:unknown")
+2026-02-09T09:19:42.3371589Z 181 |     
+2026-02-09T09:19:42.3371738Z     | ^^^^
+2026-02-09T09:19:42.3371962Z 182 |     # Try to find citations.json in the same directory
+2026-02-09T09:19:42.3372333Z 183 |     citations_path = Path(afb_json).parent / "citations.json"
+2026-02-09T09:19:42.3372643Z     |
+2026-02-09T09:19:42.3372828Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3373000Z 
+2026-02-09T09:19:42.3373081Z E501 Line too long (104 > 100)
+2026-02-09T09:19:42.3373310Z    --> src/trust_wedo/cli.py:191:101
+2026-02-09T09:19:42.3373564Z     |
+2026-02-09T09:19:42.3373904Z 189 |         click.echo("ℹ️  找不到 citations.json，使用示範資料")
+2026-02-09T09:19:42.3374212Z 190 |         citations = [
+2026-02-09T09:19:42.3374626Z 191 |             {"citation_id": "cite:001", "url": "https://trusted-source.org/fact", "status": "verified"},
+2026-02-09T09:19:42.3375289Z     |                                                                                                     ^^^^
+2026-02-09T09:19:42.3375818Z 192 |             {"citation_id": "cite:002", "url": "https://twitter.com/someone/status/123", "status": "unverified"}
+2026-02-09T09:19:42.3376277Z 193 |         ]
+2026-02-09T09:19:42.3376438Z     |
+2026-02-09T09:19:42.3376530Z 
+2026-02-09T09:19:42.3376608Z E501 Line too long (112 > 100)
+2026-02-09T09:19:42.3376831Z    --> src/trust_wedo/cli.py:192:101
+2026-02-09T09:19:42.3377055Z     |
+2026-02-09T09:19:42.3377214Z 190 |         citations = [
+2026-02-09T09:19:42.3377593Z 191 |             {"citation_id": "cite:001", "url": "https://trusted-source.org/fact", "status": "verified"},
+2026-02-09T09:19:42.3378222Z 192 |             {"citation_id": "cite:002", "url": "https://twitter.com/someone/status/123", "status": "unverified"}
+2026-02-09T09:19:42.3378745Z     |                                                                                                     ^^^^^^^^^^^^
+2026-02-09T09:19:42.3379065Z 193 |         ]
+2026-02-09T09:19:42.3379441Z     |
+2026-02-09T09:19:42.3379538Z 
+2026-02-09T09:19:42.3379627Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3379880Z    --> src/trust_wedo/cli.py:194:1
+2026-02-09T09:19:42.3380100Z     |
+2026-02-09T09:19:42.3380456Z 192 |             {"citation_id": "cite:002", "url": "https://twitter.com/someone/status/123", "status": "unverified"}
+2026-02-09T09:19:42.3380879Z 193 |         ]
+2026-02-09T09:19:42.3381042Z 194 |     
+2026-02-09T09:19:42.3381191Z     | ^^^^
+2026-02-09T09:19:42.3381411Z 195 |     evaluator = CitationEvaluator(afb_id, citations)
+2026-02-09T09:19:42.3381757Z 196 |     result = evaluator.evaluate(input_source=afb_json)
+2026-02-09T09:19:42.3382042Z     |
+2026-02-09T09:19:42.3382215Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3382531Z 
+2026-02-09T09:19:42.3382620Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3382874Z    --> src/trust_wedo/cli.py:197:1
+2026-02-09T09:19:42.3383086Z     |
+2026-02-09T09:19:42.3383303Z 195 |     evaluator = CitationEvaluator(afb_id, citations)
+2026-02-09T09:19:42.3383645Z 196 |     result = evaluator.evaluate(input_source=afb_json)
+2026-02-09T09:19:42.3383927Z 197 |     
+2026-02-09T09:19:42.3384074Z     | ^^^^
+2026-02-09T09:19:42.3384248Z 198 |     output_path = Path(output)
+2026-02-09T09:19:42.3384529Z 199 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3384802Z     |
+2026-02-09T09:19:42.3384979Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3385149Z 
+2026-02-09T09:19:42.3385235Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3385482Z    --> src/trust_wedo/cli.py:201:1
+2026-02-09T09:19:42.3385692Z     |
+2026-02-09T09:19:42.3385897Z 199 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3386261Z 200 |     citation_eval_json_path = output_path / "citation_eval.json"
+2026-02-09T09:19:42.3386582Z 201 |     
+2026-02-09T09:19:42.3386731Z     | ^^^^
+2026-02-09T09:19:42.3386937Z 202 |     with open(citation_eval_json_path, "w") as f:
+2026-02-09T09:19:42.3387274Z 203 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3387556Z     |
+2026-02-09T09:19:42.3387731Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3387900Z 
+2026-02-09T09:19:42.3387985Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3388236Z    --> src/trust_wedo/cli.py:204:1
+2026-02-09T09:19:42.3388444Z     |
+2026-02-09T09:19:42.3388646Z 202 |     with open(citation_eval_json_path, "w") as f:
+2026-02-09T09:19:42.3388974Z 203 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3389456Z 204 |     
+2026-02-09T09:19:42.3389614Z     | ^^^^
+2026-02-09T09:19:42.3389928Z 205 |     click.echo(f"📋 已產生引用評估檔案: {citation_eval_json_path}")
+2026-02-09T09:19:42.3390334Z 206 |     click.echo(f"⚖️  最終決策: {result['decision']}")
+2026-02-09T09:19:42.3390723Z     |
+2026-02-09T09:19:42.3390910Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3391080Z 
+2026-02-09T09:19:42.3391169Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3391419Z    --> src/trust_wedo/cli.py:207:1
+2026-02-09T09:19:42.3391638Z     |
+2026-02-09T09:19:42.3391917Z 205 |     click.echo(f"📋 已產生引用評估檔案: {citation_eval_json_path}")
+2026-02-09T09:19:42.3392299Z 206 |     click.echo(f"⚖️  最終決策: {result['decision']}")
+2026-02-09T09:19:42.3392551Z 207 |     
+2026-02-09T09:19:42.3392712Z     | ^^^^
+2026-02-09T09:19:42.3392884Z 208 |     validator = SchemaValidator()
+2026-02-09T09:19:42.3393260Z 209 |     is_valid, error = validator.validate_file(citation_eval_json_path, "citation")
+2026-02-09T09:19:42.3393630Z     |
+2026-02-09T09:19:42.3393804Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3393970Z 
+2026-02-09T09:19:42.3394063Z W293 Blank line contains whitespace
+2026-02-09T09:19:42.3394307Z    --> src/trust_wedo/cli.py:230:1
+2026-02-09T09:19:42.3394523Z     |
+2026-02-09T09:19:42.3394808Z 228 | def graph_build(ctx: click.Context, bundle_dir: str, output: str) -> None:
+2026-02-09T09:19:42.3395223Z 229 |     """建立實體關係圖並檢測風險。
+2026-02-09T09:19:42.3395412Z 230 |     
+2026-02-09T09:19:42.3395562Z     | ^^^^
+2026-02-09T09:19:42.3395765Z 231 |     輸出：output/entity_graph.json
+2026-02-09T09:19:42.3395990Z 232 |     """
+2026-02-09T09:19:42.3396145Z     |
+2026-02-09T09:19:42.3396320Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3396490Z 
+2026-02-09T09:19:42.3396582Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3396823Z    --> src/trust_wedo/cli.py:234:1
+2026-02-09T09:19:42.3397038Z     |
+2026-02-09T09:19:42.3397185Z 232 |     """
+2026-02-09T09:19:42.3397432Z 233 |     click.echo(f"🕸️  建立關係圖: {bundle_dir}")
+2026-02-09T09:19:42.3397679Z 234 |     
+2026-02-09T09:19:42.3397833Z     | ^^^^
+2026-02-09T09:19:42.3398009Z 235 |     bundle_path = Path(bundle_dir)
+2026-02-09T09:19:42.3398380Z 236 |     bundle_data = {}
+2026-02-09T09:19:42.3398573Z     |
+2026-02-09T09:19:42.3398751Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3398919Z 
+2026-02-09T09:19:42.3399012Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3399455Z    --> src/trust_wedo/cli.py:237:1
+2026-02-09T09:19:42.3399675Z     |
+2026-02-09T09:19:42.3399853Z 235 |     bundle_path = Path(bundle_dir)
+2026-02-09T09:19:42.3400099Z 236 |     bundle_data = {}
+2026-02-09T09:19:42.3400283Z 237 |     
+2026-02-09T09:19:42.3400436Z     | ^^^^
+2026-02-09T09:19:42.3400595Z 238 |     files_to_load = {
+2026-02-09T09:19:42.3400830Z 239 |         "entity": "entity_profile.json",
+2026-02-09T09:19:42.3401103Z     |
+2026-02-09T09:19:42.3401274Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3401444Z 
+2026-02-09T09:19:42.3401538Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3401777Z    --> src/trust_wedo/cli.py:243:1
+2026-02-09T09:19:42.3401992Z     |
+2026-02-09T09:19:42.3402170Z 241 |         "citation": "citation_eval.json"
+2026-02-09T09:19:42.3402413Z 242 |     }
+2026-02-09T09:19:42.3402572Z 243 |     
+2026-02-09T09:19:42.3402727Z     | ^^^^
+2026-02-09T09:19:42.3402939Z 244 |     for key, filename in files_to_load.items():
+2026-02-09T09:19:42.3403233Z 245 |         file_path = bundle_path / filename
+2026-02-09T09:19:42.3403479Z     |
+2026-02-09T09:19:42.3403648Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3403815Z 
+2026-02-09T09:19:42.3403909Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3404151Z    --> src/trust_wedo/cli.py:251:1
+2026-02-09T09:19:42.3404364Z     |
+2026-02-09T09:19:42.3404511Z 249 |         else:
+2026-02-09T09:19:42.3404782Z 250 |             click.echo(f"⚠️  找不到 {filename}")
+2026-02-09T09:19:42.3405030Z 251 |     
+2026-02-09T09:19:42.3405178Z     | ^^^^
+2026-02-09T09:19:42.3405363Z 252 |     builder = GraphBuilder(bundle_data)
+2026-02-09T09:19:42.3405661Z 253 |     result = builder.build(input_source=bundle_dir)
+2026-02-09T09:19:42.3405942Z     |
+2026-02-09T09:19:42.3406119Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3406419Z 
+2026-02-09T09:19:42.3406506Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3406744Z    --> src/trust_wedo/cli.py:254:1
+2026-02-09T09:19:42.3406966Z     |
+2026-02-09T09:19:42.3407140Z 252 |     builder = GraphBuilder(bundle_data)
+2026-02-09T09:19:42.3407445Z 253 |     result = builder.build(input_source=bundle_dir)
+2026-02-09T09:19:42.3407717Z 254 |     
+2026-02-09T09:19:42.3407862Z     | ^^^^
+2026-02-09T09:19:42.3408035Z 255 |     output_path = Path(output)
+2026-02-09T09:19:42.3408314Z 256 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3408582Z     |
+2026-02-09T09:19:42.3408751Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3408923Z 
+2026-02-09T09:19:42.3409009Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3409490Z    --> src/trust_wedo/cli.py:258:1
+2026-02-09T09:19:42.3409714Z     |
+2026-02-09T09:19:42.3409933Z 256 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3410283Z 257 |     graph_json_path = output_path / "entity_graph.json"
+2026-02-09T09:19:42.3410572Z 258 |     
+2026-02-09T09:19:42.3410721Z     | ^^^^
+2026-02-09T09:19:42.3410912Z 259 |     with open(graph_json_path, "w") as f:
+2026-02-09T09:19:42.3411233Z 260 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3411522Z     |
+2026-02-09T09:19:42.3411695Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3411868Z 
+2026-02-09T09:19:42.3411957Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3412208Z    --> src/trust_wedo/cli.py:261:1
+2026-02-09T09:19:42.3412421Z     |
+2026-02-09T09:19:42.3412607Z 259 |     with open(graph_json_path, "w") as f:
+2026-02-09T09:19:42.3412909Z 260 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3413191Z 261 |     
+2026-02-09T09:19:42.3413339Z     | ^^^^
+2026-02-09T09:19:42.3413613Z 262 |     click.echo(f"🔗 已產生關係圖檔案: {graph_json_path}")
+2026-02-09T09:19:42.3414023Z 263 |     metrics = result['metrics']
+2026-02-09T09:19:42.3414248Z     |
+2026-02-09T09:19:42.3414432Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3414601Z 
+2026-02-09T09:19:42.3414681Z E501 Line too long (141 > 100)
+2026-02-09T09:19:42.3414911Z    --> src/trust_wedo/cli.py:264:91
+2026-02-09T09:19:42.3415127Z     |
+2026-02-09T09:19:42.3415301Z 262 | …
+2026-02-09T09:19:42.3415462Z 263 | …
+2026-02-09T09:19:42.3415797Z 264 | …}, 孤立={metrics['is_isolated']}, 單一來源風險={metrics['single_source_risk']}")
+2026-02-09T09:19:42.3416186Z     |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3416483Z 265 | …
+2026-02-09T09:19:42.3416647Z 266 | …
+2026-02-09T09:19:42.3416790Z     |
+2026-02-09T09:19:42.3416875Z 
+2026-02-09T09:19:42.3416967Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3417214Z    --> src/trust_wedo/cli.py:265:1
+2026-02-09T09:19:42.3417433Z     |
+2026-02-09T09:19:42.3417593Z 263 |     metrics = result['metrics']
+2026-02-09T09:19:42.3418235Z 264 |     click.echo(f"📊 指標: 來源數={metrics['distinct_sources']}, 孤立={metrics['is_isolated']}, 單一來源風險={metrics['single_source_ri             …
+2026-02-09T09:19:42.3418860Z 265 |     
+2026-02-09T09:19:42.3419015Z     | ^^^^
+2026-02-09T09:19:42.3419302Z 266 |     validator = SchemaValidator()
+2026-02-09T09:19:42.3419646Z 267 |     is_valid, error = validator.validate_file(graph_json_path, "graph")
+2026-02-09T09:19:42.3419987Z     |
+2026-02-09T09:19:42.3420158Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3420333Z 
+2026-02-09T09:19:42.3420420Z W293 Blank line contains whitespace
+2026-02-09T09:19:42.3420655Z    --> src/trust_wedo/cli.py:283:1
+2026-02-09T09:19:42.3420870Z     |
+2026-02-09T09:19:42.3421204Z 281 | def capture(ctx: click.Context, afb_id: str, ai_output: str, source: str, output: str) -> None:
+2026-02-09T09:19:42.3421672Z 282 |     """捕獲 AI 輸出資料。
+2026-02-09T09:19:42.3421863Z 283 |     
+2026-02-09T09:19:42.3422012Z     | ^^^^
+2026-02-09T09:19:42.3422333Z 284 |     輸出：output/captures/capture_<afb_id>_<source>_<timestamp>.json
+2026-02-09T09:19:42.3422655Z 285 |     """
+2026-02-09T09:19:42.3422819Z     |
+2026-02-09T09:19:42.3422991Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3423163Z 
+2026-02-09T09:19:42.3423248Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3423491Z    --> src/trust_wedo/cli.py:287:1
+2026-02-09T09:19:42.3423708Z     |
+2026-02-09T09:19:42.3423858Z 285 |     """
+2026-02-09T09:19:42.3424136Z 286 |     click.echo(f"📥 捕獲 AI 輸出: {afb_id} (來源: {source})")
+2026-02-09T09:19:42.3424417Z 287 |     
+2026-02-09T09:19:42.3424565Z     | ^^^^
+2026-02-09T09:19:42.3424772Z 288 |     manager = CaptureManager(output_dir=output)
+2026-02-09T09:19:42.3425101Z 289 |     result = manager.capture(afb_id, ai_output, source)
+2026-02-09T09:19:42.3425387Z     |
+2026-02-09T09:19:42.3425555Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3425727Z 
+2026-02-09T09:19:42.3425874Z F841 Local variable `result` is assigned to but never used
+2026-02-09T09:19:42.3426190Z    --> src/trust_wedo/cli.py:289:5
+2026-02-09T09:19:42.3426412Z     |
+2026-02-09T09:19:42.3446363Z 288 |     manager = CaptureManager(output_dir=output)
+2026-02-09T09:19:42.3446823Z 289 |     result = manager.capture(afb_id, ai_output, source)
+2026-02-09T09:19:42.3447138Z     |     ^^^^^^
+2026-02-09T09:19:42.3447314Z 290 |     
+2026-02-09T09:19:42.3447527Z 291 |     # Find the latest file in output directory
+2026-02-09T09:19:42.3447793Z     |
+2026-02-09T09:19:42.3448006Z help: Remove assignment to unused variable `result`
+2026-02-09T09:19:42.3448214Z 
+2026-02-09T09:19:42.3448306Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3448570Z    --> src/trust_wedo/cli.py:290:1
+2026-02-09T09:19:42.3448799Z     |
+2026-02-09T09:19:42.3449005Z 288 |     manager = CaptureManager(output_dir=output)
+2026-02-09T09:19:42.3449605Z 289 |     result = manager.capture(afb_id, ai_output, source)
+2026-02-09T09:19:42.3449895Z 290 |     
+2026-02-09T09:19:42.3450056Z     | ^^^^
+2026-02-09T09:19:42.3450486Z 291 |     # Find the latest file in output directory
+2026-02-09T09:19:42.3450946Z 292 |     latest_file = max(Path(output).glob("capture_*.json"), key=lambda p: p.stat().st_mtime)
+2026-02-09T09:19:42.3451358Z     |
+2026-02-09T09:19:42.3451543Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3451720Z 
+2026-02-09T09:19:42.3451810Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3452059Z    --> src/trust_wedo/cli.py:293:1
+2026-02-09T09:19:42.3452282Z     |
+2026-02-09T09:19:42.3452473Z 291 |     # Find the latest file in output directory
+2026-02-09T09:19:42.3452899Z 292 |     latest_file = max(Path(output).glob("capture_*.json"), key=lambda p: p.stat().st_mtime)
+2026-02-09T09:19:42.3453294Z 293 |     
+2026-02-09T09:19:42.3453450Z     | ^^^^
+2026-02-09T09:19:42.3453736Z 294 |     click.echo(f"📄 已儲存至: {latest_file}")
+2026-02-09T09:19:42.3453988Z     |
+2026-02-09T09:19:42.3454163Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3454331Z 
+2026-02-09T09:19:42.3454425Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3454674Z    --> src/trust_wedo/cli.py:295:1
+2026-02-09T09:19:42.3455005Z     |
+2026-02-09T09:19:42.3455240Z 294 |     click.echo(f"📄 已儲存至: {latest_file}")
+2026-02-09T09:19:42.3455477Z 295 |     
+2026-02-09T09:19:42.3455630Z     | ^^^^
+2026-02-09T09:19:42.3455796Z 296 |     validator = SchemaValidator()
+2026-02-09T09:19:42.3456128Z 297 |     is_valid, error = validator.validate_file(latest_file, "capture")
+2026-02-09T09:19:42.3456462Z     |
+2026-02-09T09:19:42.3456631Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3456796Z 
+2026-02-09T09:19:42.3456887Z W293 Blank line contains whitespace
+2026-02-09T09:19:42.3457131Z    --> src/trust_wedo/cli.py:312:1
+2026-02-09T09:19:42.3457348Z     |
+2026-02-09T09:19:42.3457650Z 310 | def diff(ctx: click.Context, afb_id: str, captures_dir: str, output: str) -> None:
+2026-02-09T09:19:42.3458086Z 311 |     """比對 AFB 與 Capture 的差異。
+2026-02-09T09:19:42.3458294Z 312 |     
+2026-02-09T09:19:42.3458454Z     | ^^^^
+2026-02-09T09:19:42.3458721Z 313 |     輸出：output/diffs/diff_<afb_id>_<timestamp>.json
+2026-02-09T09:19:42.3459012Z 314 |     """
+2026-02-09T09:19:42.3459297Z     |
+2026-02-09T09:19:42.3459475Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3459649Z 
+2026-02-09T09:19:42.3459738Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3459982Z    --> src/trust_wedo/cli.py:316:1
+2026-02-09T09:19:42.3460198Z     |
+2026-02-09T09:19:42.3460341Z 314 |     """
+2026-02-09T09:19:42.3460583Z 315 |     click.echo(f"🔍 開始差異分析: {afb_id}")
+2026-02-09T09:19:42.3460814Z 316 |     
+2026-02-09T09:19:42.3460965Z     | ^^^^
+2026-02-09T09:19:42.3461116Z 317 |     # 1. Load AFB
+2026-02-09T09:19:42.3461360Z 318 |     afb_path = Path("output/afb.json") # Default for MVP
+2026-02-09T09:19:42.3461642Z     |
+2026-02-09T09:19:42.3461815Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3461987Z 
+2026-02-09T09:19:42.3462072Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3462321Z    --> src/trust_wedo/cli.py:322:1
+2026-02-09T09:19:42.3462541Z     |
+2026-02-09T09:19:42.3462786Z 320 |         click.echo(f"❌ 找不到 AFB 檔案: {afb_path}")
+2026-02-09T09:19:42.3463059Z 321 |         ctx.exit(1)
+2026-02-09T09:19:42.3463254Z 322 |         
+2026-02-09T09:19:42.3463422Z     | ^^^^^^^^
+2026-02-09T09:19:42.3463598Z 323 |     with open(afb_path) as f:
+2026-02-09T09:19:42.3463824Z 324 |         afb_data = json.load(f)
+2026-02-09T09:19:42.3464044Z     |
+2026-02-09T09:19:42.3464212Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3464382Z 
+2026-02-09T09:19:42.3464466Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3464708Z    --> src/trust_wedo/cli.py:325:1
+2026-02-09T09:19:42.3464923Z     |
+2026-02-09T09:19:42.3465085Z 323 |     with open(afb_path) as f:
+2026-02-09T09:19:42.3465312Z 324 |         afb_data = json.load(f)
+2026-02-09T09:19:42.3465533Z 325 |         
+2026-02-09T09:19:42.3465688Z     | ^^^^^^^^
+2026-02-09T09:19:42.3465877Z 326 |     if afb_data.get("afb_id") != afb_id:
+2026-02-09T09:19:42.3466466Z 327 |         click.echo(f"⚠️  警告: 檔案內的 AFB ID ({afb_data.get('afb_id')}) 與參數 ({afb_id}) 不符")
+2026-02-09T09:19:42.3466828Z     |
+2026-02-09T09:19:42.3467005Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3467174Z 
+2026-02-09T09:19:42.3467259Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3467500Z    --> src/trust_wedo/cli.py:328:1
+2026-02-09T09:19:42.3467706Z     |
+2026-02-09T09:19:42.3467875Z 326 |     if afb_data.get("afb_id") != afb_id:
+2026-02-09T09:19:42.3468303Z 327 |         click.echo(f"⚠️  警告: 檔案內的 AFB ID ({afb_data.get('afb_id')}) 與參數 ({afb_id}) 不符")
+2026-02-09T09:19:42.3468650Z 328 |     
+2026-02-09T09:19:42.3468800Z     | ^^^^
+2026-02-09T09:19:42.3468973Z 329 |     # 2. Load related Captures
+2026-02-09T09:19:42.3469410Z 330 |     captures = []
+2026-02-09T09:19:42.3469606Z     |
+2026-02-09T09:19:42.3469778Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3469960Z 
+2026-02-09T09:19:42.3470048Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3470309Z    --> src/trust_wedo/cli.py:336:1
+2026-02-09T09:19:42.3470518Z     |
+2026-02-09T09:19:42.3470835Z 334 |             if cap_data.get("afb_id") == afb_id:
+2026-02-09T09:19:42.3471126Z 335 |                 captures.append(cap_data)
+2026-02-09T09:19:42.3471375Z 336 |                 
+2026-02-09T09:19:42.3471547Z     | ^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3471728Z 337 |     if not captures:
+2026-02-09T09:19:42.3472051Z 338 |         click.echo(f"❌ 找不到與 {afb_id} 相關的 Capture 檔案")
+2026-02-09T09:19:42.3472320Z     |
+2026-02-09T09:19:42.3472498Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3472666Z 
+2026-02-09T09:19:42.3472750Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3472999Z    --> src/trust_wedo/cli.py:340:1
+2026-02-09T09:19:42.3473208Z     |
+2026-02-09T09:19:42.3473507Z 338 |         click.echo(f"❌ 找不到與 {afb_id} 相關的 Capture 檔案")
+2026-02-09T09:19:42.3473783Z 339 |         ctx.exit(1)
+2026-02-09T09:19:42.3473976Z 340 |         
+2026-02-09T09:19:42.3474144Z     | ^^^^^^^^
+2026-02-09T09:19:42.3474422Z 341 |     click.echo(f"📂 找到 {len(captures)} 個相關 Capture")
+2026-02-09T09:19:42.3474709Z     |
+2026-02-09T09:19:42.3474880Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3475052Z 
+2026-02-09T09:19:42.3475141Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3475386Z    --> src/trust_wedo/cli.py:342:1
+2026-02-09T09:19:42.3475597Z     |
+2026-02-09T09:19:42.3475850Z 341 |     click.echo(f"📂 找到 {len(captures)} 個相關 Capture")
+2026-02-09T09:19:42.3476121Z 342 |     
+2026-02-09T09:19:42.3476271Z     | ^^^^
+2026-02-09T09:19:42.3476429Z 343 |     # 3. Analyze
+2026-02-09T09:19:42.3476662Z 344 |     analyzer = DiffAnalyzer(afb_data, captures)
+2026-02-09T09:19:42.3476919Z     |
+2026-02-09T09:19:42.3477094Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3477260Z 
+2026-02-09T09:19:42.3477345Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3477589Z    --> src/trust_wedo/cli.py:346:1
+2026-02-09T09:19:42.3477798Z     |
+2026-02-09T09:19:42.3477998Z 344 |     analyzer = DiffAnalyzer(afb_data, captures)
+2026-02-09T09:19:42.3478312Z 345 |     result = analyzer.analyze(input_source=afb_id)
+2026-02-09T09:19:42.3478581Z 346 |     
+2026-02-09T09:19:42.3478734Z     | ^^^^
+2026-02-09T09:19:42.3478886Z 347 |     # 4. Save
+2026-02-09T09:19:42.3479233Z 348 |     output_path = Path(output)
+2026-02-09T09:19:42.3479505Z     |
+2026-02-09T09:19:42.3479688Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3479854Z 
+2026-02-09T09:19:42.3479940Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3480184Z    --> src/trust_wedo/cli.py:354:1
+2026-02-09T09:19:42.3480392Z     |
+2026-02-09T09:19:42.3480572Z 352 |     clean_afb = afb_id.replace(":", "-")
+2026-02-09T09:19:42.3480917Z 353 |     diff_json_path = output_path / f"diff_{clean_afb}_{timestamp}.json"
+2026-02-09T09:19:42.3481251Z 354 |     
+2026-02-09T09:19:42.3481401Z     | ^^^^
+2026-02-09T09:19:42.3481574Z 355 |     with open(diff_json_path, "w") as f:
+2026-02-09T09:19:42.3482007Z 356 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3482288Z     |
+2026-02-09T09:19:42.3482461Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3482627Z 
+2026-02-09T09:19:42.3482710Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3482954Z    --> src/trust_wedo/cli.py:357:1
+2026-02-09T09:19:42.3483163Z     |
+2026-02-09T09:19:42.3483337Z 355 |     with open(diff_json_path, "w") as f:
+2026-02-09T09:19:42.3483642Z 356 |         json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3483919Z 357 |         
+2026-02-09T09:19:42.3484079Z     | ^^^^^^^^
+2026-02-09T09:19:42.3484356Z 358 |     click.echo(f"📄 已產生 Diff 檔案: {diff_json_path}")
+2026-02-09T09:19:42.3484624Z     |
+2026-02-09T09:19:42.3484794Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3484964Z 
+2026-02-09T09:19:42.3485050Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3485287Z    --> src/trust_wedo/cli.py:359:1
+2026-02-09T09:19:42.3485500Z     |
+2026-02-09T09:19:42.3485757Z 358 |     click.echo(f"📄 已產生 Diff 檔案: {diff_json_path}")
+2026-02-09T09:19:42.3486134Z 359 |     
+2026-02-09T09:19:42.3486281Z     | ^^^^
+2026-02-09T09:19:42.3486451Z 360 |     validator = SchemaValidator()
+2026-02-09T09:19:42.3486787Z 361 |     is_valid, error = validator.validate_file(diff_json_path, "diff")
+2026-02-09T09:19:42.3487114Z     |
+2026-02-09T09:19:42.3487289Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3487457Z 
+2026-02-09T09:19:42.3487536Z E501 Line too long (118 > 100)
+2026-02-09T09:19:42.3487764Z    --> src/trust_wedo/cli.py:372:101
+2026-02-09T09:19:42.3487982Z     |
+2026-02-09T09:19:42.3488216Z 370 | @click.argument("bundle_dir", type=click.Path(exists=True))
+2026-02-09T09:19:42.3488687Z 371 | @click.option("--output", "-o", default="output", help="輸出目錄")
+2026-02-09T09:19:42.3489494Z 372 | @click.option("--format", "report_format", type=click.Choice(["md", "json", "both"]), default="both", help="報告格式")
+2026-02-09T09:19:42.3490076Z     |                                                                                                     ^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3490439Z 373 | @click.pass_context
+2026-02-09T09:19:42.3490821Z 374 | def report(ctx: click.Context, bundle_dir: str, output: str, report_format: str) -> None:
+2026-02-09T09:19:42.3491221Z     |
+2026-02-09T09:19:42.3491315Z 
+2026-02-09T09:19:42.3491403Z W293 Blank line contains whitespace
+2026-02-09T09:19:42.3491653Z    --> src/trust_wedo/cli.py:376:1
+2026-02-09T09:19:42.3491869Z     |
+2026-02-09T09:19:42.3492190Z 374 | def report(ctx: click.Context, bundle_dir: str, output: str, report_format: str) -> None:
+2026-02-09T09:19:42.3492629Z 375 |     """產生最終信任報告。
+2026-02-09T09:19:42.3492812Z 376 |     
+2026-02-09T09:19:42.3492963Z     | ^^^^
+2026-02-09T09:19:42.3493286Z 377 |     輸出：output/trust-wedo-report.md, output/trust-wedo-report.json
+2026-02-09T09:19:42.3493628Z 378 |     """
+2026-02-09T09:19:42.3493784Z     |
+2026-02-09T09:19:42.3493965Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3494149Z 
+2026-02-09T09:19:42.3494237Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3494492Z    --> src/trust_wedo/cli.py:380:1
+2026-02-09T09:19:42.3494710Z     |
+2026-02-09T09:19:42.3494859Z 378 |     """
+2026-02-09T09:19:42.3495095Z 379 |     click.echo(f"📋 產生報告: {bundle_dir}")
+2026-02-09T09:19:42.3495340Z 380 |     
+2026-02-09T09:19:42.3495495Z     | ^^^^
+2026-02-09T09:19:42.3495683Z 381 |     generator = ReportGenerator(bundle_dir)
+2026-02-09T09:19:42.3495961Z 382 |     output_path = Path(output)
+2026-02-09T09:19:42.3496184Z     |
+2026-02-09T09:19:42.3496357Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3496527Z 
+2026-02-09T09:19:42.3496612Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3496857Z    --> src/trust_wedo/cli.py:384:1
+2026-02-09T09:19:42.3497065Z     |
+2026-02-09T09:19:42.3497229Z 382 |     output_path = Path(output)
+2026-02-09T09:19:42.3497507Z 383 |     output_path.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3497899Z 384 |     
+2026-02-09T09:19:42.3498049Z     | ^^^^
+2026-02-09T09:19:42.3498228Z 385 |     if report_format in ["json", "both"]:
+2026-02-09T09:19:42.3498533Z 386 |         report_json = generator.generate_json()
+2026-02-09T09:19:42.3498789Z     |
+2026-02-09T09:19:42.3498967Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3499230Z 
+2026-02-09T09:19:42.3499318Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3499562Z    --> src/trust_wedo/cli.py:391:1
+2026-02-09T09:19:42.3499776Z     |
+2026-02-09T09:19:42.3500001Z 389 |             json.dump(report_json, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3500440Z 390 |         click.echo(f"📄 已產生 JSON 報告: {report_json_path}")
+2026-02-09T09:19:42.3500722Z 391 |         
+2026-02-09T09:19:42.3500884Z     | ^^^^^^^^
+2026-02-09T09:19:42.3501068Z 392 |     if report_format in ["md", "both"]:
+2026-02-09T09:19:42.3501363Z 393 |         report_md = generator.generate_markdown()
+2026-02-09T09:19:42.3501619Z     |
+2026-02-09T09:19:42.3501798Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3501964Z 
+2026-02-09T09:19:42.3502101Z UP035 `typing.Dict` is deprecated, use `dict` instead
+2026-02-09T09:19:42.3502533Z  --> src/trust_wedo/core/afb_builder.py:3:1
+2026-02-09T09:19:42.3502780Z   |
+2026-02-09T09:19:42.3502957Z 1 | """AFB builder module for Trust WEDO."""
+2026-02-09T09:19:42.3503194Z 2 |
+2026-02-09T09:19:42.3503380Z 3 | from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3503651Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3503901Z 4 | from bs4 import BeautifulSoup
+2026-02-09T09:19:42.3504158Z 5 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3504408Z   |
+2026-02-09T09:19:42.3504492Z 
+2026-02-09T09:19:42.3504614Z UP035 `typing.List` is deprecated, use `list` instead
+2026-02-09T09:19:42.3504918Z  --> src/trust_wedo/core/afb_builder.py:3:1
+2026-02-09T09:19:42.3505152Z   |
+2026-02-09T09:19:42.3505337Z 1 | """AFB builder module for Trust WEDO."""
+2026-02-09T09:19:42.3505564Z 2 |
+2026-02-09T09:19:42.3505753Z 3 | from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3506014Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3506268Z 4 | from bs4 import BeautifulSoup
+2026-02-09T09:19:42.3506519Z 5 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3506757Z   |
+2026-02-09T09:19:42.3506842Z 
+2026-02-09T09:19:42.3506957Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3507240Z  --> src/trust_wedo/core/afb_builder.py:3:1
+2026-02-09T09:19:42.3507476Z   |
+2026-02-09T09:19:42.3507646Z 1 |   """AFB builder module for Trust WEDO."""
+2026-02-09T09:19:42.3507882Z 2 |
+2026-02-09T09:19:42.3508063Z 3 | / from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3508340Z 4 | | from bs4 import BeautifulSoup
+2026-02-09T09:19:42.3508597Z 5 | | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3508862Z   | |__________________________________________^
+2026-02-09T09:19:42.3509231Z   |
+2026-02-09T09:19:42.3509434Z help: Organize imports
+2026-02-09T09:19:42.3509575Z 
+2026-02-09T09:19:42.3509675Z F401 [*] `typing.List` imported but unused
+2026-02-09T09:19:42.3509950Z  --> src/trust_wedo/core/afb_builder.py:3:26
+2026-02-09T09:19:42.3510190Z   |
+2026-02-09T09:19:42.3510362Z 1 | """AFB builder module for Trust WEDO."""
+2026-02-09T09:19:42.3510595Z 2 |
+2026-02-09T09:19:42.3510779Z 3 | from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3511032Z   |                          ^^^^
+2026-02-09T09:19:42.3511254Z 4 | from bs4 import BeautifulSoup
+2026-02-09T09:19:42.3511498Z 5 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3511743Z   |
+2026-02-09T09:19:42.3511900Z help: Remove unused import
+2026-02-09T09:19:42.3512042Z 
+2026-02-09T09:19:42.3512143Z F401 [*] `typing.Optional` imported but unused
+2026-02-09T09:19:42.3512421Z  --> src/trust_wedo/core/afb_builder.py:3:37
+2026-02-09T09:19:42.3512657Z   |
+2026-02-09T09:19:42.3512823Z 1 | """AFB builder module for Trust WEDO."""
+2026-02-09T09:19:42.3513058Z 2 |
+2026-02-09T09:19:42.3513361Z 3 | from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3513620Z   |                                     ^^^^^^^^
+2026-02-09T09:19:42.3513870Z 4 | from bs4 import BeautifulSoup
+2026-02-09T09:19:42.3514112Z 5 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3514353Z   |
+2026-02-09T09:19:42.3514506Z help: Remove unused import
+2026-02-09T09:19:42.3514641Z 
+2026-02-09T09:19:42.3514765Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3515086Z   --> src/trust_wedo/core/afb_builder.py:11:59
+2026-02-09T09:19:42.3515326Z    |
+2026-02-09T09:19:42.3515546Z  9 |     """Builder for generating Answer-First Block (AFB)."""
+2026-02-09T09:19:42.3515826Z 10 |
+2026-02-09T09:19:42.3516084Z 11 |     def __init__(self, html_content: str, entity_profile: Dict[str, Any]):
+2026-02-09T09:19:42.3516456Z    |                                                           ^^^^
+2026-02-09T09:19:42.3516743Z 12 |         self.html_content = html_content
+2026-02-09T09:19:42.3517021Z 13 |         self.entity_profile = entity_profile
+2026-02-09T09:19:42.3517267Z    |
+2026-02-09T09:19:42.3517543Z help: Replace with `dict`
+2026-02-09T09:19:42.3517674Z 
+2026-02-09T09:19:42.3517799Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3518119Z   --> src/trust_wedo/core/afb_builder.py:16:57
+2026-02-09T09:19:42.3518360Z    |
+2026-02-09T09:19:42.3518588Z 14 |         self.soup = BeautifulSoup(html_content, "html.parser")
+2026-02-09T09:19:42.3518881Z 15 |
+2026-02-09T09:19:42.3519230Z 16 |     def build(self, input_source: str = "page.html") -> Dict[str, Any]:
+2026-02-09T09:19:42.3519601Z    |                                                         ^^^^
+2026-02-09T09:19:42.3519869Z 17 |         """Build AFB JSON."""
+2026-02-09T09:19:42.3520093Z 18 |         # Check eligibility
+2026-02-09T09:19:42.3520291Z    |
+2026-02-09T09:19:42.3520450Z help: Replace with `dict`
+2026-02-09T09:19:42.3520581Z 
+2026-02-09T09:19:42.3520669Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3520939Z   --> src/trust_wedo/core/afb_builder.py:44:1
+2026-02-09T09:19:42.3521177Z    |
+2026-02-09T09:19:42.3521339Z 42 |         # Extract text content
+2026-02-09T09:19:42.3521580Z 43 |         content_text = self._extract_text()
+2026-02-09T09:19:42.3521827Z 44 |         
+2026-02-09T09:19:42.3521990Z    | ^^^^^^^^
+2026-02-09T09:19:42.3522159Z 45 |         # Template based answer
+2026-02-09T09:19:42.3522515Z 46 |         summary = content_text[:100] + "..." if len(content_text) > 100 else content_text
+2026-02-09T09:19:42.3522875Z    |
+2026-02-09T09:19:42.3523048Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3523218Z 
+2026-02-09T09:19:42.3523328Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3523633Z  --> src/trust_wedo/core/capture_manager.py:3:1
+2026-02-09T09:19:42.3523882Z   |
+2026-02-09T09:19:42.3524069Z 1 |   """Capture manager module for Trust WEDO."""
+2026-02-09T09:19:42.3524319Z 2 |
+2026-02-09T09:19:42.3524466Z 3 | / import json
+2026-02-09T09:19:42.3524657Z 4 | | from datetime import datetime
+2026-02-09T09:19:42.3524892Z 5 | | from pathlib import Path
+2026-02-09T09:19:42.3525125Z 6 | | from typing import Dict, Any
+2026-02-09T09:19:42.3525377Z 7 | | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3525652Z   | |__________________________________________^
+2026-02-09T09:19:42.3525875Z   |
+2026-02-09T09:19:42.3526037Z help: Organize imports
+2026-02-09T09:19:42.3526159Z 
+2026-02-09T09:19:42.3526286Z UP035 `typing.Dict` is deprecated, use `dict` instead
+2026-02-09T09:19:42.3526599Z  --> src/trust_wedo/core/capture_manager.py:6:1
+2026-02-09T09:19:42.3526850Z   |
+2026-02-09T09:19:42.3527012Z 4 | from datetime import datetime
+2026-02-09T09:19:42.3527247Z 5 | from pathlib import Path
+2026-02-09T09:19:42.3527468Z 6 | from typing import Dict, Any
+2026-02-09T09:19:42.3527688Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3527923Z 7 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3528168Z   |
+2026-02-09T09:19:42.3528373Z 
+2026-02-09T09:19:42.3528508Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3528840Z   --> src/trust_wedo/core/capture_manager.py:17:80
+2026-02-09T09:19:42.3529235Z    |
+2026-02-09T09:19:42.3529465Z 15 |         self.output_dir.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3529758Z 16 |
+2026-02-09T09:19:42.3530072Z 17 |     def capture(self, afb_id: str, ai_output: str, source: str = "unknown") -> Dict[str, Any]:
+2026-02-09T09:19:42.3530526Z    |                                                                                ^^^^
+2026-02-09T09:19:42.3530847Z 18 |         """Capture AI output and save to JSON."""
+2026-02-09T09:19:42.3531132Z 19 |         # Auto-increment capture_id
+2026-02-09T09:19:42.3531366Z    |
+2026-02-09T09:19:42.3531523Z help: Replace with `dict`
+2026-02-09T09:19:42.3531655Z 
+2026-02-09T09:19:42.3531750Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3532025Z   --> src/trust_wedo/core/capture_manager.py:22:1
+2026-02-09T09:19:42.3532285Z    |
+2026-02-09T09:19:42.3532531Z 20 |         capture_count = len(list(self.output_dir.glob("capture_*.json")))
+2026-02-09T09:19:42.3533043Z 21 |         capture_id = f"cap:{capture_count + 1:03d}"
+2026-02-09T09:19:42.3533304Z 22 |         
+2026-02-09T09:19:42.3533461Z    | ^^^^^^^^
+2026-02-09T09:19:42.3533668Z 23 |         now = datetime.utcnow().isoformat() + "Z"
+2026-02-09T09:19:42.3533922Z    |
+2026-02-09T09:19:42.3534098Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3534266Z 
+2026-02-09T09:19:42.3534352Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3534620Z   --> src/trust_wedo/core/capture_manager.py:24:1
+2026-02-09T09:19:42.3534875Z    |
+2026-02-09T09:19:42.3535061Z 23 |         now = datetime.utcnow().isoformat() + "Z"
+2026-02-09T09:19:42.3535311Z 24 |         
+2026-02-09T09:19:42.3535466Z    | ^^^^^^^^
+2026-02-09T09:19:42.3535627Z 25 |         result = {
+2026-02-09T09:19:42.3535828Z 26 |             "capture_id": capture_id,
+2026-02-09T09:19:42.3536076Z    |
+2026-02-09T09:19:42.3536283Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3536454Z 
+2026-02-09T09:19:42.3536543Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3536806Z   --> src/trust_wedo/core/capture_manager.py:33:1
+2026-02-09T09:19:42.3537058Z    |
+2026-02-09T09:19:42.3537230Z 31 |             "meta": get_meta("cli:manual")
+2026-02-09T09:19:42.3537471Z 32 |         }
+2026-02-09T09:19:42.3537631Z 33 |         
+2026-02-09T09:19:42.3537782Z    | ^^^^^^^^
+2026-02-09T09:19:42.3538013Z 34 |         # Filename: capture_<afb_id>_<source>_<timestamp>.json
+2026-02-09T09:19:42.3538337Z 35 |         # Clean afb_id and source for filename
+2026-02-09T09:19:42.3538582Z    |
+2026-02-09T09:19:42.3538750Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3538925Z 
+2026-02-09T09:19:42.3539010Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3539375Z   --> src/trust_wedo/core/capture_manager.py:40:1
+2026-02-09T09:19:42.3539628Z    |
+2026-02-09T09:19:42.3539843Z 38 |         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+2026-02-09T09:19:42.3540229Z 39 |         filename = f"capture_{clean_afb}_{clean_source}_{timestamp}.json"
+2026-02-09T09:19:42.3540567Z 40 |         
+2026-02-09T09:19:42.3540722Z    | ^^^^^^^^
+2026-02-09T09:19:42.3540923Z 41 |         file_path = self.output_dir / filename
+2026-02-09T09:19:42.3541201Z 42 |         with open(file_path, "w") as f:
+2026-02-09T09:19:42.3541440Z    |
+2026-02-09T09:19:42.3541608Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3541780Z 
+2026-02-09T09:19:42.3541867Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3542138Z   --> src/trust_wedo/core/capture_manager.py:44:1
+2026-02-09T09:19:42.3542387Z    |
+2026-02-09T09:19:42.3542559Z 42 |         with open(file_path, "w") as f:
+2026-02-09T09:19:42.3542854Z 43 |             json.dump(result, f, indent=2, ensure_ascii=False)
+2026-02-09T09:19:42.3543141Z 44 |             
+2026-02-09T09:19:42.3543301Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3543481Z 45 |         return result
+2026-02-09T09:19:42.3543786Z    |
+2026-02-09T09:19:42.3543957Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3544128Z 
+2026-02-09T09:19:42.3544254Z UP035 `typing.Dict` is deprecated, use `dict` instead
+2026-02-09T09:19:42.3544574Z  --> src/trust_wedo/core/citation_evaluator.py:3:1
+2026-02-09T09:19:42.3544836Z   |
+2026-02-09T09:19:42.3545023Z 1 | """Citation evaluator module for Trust WEDO."""
+2026-02-09T09:19:42.3545277Z 2 |
+2026-02-09T09:19:42.3545450Z 3 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3545689Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3545938Z 4 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3546189Z   |
+2026-02-09T09:19:42.3546272Z 
+2026-02-09T09:19:42.3546397Z UP035 `typing.List` is deprecated, use `list` instead
+2026-02-09T09:19:42.3546713Z  --> src/trust_wedo/core/citation_evaluator.py:3:1
+2026-02-09T09:19:42.3546976Z   |
+2026-02-09T09:19:42.3547164Z 1 | """Citation evaluator module for Trust WEDO."""
+2026-02-09T09:19:42.3547420Z 2 |
+2026-02-09T09:19:42.3547584Z 3 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3547818Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3548172Z 4 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3548417Z   |
+2026-02-09T09:19:42.3548550Z 
+2026-02-09T09:19:42.3548663Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3548966Z  --> src/trust_wedo/core/citation_evaluator.py:3:1
+2026-02-09T09:19:42.3549402Z   |
+2026-02-09T09:19:42.3549595Z 1 |   """Citation evaluator module for Trust WEDO."""
+2026-02-09T09:19:42.3549854Z 2 |
+2026-02-09T09:19:42.3550023Z 3 | / from typing import Dict, List, Any
+2026-02-09T09:19:42.3550297Z 4 | | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3550562Z   | |__________________________________________^
+2026-02-09T09:19:42.3550792Z   |
+2026-02-09T09:19:42.3550951Z help: Organize imports
+2026-02-09T09:19:42.3551079Z 
+2026-02-09T09:19:42.3551209Z UP006 [*] Use `list` instead of `List` for type annotation
+2026-02-09T09:19:42.3551549Z   --> src/trust_wedo/core/citation_evaluator.py:10:48
+2026-02-09T09:19:42.3551813Z    |
+2026-02-09T09:19:42.3552059Z  8 |     """Evaluator for calculating Citation Confidence Score (CCS)."""
+2026-02-09T09:19:42.3552372Z  9 |
+2026-02-09T09:19:42.3552617Z 10 |     def __init__(self, afb_id: str, citations: List[Dict[str, Any]]):
+2026-02-09T09:19:42.3552956Z    |                                                ^^^^
+2026-02-09T09:19:42.3553216Z 11 |         self.afb_id = afb_id
+2026-02-09T09:19:42.3553451Z 12 |         self.citations = citations
+2026-02-09T09:19:42.3553674Z    |
+2026-02-09T09:19:42.3553842Z help: Replace with `list`
+2026-02-09T09:19:42.3553978Z 
+2026-02-09T09:19:42.3554104Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3554441Z   --> src/trust_wedo/core/citation_evaluator.py:10:53
+2026-02-09T09:19:42.3554698Z    |
+2026-02-09T09:19:42.3554943Z  8 |     """Evaluator for calculating Citation Confidence Score (CCS)."""
+2026-02-09T09:19:42.3555260Z  9 |
+2026-02-09T09:19:42.3555489Z 10 |     def __init__(self, afb_id: str, citations: List[Dict[str, Any]]):
+2026-02-09T09:19:42.3555836Z    |                                                     ^^^^
+2026-02-09T09:19:42.3556094Z 11 |         self.afb_id = afb_id
+2026-02-09T09:19:42.3556323Z 12 |         self.citations = citations
+2026-02-09T09:19:42.3556545Z    |
+2026-02-09T09:19:42.3556706Z help: Replace with `dict`
+2026-02-09T09:19:42.3556837Z 
+2026-02-09T09:19:42.3556963Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3557290Z   --> src/trust_wedo/core/citation_evaluator.py:14:59
+2026-02-09T09:19:42.3557552Z    |
+2026-02-09T09:19:42.3557711Z 12 |         self.citations = citations
+2026-02-09T09:19:42.3557933Z 13 |
+2026-02-09T09:19:42.3558187Z 14 |     def evaluate(self, input_source: str = "afb.json") -> Dict[str, Any]:
+2026-02-09T09:19:42.3558559Z    |                                                           ^^^^
+2026-02-09T09:19:42.3558836Z 15 |         """Evaluate all citations."""
+2026-02-09T09:19:42.3559314Z 16 |         evaluated_citations = []
+2026-02-09T09:19:42.3559536Z    |
+2026-02-09T09:19:42.3559700Z help: Replace with `dict`
+2026-02-09T09:19:42.3559837Z 
+2026-02-09T09:19:42.3559931Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3560208Z   --> src/trust_wedo/core/citation_evaluator.py:24:1
+2026-02-09T09:19:42.3560471Z    |
+2026-02-09T09:19:42.3560707Z 22 |             base_score = 0.8 if cite.get("status") == "verified" else 0.5
+2026-02-09T09:19:42.3561043Z 23 |             url = cite.get("url", "")
+2026-02-09T09:19:42.3561271Z 24 |             
+2026-02-09T09:19:42.3561444Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3561735Z 25 |             # Penalize if it's a social media link (less authoritative for citations)
+2026-02-09T09:19:42.3562201Z 26 |             social_domains = ["twitter.com", "facebook.com", "linkedin.com"]
+2026-02-09T09:19:42.3562535Z    |
+2026-02-09T09:19:42.3562705Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3562877Z 
+2026-02-09T09:19:42.3562971Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3563245Z   --> src/trust_wedo/core/citation_evaluator.py:29:1
+2026-02-09T09:19:42.3563656Z    |
+2026-02-09T09:19:42.3563854Z 27 |             if any(sd in url for sd in social_domains):
+2026-02-09T09:19:42.3564141Z 28 |                 base_score -= 0.2
+2026-02-09T09:19:42.3564371Z 29 |             
+2026-02-09T09:19:42.3564532Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3564785Z 30 |             # Penalize if it's an old citation (simulating half-life)
+2026-02-09T09:19:42.3565120Z 31 |             days_old = cite.get("days_old", 0)
+2026-02-09T09:19:42.3565360Z    |
+2026-02-09T09:19:42.3565454Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3565460Z 
+2026-02-09T09:19:42.3565548Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3565669Z   --> src/trust_wedo/core/citation_evaluator.py:34:1
+2026-02-09T09:19:42.3565732Z    |
+2026-02-09T09:19:42.3565811Z 32 |             if days_old > 365:
+2026-02-09T09:19:42.3565901Z 33 |                 base_score -= 0.1
+2026-02-09T09:19:42.3565965Z 34 |             
+2026-02-09T09:19:42.3566032Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3566132Z 35 |             ccs = max(0.0, min(1.0, base_score))
+2026-02-09T09:19:42.3566202Z    |
+2026-02-09T09:19:42.3566292Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3566297Z 
+2026-02-09T09:19:42.3566384Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3566501Z   --> src/trust_wedo/core/citation_evaluator.py:36:1
+2026-02-09T09:19:42.3566564Z    |
+2026-02-09T09:19:42.3566658Z 35 |             ccs = max(0.0, min(1.0, base_score))
+2026-02-09T09:19:42.3566726Z 36 |             
+2026-02-09T09:19:42.3566798Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3566878Z 37 |             status = "accept"
+2026-02-09T09:19:42.3566961Z 38 |             failure_states = []
+2026-02-09T09:19:42.3567029Z    |
+2026-02-09T09:19:42.3567119Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3567124Z 
+2026-02-09T09:19:42.3567208Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3567332Z   --> src/trust_wedo/core/citation_evaluator.py:44:1
+2026-02-09T09:19:42.3567410Z    |
+2026-02-09T09:19:42.3567489Z 42 |             elif ccs < 0.75:
+2026-02-09T09:19:42.3567573Z 43 |                 status = "downgrade"
+2026-02-09T09:19:42.3567643Z 44 |             
+2026-02-09T09:19:42.3567709Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3567807Z 45 |             evaluated_citations.append({
+2026-02-09T09:19:42.3567956Z 46 |                 "citation_id": cite.get("citation_id", "cite:unknown"),
+2026-02-09T09:19:42.3568019Z    |
+2026-02-09T09:19:42.3568108Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3568113Z 
+2026-02-09T09:19:42.3568257Z F841 Local variable `avg_ccs` is assigned to but never used
+2026-02-09T09:19:42.3568373Z   --> src/trust_wedo/core/citation_evaluator.py:58:13
+2026-02-09T09:19:42.3568436Z    |
+2026-02-09T09:19:42.3568529Z 56 |             reasons = ["no_citations_found"]
+2026-02-09T09:19:42.3568601Z 57 |         else:
+2026-02-09T09:19:42.3568842Z 58 |             avg_ccs = overall_ccs / len(evaluated_citations)
+2026-02-09T09:19:42.3568917Z    |             ^^^^^^^
+2026-02-09T09:19:42.3569070Z 59 |             if all(c["status"] == "reject" for c in evaluated_citations):
+2026-02-09T09:19:42.3569249Z 60 |                 decision = "reject"
+2026-02-09T09:19:42.3569312Z    |
+2026-02-09T09:19:42.3569430Z help: Remove assignment to unused variable `avg_ccs`
+2026-02-09T09:19:42.3569441Z 
+2026-02-09T09:19:42.3569549Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3569652Z  --> src/trust_wedo/core/diff_analyzer.py:3:1
+2026-02-09T09:19:42.3569715Z   |
+2026-02-09T09:19:42.3569821Z 1 |   """Diff analyzer module for Trust WEDO."""
+2026-02-09T09:19:42.3569882Z 2 |
+2026-02-09T09:19:42.3569952Z 3 | / import json
+2026-02-09T09:19:42.3570043Z 4 | | from pathlib import Path
+2026-02-09T09:19:42.3570132Z 5 | | from typing import Dict, List, Any
+2026-02-09T09:19:42.3570402Z 6 | | from trust_wedo.core.similarity_calculator import calculate_similarity, get_text_differences
+2026-02-09T09:19:42.3570511Z 7 | | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3570715Z   | |__________________________________________^
+2026-02-09T09:19:42.3570777Z   |
+2026-02-09T09:19:42.3570857Z help: Organize imports
+2026-02-09T09:19:42.3570863Z 
+2026-02-09T09:19:42.3570952Z F401 [*] `json` imported but unused
+2026-02-09T09:19:42.3571057Z  --> src/trust_wedo/core/diff_analyzer.py:3:8
+2026-02-09T09:19:42.3571118Z   |
+2026-02-09T09:19:42.3571223Z 1 | """Diff analyzer module for Trust WEDO."""
+2026-02-09T09:19:42.3571285Z 2 |
+2026-02-09T09:19:42.3571357Z 3 | import json
+2026-02-09T09:19:42.3571424Z   |        ^^^^
+2026-02-09T09:19:42.3571513Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3571602Z 5 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3571665Z   |
+2026-02-09T09:19:42.3571758Z help: Remove unused import: `json`
+2026-02-09T09:19:42.3571764Z 
+2026-02-09T09:19:42.3571863Z F401 [*] `pathlib.Path` imported but unused
+2026-02-09T09:19:42.3571971Z  --> src/trust_wedo/core/diff_analyzer.py:4:21
+2026-02-09T09:19:42.3572032Z   |
+2026-02-09T09:19:42.3572106Z 3 | import json
+2026-02-09T09:19:42.3572188Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3572260Z   |                     ^^^^
+2026-02-09T09:19:42.3572352Z 5 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3572618Z 6 | from trust_wedo.core.similarity_calculator import calculate_similarity, get_text_differences
+2026-02-09T09:19:42.3572680Z   |
+2026-02-09T09:19:42.3572782Z help: Remove unused import: `pathlib.Path`
+2026-02-09T09:19:42.3572792Z 
+2026-02-09T09:19:42.3572918Z UP035 `typing.Dict` is deprecated, use `dict` instead
+2026-02-09T09:19:42.3573017Z  --> src/trust_wedo/core/diff_analyzer.py:5:1
+2026-02-09T09:19:42.3573078Z   |
+2026-02-09T09:19:42.3573151Z 3 | import json
+2026-02-09T09:19:42.3573236Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3573325Z 5 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3573429Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3573695Z 6 | from trust_wedo.core.similarity_calculator import calculate_similarity, get_text_differences
+2026-02-09T09:19:42.3573804Z 7 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3573871Z   |
+2026-02-09T09:19:42.3573876Z 
+2026-02-09T09:19:42.3573996Z UP035 `typing.List` is deprecated, use `list` instead
+2026-02-09T09:19:42.3574096Z  --> src/trust_wedo/core/diff_analyzer.py:5:1
+2026-02-09T09:19:42.3574157Z   |
+2026-02-09T09:19:42.3574233Z 3 | import json
+2026-02-09T09:19:42.3574313Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3574400Z 5 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3574475Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3574729Z 6 | from trust_wedo.core.similarity_calculator import calculate_similarity, get_text_differences
+2026-02-09T09:19:42.3574830Z 7 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3574891Z   |
+2026-02-09T09:19:42.3574900Z 
+2026-02-09T09:19:42.3575031Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3575255Z   --> src/trust_wedo/core/diff_analyzer.py:13:34
+2026-02-09T09:19:42.3575320Z    |
+2026-02-09T09:19:42.3575447Z 11 |     """Analyzer for comparing AFB and AI Captures."""
+2026-02-09T09:19:42.3575509Z 12 |
+2026-02-09T09:19:42.3575702Z 13 |     def __init__(self, afb_data: Dict[str, Any], captures: List[Dict[str, Any]]):
+2026-02-09T09:19:42.3575784Z    |                                  ^^^^
+2026-02-09T09:19:42.3575866Z 14 |         self.afb_data = afb_data
+2026-02-09T09:19:42.3575951Z 15 |         self.captures = captures
+2026-02-09T09:19:42.3576014Z    |
+2026-02-09T09:19:42.3576100Z help: Replace with `dict`
+2026-02-09T09:19:42.3576105Z 
+2026-02-09T09:19:42.3576232Z UP006 [*] Use `list` instead of `List` for type annotation
+2026-02-09T09:19:42.3576336Z   --> src/trust_wedo/core/diff_analyzer.py:13:60
+2026-02-09T09:19:42.3576402Z    |
+2026-02-09T09:19:42.3576520Z 11 |     """Analyzer for comparing AFB and AI Captures."""
+2026-02-09T09:19:42.3576586Z 12 |
+2026-02-09T09:19:42.3576772Z 13 |     def __init__(self, afb_data: Dict[str, Any], captures: List[Dict[str, Any]]):
+2026-02-09T09:19:42.3576951Z    |                                                            ^^^^
+2026-02-09T09:19:42.3577031Z 14 |         self.afb_data = afb_data
+2026-02-09T09:19:42.3577113Z 15 |         self.captures = captures
+2026-02-09T09:19:42.3577181Z    |
+2026-02-09T09:19:42.3577260Z help: Replace with `list`
+2026-02-09T09:19:42.3577265Z 
+2026-02-09T09:19:42.3577389Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3577495Z   --> src/trust_wedo/core/diff_analyzer.py:13:65
+2026-02-09T09:19:42.3577557Z    |
+2026-02-09T09:19:42.3577682Z 11 |     """Analyzer for comparing AFB and AI Captures."""
+2026-02-09T09:19:42.3577749Z 12 |
+2026-02-09T09:19:42.3577931Z 13 |     def __init__(self, afb_data: Dict[str, Any], captures: List[Dict[str, Any]]):
+2026-02-09T09:19:42.3578036Z    |                                                                 ^^^^
+2026-02-09T09:19:42.3578121Z 14 |         self.afb_data = afb_data
+2026-02-09T09:19:42.3578210Z 15 |         self.captures = captures
+2026-02-09T09:19:42.3578277Z    |
+2026-02-09T09:19:42.3578355Z help: Replace with `dict`
+2026-02-09T09:19:42.3578359Z 
+2026-02-09T09:19:42.3578485Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3578590Z   --> src/trust_wedo/core/diff_analyzer.py:17:53
+2026-02-09T09:19:42.3578653Z    |
+2026-02-09T09:19:42.3578738Z 15 |         self.captures = captures
+2026-02-09T09:19:42.3578799Z 16 |
+2026-02-09T09:19:42.3578962Z 17 |     def analyze(self, input_source: str = "cli") -> Dict[str, Any]:
+2026-02-09T09:19:42.3579056Z    |                                                     ^^^^
+2026-02-09T09:19:42.3579242Z 18 |         """Perform diff analysis."""
+2026-02-09T09:19:42.3579381Z 19 |         afb_answer = self.afb_data.get("ai_quick_answer", "")
+2026-02-09T09:19:42.3579444Z    |
+2026-02-09T09:19:42.3579528Z help: Replace with `dict`
+2026-02-09T09:19:42.3579533Z 
+2026-02-09T09:19:42.3579625Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3579730Z   --> src/trust_wedo/core/diff_analyzer.py:21:1
+2026-02-09T09:19:42.3579801Z    |
+2026-02-09T09:19:42.3579931Z 19 |         afb_answer = self.afb_data.get("ai_quick_answer", "")
+2026-02-09T09:19:42.3580057Z 20 |         afb_id = self.afb_data.get("afb_id", "afb:unknown")
+2026-02-09T09:19:42.3580121Z 21 |         
+2026-02-09T09:19:42.3580191Z    | ^^^^^^^^
+2026-02-09T09:19:42.3580270Z 22 |         comparisons = []
+2026-02-09T09:19:42.3580352Z 23 |         total_similarity = 0.0
+2026-02-09T09:19:42.3580417Z    |
+2026-02-09T09:19:42.3580509Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3580514Z 
+2026-02-09T09:19:42.3580601Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3580701Z   --> src/trust_wedo/core/diff_analyzer.py:24:1
+2026-02-09T09:19:42.3580770Z    |
+2026-02-09T09:19:42.3580846Z 22 |         comparisons = []
+2026-02-09T09:19:42.3580928Z 23 |         total_similarity = 0.0
+2026-02-09T09:19:42.3581110Z 24 |         
+2026-02-09T09:19:42.3581172Z    | ^^^^^^^^
+2026-02-09T09:19:42.3581249Z 25 |         best_source = None
+2026-02-09T09:19:42.3581343Z 26 |         best_score = -1.0
+2026-02-09T09:19:42.3581407Z    |
+2026-02-09T09:19:42.3581497Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3581502Z 
+2026-02-09T09:19:42.3581588Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3581694Z   --> src/trust_wedo/core/diff_analyzer.py:34:1
+2026-02-09T09:19:42.3581756Z    |
+2026-02-09T09:19:42.3581860Z 32 |             source = cap.get("source", "unknown")
+2026-02-09T09:19:42.3582017Z 33 |             similarity = calculate_similarity(afb_answer, ai_output)
+2026-02-09T09:19:42.3582085Z 34 |             
+2026-02-09T09:19:42.3582150Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3582286Z 35 |             risk = self._detect_hallucination_risk(similarity)
+2026-02-09T09:19:42.3582354Z    |
+2026-02-09T09:19:42.3582443Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3582448Z 
+2026-02-09T09:19:42.3582536Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3582640Z   --> src/trust_wedo/core/diff_analyzer.py:36:1
+2026-02-09T09:19:42.3582805Z    |
+2026-02-09T09:19:42.3582931Z 35 |             risk = self._detect_hallucination_risk(similarity)
+2026-02-09T09:19:42.3582999Z 36 |             
+2026-02-09T09:19:42.3583062Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3583146Z 37 |             comparisons.append({
+2026-02-09T09:19:42.3583284Z 38 |                 "capture_id": cap.get("capture_id", "cap:unknown"),
+2026-02-09T09:19:42.3583351Z    |
+2026-02-09T09:19:42.3583441Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3583446Z 
+2026-02-09T09:19:42.3583531Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3583634Z   --> src/trust_wedo/core/diff_analyzer.py:45:1
+2026-02-09T09:19:42.3583696Z    |
+2026-02-09T09:19:42.3583788Z 43 |                 "hallucination_risk": risk
+2026-02-09T09:19:42.3583858Z 44 |             })
+2026-02-09T09:19:42.3583923Z 45 |             
+2026-02-09T09:19:42.3583990Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3584082Z 46 |             total_similarity += similarity
+2026-02-09T09:19:42.3584153Z    |
+2026-02-09T09:19:42.3584241Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3584246Z 
+2026-02-09T09:19:42.3584331Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3584436Z   --> src/trust_wedo/core/diff_analyzer.py:47:1
+2026-02-09T09:19:42.3584498Z    |
+2026-02-09T09:19:42.3584588Z 46 |             total_similarity += similarity
+2026-02-09T09:19:42.3584652Z 47 |             
+2026-02-09T09:19:42.3584721Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3584813Z 48 |             if similarity > best_score:
+2026-02-09T09:19:42.3584900Z 49 |                 best_score = similarity
+2026-02-09T09:19:42.3584969Z    |
+2026-02-09T09:19:42.3585055Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3585060Z 
+2026-02-09T09:19:42.3585144Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3585245Z   --> src/trust_wedo/core/diff_analyzer.py:51:1
+2026-02-09T09:19:42.3585308Z    |
+2026-02-09T09:19:42.3585390Z 49 |                 best_score = similarity
+2026-02-09T09:19:42.3585474Z 50 |                 best_source = source
+2026-02-09T09:19:42.3585540Z 51 |             
+2026-02-09T09:19:42.3585607Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3585696Z 52 |             if similarity < worst_score:
+2026-02-09T09:19:42.3585788Z 53 |                 worst_score = similarity
+2026-02-09T09:19:42.3585856Z    |
+2026-02-09T09:19:42.3585946Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3585951Z 
+2026-02-09T09:19:42.3586081Z UP035 `typing.Dict` is deprecated, use `dict` instead
+2026-02-09T09:19:42.3586180Z  --> src/trust_wedo/core/entity_scorer.py:3:1
+2026-02-09T09:19:42.3586242Z   |
+2026-02-09T09:19:42.3586344Z 1 | """Entity scorer module for Trust WEDO."""
+2026-02-09T09:19:42.3586413Z 2 |
+2026-02-09T09:19:42.3586503Z 3 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3586576Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3586766Z 4 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3586829Z   |
+2026-02-09T09:19:42.3586837Z 
+2026-02-09T09:19:42.3586956Z UP035 `typing.List` is deprecated, use `list` instead
+2026-02-09T09:19:42.3587054Z  --> src/trust_wedo/core/entity_scorer.py:3:1
+2026-02-09T09:19:42.3587122Z   |
+2026-02-09T09:19:42.3587217Z 1 | """Entity scorer module for Trust WEDO."""
+2026-02-09T09:19:42.3587278Z 2 |
+2026-02-09T09:19:42.3587372Z 3 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3587444Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3587543Z 4 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3587610Z   |
+2026-02-09T09:19:42.3587615Z 
+2026-02-09T09:19:42.3587725Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3587824Z  --> src/trust_wedo/core/entity_scorer.py:3:1
+2026-02-09T09:19:42.3587886Z   |
+2026-02-09T09:19:42.3587989Z 1 |   """Entity scorer module for Trust WEDO."""
+2026-02-09T09:19:42.3588050Z 2 |
+2026-02-09T09:19:42.3588139Z 3 | / from typing import Dict, List, Any
+2026-02-09T09:19:42.3588249Z 4 | | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3588410Z   | |__________________________________________^
+2026-02-09T09:19:42.3588471Z   |
+2026-02-09T09:19:42.3588548Z help: Organize imports
+2026-02-09T09:19:42.3588558Z 
+2026-02-09T09:19:42.3588652Z F401 [*] `typing.List` imported but unused
+2026-02-09T09:19:42.3588752Z  --> src/trust_wedo/core/entity_scorer.py:3:26
+2026-02-09T09:19:42.3588814Z   |
+2026-02-09T09:19:42.3588916Z 1 | """Entity scorer module for Trust WEDO."""
+2026-02-09T09:19:42.3588977Z 2 |
+2026-02-09T09:19:42.3589063Z 3 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3589235Z   |                          ^^^^
+2026-02-09T09:19:42.3589337Z 4 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3589399Z   |
+2026-02-09T09:19:42.3589496Z help: Remove unused import: `typing.List`
+2026-02-09T09:19:42.3589501Z 
+2026-02-09T09:19:42.3589636Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3589742Z   --> src/trust_wedo/core/entity_scorer.py:10:35
+2026-02-09T09:19:42.3589804Z    |
+2026-02-09T09:19:42.3589944Z  8 |     """Scorer for calculating Entity Confidence (EC)."""
+2026-02-09T09:19:42.3590006Z  9 |
+2026-02-09T09:19:42.3590123Z 10 |     def __init__(self, site_data: Dict[str, Any]):
+2026-02-09T09:19:42.3590205Z    |                                   ^^^^
+2026-02-09T09:19:42.3590291Z 11 |         self.site_data = site_data
+2026-02-09T09:19:42.3590399Z 12 |         self.pages = site_data.get("pages", [])
+2026-02-09T09:19:42.3590463Z    |
+2026-02-09T09:19:42.3590550Z help: Replace with `dict`
+2026-02-09T09:19:42.3590556Z 
+2026-02-09T09:19:42.3590679Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3590780Z   --> src/trust_wedo/core/entity_scorer.py:15:67
+2026-02-09T09:19:42.3590847Z    |
+2026-02-09T09:19:42.3590953Z 13 |         self.checks = site_data.get("checks", {})
+2026-02-09T09:19:42.3591015Z 14 |
+2026-02-09T09:19:42.3591215Z 15 |     def calculate_score(self, input_source: str = "site.json") -> Dict[str, Any]:
+2026-02-09T09:19:42.3591329Z    |                                                                   ^^^^
+2026-02-09T09:19:42.3591424Z 16 |         """Calculate EC and signals."""
+2026-02-09T09:19:42.3591503Z 17 |         if not self.pages:
+2026-02-09T09:19:42.3591571Z    |
+2026-02-09T09:19:42.3591650Z help: Replace with `dict`
+2026-02-09T09:19:42.3591655Z 
+2026-02-09T09:19:42.3591733Z E501 Line too long (104 > 100)
+2026-02-09T09:19:42.3591847Z   --> src/trust_wedo/core/entity_scorer.py:43:101
+2026-02-09T09:19:42.3591910Z    |
+2026-02-09T09:19:42.3592031Z 42 |         # 3. Citation: external links count (heuristic)
+2026-02-09T09:19:42.3592307Z 43 |         avg_external_links = sum(p.get("external_links_count", 0) for p in self.pages) / len(self.pages)
+2026-02-09T09:19:42.3592456Z    |                                                                                                     ^^^^
+2026-02-09T09:19:42.3592623Z 44 |         citation = min(avg_external_links / 4.0, 1.0)  # Adjusted for MVP
+2026-02-09T09:19:42.3592802Z    |
+2026-02-09T09:19:42.3592810Z 
+2026-02-09T09:19:42.3592898Z W291 [*] Trailing whitespace
+2026-02-09T09:19:42.3593005Z   --> src/trust_wedo/core/entity_scorer.py:54:34
+2026-02-09T09:19:42.3593067Z    |
+2026-02-09T09:19:42.3593158Z 53 |         # EC formula (simplified)
+2026-02-09T09:19:42.3593244Z 54 |         ec = (consistency * 0.3 + 
+2026-02-09T09:19:42.3593317Z    |                                  ^
+2026-02-09T09:19:42.3593400Z 55 |               authority * 0.25 + 
+2026-02-09T09:19:42.3593478Z 56 |               citation * 0.15 + 
+2026-02-09T09:19:42.3593540Z    |
+2026-02-09T09:19:42.3593627Z help: Remove trailing whitespace
+2026-02-09T09:19:42.3593632Z 
+2026-02-09T09:19:42.3593716Z W291 [*] Trailing whitespace
+2026-02-09T09:19:42.3593819Z   --> src/trust_wedo/core/entity_scorer.py:55:33
+2026-02-09T09:19:42.3593882Z    |
+2026-02-09T09:19:42.3593972Z 53 |         # EC formula (simplified)
+2026-02-09T09:19:42.3594059Z 54 |         ec = (consistency * 0.3 + 
+2026-02-09T09:19:42.3594134Z 55 |               authority * 0.25 + 
+2026-02-09T09:19:42.3594310Z    |                                 ^
+2026-02-09T09:19:42.3594393Z 56 |               citation * 0.15 + 
+2026-02-09T09:19:42.3594471Z 57 |               frequency * 0.15 + 
+2026-02-09T09:19:42.3594536Z    |
+2026-02-09T09:19:42.3594627Z help: Remove trailing whitespace
+2026-02-09T09:19:42.3594632Z 
+2026-02-09T09:19:42.3594712Z W291 [*] Trailing whitespace
+2026-02-09T09:19:42.3594814Z   --> src/trust_wedo/core/entity_scorer.py:56:32
+2026-02-09T09:19:42.3594883Z    |
+2026-02-09T09:19:42.3594964Z 54 |         ec = (consistency * 0.3 + 
+2026-02-09T09:19:42.3595041Z 55 |               authority * 0.25 + 
+2026-02-09T09:19:42.3595118Z 56 |               citation * 0.15 + 
+2026-02-09T09:19:42.3595196Z    |                                ^
+2026-02-09T09:19:42.3595273Z 57 |               frequency * 0.15 + 
+2026-02-09T09:19:42.3595349Z 58 |               social * 0.15)
+2026-02-09T09:19:42.3595422Z    |
+2026-02-09T09:19:42.3595507Z help: Remove trailing whitespace
+2026-02-09T09:19:42.3595516Z 
+2026-02-09T09:19:42.3595592Z W291 [*] Trailing whitespace
+2026-02-09T09:19:42.3595699Z   --> src/trust_wedo/core/entity_scorer.py:57:33
+2026-02-09T09:19:42.3595763Z    |
+2026-02-09T09:19:42.3595842Z 55 |               authority * 0.25 + 
+2026-02-09T09:19:42.3595919Z 56 |               citation * 0.15 + 
+2026-02-09T09:19:42.3596001Z 57 |               frequency * 0.15 + 
+2026-02-09T09:19:42.3596071Z    |                                 ^
+2026-02-09T09:19:42.3596146Z 58 |               social * 0.15)
+2026-02-09T09:19:42.3596215Z    |
+2026-02-09T09:19:42.3596300Z help: Remove trailing whitespace
+2026-02-09T09:19:42.3596304Z 
+2026-02-09T09:19:42.3596389Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3596492Z   --> src/trust_wedo/core/entity_scorer.py:59:1
+2026-02-09T09:19:42.3596561Z    |
+2026-02-09T09:19:42.3596639Z 57 |               frequency * 0.15 + 
+2026-02-09T09:19:42.3596717Z 58 |               social * 0.15)
+2026-02-09T09:19:42.3596788Z 59 |         
+2026-02-09T09:19:42.3596851Z    | ^^^^^^^^
+2026-02-09T09:19:42.3596931Z 60 |         ec = round(ec, 2)
+2026-02-09T09:19:42.3597052Z 61 |         eligibility = "pass" if ec >= 0.60 else "fail"
+2026-02-09T09:19:42.3597121Z    |
+2026-02-09T09:19:42.3597211Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3597216Z 
+2026-02-09T09:19:42.3597340Z UP035 `typing.Dict` is deprecated, use `dict` instead
+2026-02-09T09:19:42.3597448Z  --> src/trust_wedo/core/graph_builder.py:3:1
+2026-02-09T09:19:42.3597518Z   |
+2026-02-09T09:19:42.3597619Z 1 | """Graph builder module for Trust WEDO."""
+2026-02-09T09:19:42.3597685Z 2 |
+2026-02-09T09:19:42.3597773Z 3 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3597845Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3597948Z 4 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3598015Z   |
+2026-02-09T09:19:42.3598021Z 
+2026-02-09T09:19:42.3598143Z UP035 `typing.List` is deprecated, use `list` instead
+2026-02-09T09:19:42.3598325Z  --> src/trust_wedo/core/graph_builder.py:3:1
+2026-02-09T09:19:42.3598397Z   |
+2026-02-09T09:19:42.3598493Z 1 | """Graph builder module for Trust WEDO."""
+2026-02-09T09:19:42.3598555Z 2 |
+2026-02-09T09:19:42.3598647Z 3 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3598718Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3598817Z 4 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3598879Z   |
+2026-02-09T09:19:42.3598884Z 
+2026-02-09T09:19:42.3599000Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3599188Z  --> src/trust_wedo/core/graph_builder.py:3:1
+2026-02-09T09:19:42.3599251Z   |
+2026-02-09T09:19:42.3599356Z 1 |   """Graph builder module for Trust WEDO."""
+2026-02-09T09:19:42.3599418Z 2 |
+2026-02-09T09:19:42.3599505Z 3 | / from typing import Dict, List, Any
+2026-02-09T09:19:42.3599608Z 4 | | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3599696Z   | |__________________________________________^
+2026-02-09T09:19:42.3599762Z   |
+2026-02-09T09:19:42.3599839Z help: Organize imports
+2026-02-09T09:19:42.3599951Z 
+2026-02-09T09:19:42.3600051Z F401 [*] `typing.List` imported but unused
+2026-02-09T09:19:42.3600155Z  --> src/trust_wedo/core/graph_builder.py:3:26
+2026-02-09T09:19:42.3600217Z   |
+2026-02-09T09:19:42.3600326Z 1 | """Graph builder module for Trust WEDO."""
+2026-02-09T09:19:42.3600389Z 2 |
+2026-02-09T09:19:42.3600480Z 3 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3600554Z   |                          ^^^^
+2026-02-09T09:19:42.3600663Z 4 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3600726Z   |
+2026-02-09T09:19:42.3600824Z help: Remove unused import: `typing.List`
+2026-02-09T09:19:42.3600829Z 
+2026-02-09T09:19:42.3600967Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3601078Z   --> src/trust_wedo/core/graph_builder.py:10:37
+2026-02-09T09:19:42.3601142Z    |
+2026-02-09T09:19:42.3601301Z  8 |     """Builder for generating Entity Graph and risk metrics."""
+2026-02-09T09:19:42.3601367Z  9 |
+2026-02-09T09:19:42.3601492Z 10 |     def __init__(self, bundle_data: Dict[str, Any]):
+2026-02-09T09:19:42.3601574Z    |                                     ^^^^
+2026-02-09T09:19:42.3601713Z 11 |         self.entity_profile = bundle_data.get("entity", {})
+2026-02-09T09:19:42.3601813Z 12 |         self.afb = bundle_data.get("afb", {})
+2026-02-09T09:19:42.3601876Z    |
+2026-02-09T09:19:42.3601969Z help: Replace with `dict`
+2026-02-09T09:19:42.3601974Z 
+2026-02-09T09:19:42.3602101Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3602208Z   --> src/trust_wedo/core/graph_builder.py:15:54
+2026-02-09T09:19:42.3602279Z    |
+2026-02-09T09:19:42.3602415Z 13 |         self.citation_eval = bundle_data.get("citation", {})
+2026-02-09T09:19:42.3602479Z 14 |
+2026-02-09T09:19:42.3602642Z 15 |     def build(self, input_source: str = "bundle") -> Dict[str, Any]:
+2026-02-09T09:19:42.3602746Z    |                                                      ^^^^
+2026-02-09T09:19:42.3602832Z 16 |         """Build Graph JSON."""
+2026-02-09T09:19:42.3603000Z 17 |         entity_id = self.entity_profile.get("entity_id", "ent:unknown")
+2026-02-09T09:19:42.3603068Z    |
+2026-02-09T09:19:42.3603149Z help: Replace with `dict`
+2026-02-09T09:19:42.3603154Z 
+2026-02-09T09:19:42.3603243Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3603357Z   --> src/trust_wedo/core/graph_builder.py:18:1
+2026-02-09T09:19:42.3603419Z    |
+2026-02-09T09:19:42.3603500Z 16 |         """Build Graph JSON."""
+2026-02-09T09:19:42.3603656Z 17 |         entity_id = self.entity_profile.get("entity_id", "ent:unknown")
+2026-02-09T09:19:42.3603728Z 18 |         
+2026-02-09T09:19:42.3603792Z    | ^^^^^^^^
+2026-02-09T09:19:42.3603875Z 19 |         # Calculate metrics
+2026-02-09T09:19:42.3604014Z 20 |         citations = self.citation_eval.get("citations", [])
+2026-02-09T09:19:42.3604077Z    |
+2026-02-09T09:19:42.3604170Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3604290Z 
+2026-02-09T09:19:42.3604382Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3604495Z   --> src/trust_wedo/core/graph_builder.py:24:1
+2026-02-09T09:19:42.3604559Z    |
+2026-02-09T09:19:42.3604667Z 22 |         # For MVP, we'll just count the citations
+2026-02-09T09:19:42.3604856Z 23 |         distinct_sources = len(set(c.get("citation_id") for c in citations))
+2026-02-09T09:19:42.3604921Z 24 |         
+2026-02-09T09:19:42.3604986Z    | ^^^^^^^^
+2026-02-09T09:19:42.3605088Z 25 |         is_isolated = distinct_sources == 0
+2026-02-09T09:19:42.3605201Z 26 |         single_source_risk = distinct_sources == 1
+2026-02-09T09:19:42.3605265Z    |
+2026-02-09T09:19:42.3605354Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3605360Z 
+2026-02-09T09:19:42.3605483Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3605593Z  --> src/trust_wedo/core/report_generator.py:3:1
+2026-02-09T09:19:42.3605655Z   |
+2026-02-09T09:19:42.3605773Z 1 |   """Report generator module for Trust WEDO."""
+2026-02-09T09:19:42.3605837Z 2 |
+2026-02-09T09:19:42.3605905Z 3 | / import json
+2026-02-09T09:19:42.3606075Z 4 | | from pathlib import Path
+2026-02-09T09:19:42.3606174Z 5 | | from typing import Dict, List, Any
+2026-02-09T09:19:42.3606277Z 6 | | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3606359Z   | |__________________________________________^
+2026-02-09T09:19:42.3606427Z   |
+2026-02-09T09:19:42.3606503Z help: Organize imports
+2026-02-09T09:19:42.3606508Z 
+2026-02-09T09:19:42.3606633Z UP035 `typing.Dict` is deprecated, use `dict` instead
+2026-02-09T09:19:42.3606744Z  --> src/trust_wedo/core/report_generator.py:5:1
+2026-02-09T09:19:42.3606806Z   |
+2026-02-09T09:19:42.3606874Z 3 | import json
+2026-02-09T09:19:42.3606959Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3607055Z 5 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3607128Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3607231Z 6 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3607302Z   |
+2026-02-09T09:19:42.3607307Z 
+2026-02-09T09:19:42.3607430Z UP035 `typing.List` is deprecated, use `list` instead
+2026-02-09T09:19:42.3607538Z  --> src/trust_wedo/core/report_generator.py:5:1
+2026-02-09T09:19:42.3607607Z   |
+2026-02-09T09:19:42.3607684Z 3 | import json
+2026-02-09T09:19:42.3607769Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3607855Z 5 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3607935Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3608036Z 6 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3608098Z   |
+2026-02-09T09:19:42.3608104Z 
+2026-02-09T09:19:42.3608203Z F401 [*] `typing.List` imported but unused
+2026-02-09T09:19:42.3608317Z  --> src/trust_wedo/core/report_generator.py:5:26
+2026-02-09T09:19:42.3608379Z   |
+2026-02-09T09:19:42.3608448Z 3 | import json
+2026-02-09T09:19:42.3608534Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3608621Z 5 | from typing import Dict, List, Any
+2026-02-09T09:19:42.3608695Z   |                          ^^^^
+2026-02-09T09:19:42.3608803Z 6 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3608869Z   |
+2026-02-09T09:19:42.3608966Z help: Remove unused import: `typing.List`
+2026-02-09T09:19:42.3608971Z 
+2026-02-09T09:19:42.3609195Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3609313Z   --> src/trust_wedo/core/report_generator.py:14:20
+2026-02-09T09:19:42.3609377Z    |
+2026-02-09T09:19:42.3609474Z 12 |     def __init__(self, bundle_dir: str):
+2026-02-09T09:19:42.3609576Z 13 |         self.bundle_path = Path(bundle_dir)
+2026-02-09T09:19:42.3609666Z 14 |         self.data: Dict[str, Any] = {}
+2026-02-09T09:19:42.3609736Z    |                    ^^^^
+2026-02-09T09:19:42.3609820Z 15 |         self._load_bundle()
+2026-02-09T09:19:42.3609882Z    |
+2026-02-09T09:19:42.3609964Z help: Replace with `dict`
+2026-02-09T09:19:42.3609970Z 
+2026-02-09T09:19:42.3610102Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3610333Z   --> src/trust_wedo/core/report_generator.py:32:32
+2026-02-09T09:19:42.3610397Z    |
+2026-02-09T09:19:42.3610502Z 30 |                     self.data[key] = json.load(f)
+2026-02-09T09:19:42.3610571Z 31 |
+2026-02-09T09:19:42.3610675Z 32 |     def generate_json(self) -> Dict[str, Any]:
+2026-02-09T09:19:42.3610751Z    |                                ^^^^
+2026-02-09T09:19:42.3610855Z 33 |         """Generate aggregated JSON report."""
+2026-02-09T09:19:42.3610926Z 34 |         return {
+2026-02-09T09:19:42.3610988Z    |
+2026-02-09T09:19:42.3611068Z help: Replace with `dict`
+2026-02-09T09:19:42.3611080Z 
+2026-02-09T09:19:42.3611159Z E501 Line too long (111 > 100)
+2026-02-09T09:19:42.3611278Z   --> src/trust_wedo/core/report_generator.py:41:101
+2026-02-09T09:19:42.3611341Z    |
+2026-02-09T09:19:42.3611521Z 39 |                 "eligibility": self.data.get("entity", {}).get("eligibility"),
+2026-02-09T09:19:42.3611711Z 40 |                 "citation_decision": self.data.get("citation", {}).get("decision"),
+2026-02-09T09:19:42.3611976Z 41 |                 "risk_detected": self.data.get("graph", {}).get("metrics", {}).get("single_source_risk", False)
+2026-02-09T09:19:42.3612274Z    |                                                                                                     ^^^^^^^^^^^
+2026-02-09T09:19:42.3612343Z 42 |             },
+2026-02-09T09:19:42.3612425Z 43 |             "details": self.data
+2026-02-09T09:19:42.3612492Z    |
+2026-02-09T09:19:42.3612497Z 
+2026-02-09T09:19:42.3612586Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3612698Z   --> src/trust_wedo/core/report_generator.py:51:1
+2026-02-09T09:19:42.3612761Z    |
+2026-02-09T09:19:42.3612875Z 49 |         citation = self.data.get("citation", {})
+2026-02-09T09:19:42.3613009Z 50 |         graph = self.data.get("graph", {}).get("metrics", {})
+2026-02-09T09:19:42.3613074Z 51 |         
+2026-02-09T09:19:42.3613145Z    | ^^^^^^^^
+2026-02-09T09:19:42.3613308Z 52 |         md = f"""# Trust WEDO 信任評估報告
+2026-02-09T09:19:42.3613372Z    |
+2026-02-09T09:19:42.3613469Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3613481Z 
+2026-02-09T09:19:42.3613576Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3613702Z   --> src/trust_wedo/core/similarity_calculator.py:19:1
+2026-02-09T09:19:42.3613764Z    |
+2026-02-09T09:19:42.3613846Z 17 |     if text1 == text2:
+2026-02-09T09:19:42.3613916Z 18 |         return []
+2026-02-09T09:19:42.3613985Z 19 |     
+2026-02-09T09:19:42.3614054Z    | ^^^^
+2026-02-09T09:19:42.3614180Z 20 |     similarity = calculate_similarity(text1, text2)
+2026-02-09T09:19:42.3614259Z 21 |     if similarity > 0.95:
+2026-02-09T09:19:42.3614322Z    |
+2026-02-09T09:19:42.3614419Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3614424Z 
+2026-02-09T09:19:42.3614533Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3614638Z  --> src/trust_wedo/parsers/site_parser.py:3:1
+2026-02-09T09:19:42.3614704Z   |
+2026-02-09T09:19:42.3614801Z 1 |   """Site parser module for Trust WEDO."""
+2026-02-09T09:19:42.3614868Z 2 |
+2026-02-09T09:19:42.3614937Z 3 | / import json
+2026-02-09T09:19:42.3615028Z 4 | | from datetime import datetime
+2026-02-09T09:19:42.3615140Z 5 | | from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3615210Z 6 | | import httpx
+2026-02-09T09:19:42.3615299Z 7 | | from bs4 import BeautifulSoup
+2026-02-09T09:19:42.3615404Z 8 | | from urllib.parse import urljoin, urlparse
+2026-02-09T09:19:42.3615505Z 9 | | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3615595Z   | |__________________________________________^
+2026-02-09T09:19:42.3615657Z   |
+2026-02-09T09:19:42.3615732Z help: Organize imports
+2026-02-09T09:19:42.3615737Z 
+2026-02-09T09:19:42.3615816Z F401 [*] `json` imported but unused
+2026-02-09T09:19:42.3615922Z  --> src/trust_wedo/parsers/site_parser.py:3:8
+2026-02-09T09:19:42.3615984Z   |
+2026-02-09T09:19:42.3616080Z 1 | """Site parser module for Trust WEDO."""
+2026-02-09T09:19:42.3616148Z 2 |
+2026-02-09T09:19:42.3616213Z 3 | import json
+2026-02-09T09:19:42.3616362Z   |        ^^^^
+2026-02-09T09:19:42.3616446Z 4 | from datetime import datetime
+2026-02-09T09:19:42.3616560Z 5 | from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3616624Z   |
+2026-02-09T09:19:42.3616710Z help: Remove unused import: `json`
+2026-02-09T09:19:42.3616716Z 
+2026-02-09T09:19:42.3616821Z F401 [*] `datetime.datetime` imported but unused
+2026-02-09T09:19:42.3616926Z  --> src/trust_wedo/parsers/site_parser.py:4:22
+2026-02-09T09:19:42.3616988Z   |
+2026-02-09T09:19:42.3617059Z 3 | import json
+2026-02-09T09:19:42.3617141Z 4 | from datetime import datetime
+2026-02-09T09:19:42.3617211Z   |                      ^^^^^^^^
+2026-02-09T09:19:42.3617313Z 5 | from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3617387Z 6 | import httpx
+2026-02-09T09:19:42.3617449Z   |
+2026-02-09T09:19:42.3617561Z help: Remove unused import: `datetime.datetime`
+2026-02-09T09:19:42.3617566Z 
+2026-02-09T09:19:42.3617696Z UP035 `typing.Dict` is deprecated, use `dict` instead
+2026-02-09T09:19:42.3617810Z  --> src/trust_wedo/parsers/site_parser.py:5:1
+2026-02-09T09:19:42.3617871Z   |
+2026-02-09T09:19:42.3617939Z 3 | import json
+2026-02-09T09:19:42.3618106Z 4 | from datetime import datetime
+2026-02-09T09:19:42.3618206Z 5 | from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3618287Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3618362Z 6 | import httpx
+2026-02-09T09:19:42.3618444Z 7 | from bs4 import BeautifulSoup
+2026-02-09T09:19:42.3618505Z   |
+2026-02-09T09:19:42.3618510Z 
+2026-02-09T09:19:42.3618635Z UP035 `typing.List` is deprecated, use `list` instead
+2026-02-09T09:19:42.3618738Z  --> src/trust_wedo/parsers/site_parser.py:5:1
+2026-02-09T09:19:42.3618801Z   |
+2026-02-09T09:19:42.3618868Z 3 | import json
+2026-02-09T09:19:42.3618955Z 4 | from datetime import datetime
+2026-02-09T09:19:42.3619057Z 5 | from typing import Dict, List, Any, Optional
+2026-02-09T09:19:42.3619228Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3619306Z 6 | import httpx
+2026-02-09T09:19:42.3619395Z 7 | from bs4 import BeautifulSoup
+2026-02-09T09:19:42.3619457Z   |
+2026-02-09T09:19:42.3619465Z 
+2026-02-09T09:19:42.3619583Z F401 [*] `urllib.parse.urljoin` imported but unused
+2026-02-09T09:19:42.3619692Z  --> src/trust_wedo/parsers/site_parser.py:8:26
+2026-02-09T09:19:42.3619754Z   |
+2026-02-09T09:19:42.3619823Z 6 | import httpx
+2026-02-09T09:19:42.3619910Z 7 | from bs4 import BeautifulSoup
+2026-02-09T09:19:42.3620011Z 8 | from urllib.parse import urljoin, urlparse
+2026-02-09T09:19:42.3620085Z   |                          ^^^^^^^
+2026-02-09T09:19:42.3620189Z 9 | from trust_wedo.utils.meta import get_meta
+2026-02-09T09:19:42.3620252Z   |
+2026-02-09T09:19:42.3620370Z help: Remove unused import: `urllib.parse.urljoin`
+2026-02-09T09:19:42.3620375Z 
+2026-02-09T09:19:42.3620507Z UP006 [*] Use `list` instead of `List` for type annotation
+2026-02-09T09:19:42.3620624Z   --> src/trust_wedo/parsers/site_parser.py:18:21
+2026-02-09T09:19:42.3620686Z    |
+2026-02-09T09:19:42.3620788Z 16 |         self.base_url = base_url.rstrip("/")
+2026-02-09T09:19:42.3620883Z 17 |         self.max_pages = max_pages
+2026-02-09T09:19:42.3620987Z 18 |         self.pages: List[Dict[str, Any]] = []
+2026-02-09T09:19:42.3621059Z    |                     ^^^^
+2026-02-09T09:19:42.3621206Z 19 |         self.checks = {"robots_ok": False, "sitemap_ok": False}
+2026-02-09T09:19:42.3621293Z 20 |         self.visited_urls = set()
+2026-02-09T09:19:42.3621356Z    |
+2026-02-09T09:19:42.3621436Z help: Replace with `list`
+2026-02-09T09:19:42.3621442Z 
+2026-02-09T09:19:42.3621574Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3621681Z   --> src/trust_wedo/parsers/site_parser.py:18:26
+2026-02-09T09:19:42.3621743Z    |
+2026-02-09T09:19:42.3621847Z 16 |         self.base_url = base_url.rstrip("/")
+2026-02-09T09:19:42.3621932Z 17 |         self.max_pages = max_pages
+2026-02-09T09:19:42.3622030Z 18 |         self.pages: List[Dict[str, Any]] = []
+2026-02-09T09:19:42.3622109Z    |                          ^^^^
+2026-02-09T09:19:42.3622371Z 19 |         self.checks = {"robots_ok": False, "sitemap_ok": False}
+2026-02-09T09:19:42.3622518Z 20 |         self.visited_urls = set()
+2026-02-09T09:19:42.3622615Z    |
+2026-02-09T09:19:42.3622765Z help: Replace with `dict`
+2026-02-09T09:19:42.3622771Z 
+2026-02-09T09:19:42.3622931Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3623070Z   --> src/trust_wedo/parsers/site_parser.py:22:29
+2026-02-09T09:19:42.3623167Z    |
+2026-02-09T09:19:42.3623480Z 20 |         self.visited_urls = set()
+2026-02-09T09:19:42.3623628Z 21 |
+2026-02-09T09:19:42.3623761Z 22 |     async def scan(self) -> Dict[str, Any]:
+2026-02-09T09:19:42.3623902Z    |                             ^^^^
+2026-02-09T09:19:42.3624056Z 23 |         """Perform site scan."""
+2026-02-09T09:19:42.3624245Z 24 |         async with httpx.AsyncClient(follow_redirects=True) as client:
+2026-02-09T09:19:42.3624393Z    |
+2026-02-09T09:19:42.3624557Z help: Replace with `dict`
+2026-02-09T09:19:42.3624562Z 
+2026-02-09T09:19:42.3624727Z UP006 [*] Use `list` instead of `List` for type annotation
+2026-02-09T09:19:42.3624997Z   --> src/trust_wedo/parsers/site_parser.py:63:70
+2026-02-09T09:19:42.3625091Z    |
+2026-02-09T09:19:42.3625209Z 61 |         }
+2026-02-09T09:19:42.3625355Z 62 |
+2026-02-09T09:19:42.3625615Z 63 |     async def _find_sitemap_urls(self, client: httpx.AsyncClient) -> List[str]:
+2026-02-09T09:19:42.3625829Z    |                                                                      ^^^^
+2026-02-09T09:19:42.3625960Z 64 |         """Find URLs from sitemap.xml."""
+2026-02-09T09:19:42.3626112Z 65 |         sitemap_url = f"{self.base_url}/sitemap.xml"
+2026-02-09T09:19:42.3626226Z    |
+2026-02-09T09:19:42.3626385Z help: Replace with `list`
+2026-02-09T09:19:42.3626391Z 
+2026-02-09T09:19:42.3626540Z UP045 [*] Use `X | None` for type annotations
+2026-02-09T09:19:42.3626721Z   --> src/trust_wedo/parsers/site_parser.py:76:72
+2026-02-09T09:19:42.3626814Z    |
+2026-02-09T09:19:42.3626917Z 74 |         return []
+2026-02-09T09:19:42.3627015Z 75 |
+2026-02-09T09:19:42.3627370Z 76 |     async def _scan_page(self, client: httpx.AsyncClient, url: str) -> Optional[Dict[str, Any]]:
+2026-02-09T09:19:42.3627567Z    |                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3627719Z 77 |         """Scan a single page."""
+2026-02-09T09:19:42.3627879Z 78 |         if url in self.visited_urls:
+2026-02-09T09:19:42.3627973Z    |
+2026-02-09T09:19:42.3628086Z help: Convert to `X | None`
+2026-02-09T09:19:42.3628092Z 
+2026-02-09T09:19:42.3628317Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3628472Z   --> src/trust_wedo/parsers/site_parser.py:76:81
+2026-02-09T09:19:42.3628565Z    |
+2026-02-09T09:19:42.3628668Z 74 |         return []
+2026-02-09T09:19:42.3628798Z 75 |
+2026-02-09T09:19:42.3629076Z 76 |     async def _scan_page(self, client: httpx.AsyncClient, url: str) -> Optional[Dict[str, Any]]:
+2026-02-09T09:19:42.3629365Z    |                                                                                 ^^^^
+2026-02-09T09:19:42.3629633Z 77 |         """Scan a single page."""
+2026-02-09T09:19:42.3629760Z 78 |         if url in self.visited_urls:
+2026-02-09T09:19:42.3629855Z    |
+2026-02-09T09:19:42.3637140Z help: Replace with `dict`
+2026-02-09T09:19:42.3637164Z 
+2026-02-09T09:19:42.3637291Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3637433Z    --> src/trust_wedo/parsers/site_parser.py:104:1
+2026-02-09T09:19:42.3637503Z     |
+2026-02-09T09:19:42.3637596Z 102 |             if fetched and soup:
+2026-02-09T09:19:42.3637802Z 103 |                 has_jsonld = bool(soup.find("script", type="application/ld+json"))
+2026-02-09T09:19:42.3637881Z 104 |                 
+2026-02-09T09:19:42.3637948Z     | ^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3638047Z 105 |                 title = soup.find("title")
+2026-02-09T09:19:42.3638244Z 106 |                 has_meta_desc = bool(soup.find("meta", attrs={"name": "description"}))
+2026-02-09T09:19:42.3638485Z     |
+2026-02-09T09:19:42.3638583Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3638589Z 
+2026-02-09T09:19:42.3638685Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3638814Z    --> src/trust_wedo/parsers/site_parser.py:108:1
+2026-02-09T09:19:42.3638877Z     |
+2026-02-09T09:19:42.3639072Z 106 |                 has_meta_desc = bool(soup.find("meta", attrs={"name": "description"}))
+2026-02-09T09:19:42.3639338Z 107 |                 has_meta = has_meta_desc
+2026-02-09T09:19:42.3639408Z 108 |                 
+2026-02-09T09:19:42.3639478Z     | ^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3639586Z 109 |                 # Check for about/author pages
+2026-02-09T09:19:42.3639924Z 110 |                 about_author_keywords = ["about", "author", "team", "contact", "關於", "作者"]
+2026-02-09T09:19:42.3639990Z     |
+2026-02-09T09:19:42.3640083Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3640089Z 
+2026-02-09T09:19:42.3640181Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3640302Z    --> src/trust_wedo/parsers/site_parser.py:113:1
+2026-02-09T09:19:42.3640365Z     |
+2026-02-09T09:19:42.3640617Z 111 |                 url_path = urlparse(url).path.lower()
+2026-02-09T09:19:42.3640820Z 112 |                 is_about_author = any(kw in url_path for kw in about_author_keywords)
+2026-02-09T09:19:42.3640889Z 113 |                 
+2026-02-09T09:19:42.3640961Z     | ^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3641056Z 114 |                 # Count external links
+2026-02-09T09:19:42.3641179Z 115 |                 all_links = soup.find_all("a", href=True)
+2026-02-09T09:19:42.3641242Z     |
+2026-02-09T09:19:42.3641337Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3641342Z 
+2026-02-09T09:19:42.3641428Z E741 Ambiguous variable name: `l`
+2026-02-09T09:19:42.3641548Z    --> src/trust_wedo/parsers/site_parser.py:117:21
+2026-02-09T09:19:42.3641613Z     |
+2026-02-09T09:19:42.3641724Z 115 |                 all_links = soup.find_all("a", href=True)
+2026-02-09T09:19:42.3641810Z 116 |                 external_links = []
+2026-02-09T09:19:42.3641901Z 117 |                 for l in all_links:
+2026-02-09T09:19:42.3641977Z     |                     ^
+2026-02-09T09:19:42.3642067Z 118 |                     href = l.get("href")
+2026-02-09T09:19:42.3642169Z 119 |                     if isinstance(href, list):
+2026-02-09T09:19:42.3642236Z     |
+2026-02-09T09:19:42.3642242Z 
+2026-02-09T09:19:42.3642320Z E501 Line too long (112 > 100)
+2026-02-09T09:19:42.3642435Z    --> src/trust_wedo/parsers/site_parser.py:121:101
+2026-02-09T09:19:42.3642502Z     |
+2026-02-09T09:19:42.3642597Z 119 |                     if isinstance(href, list):
+2026-02-09T09:19:42.3642706Z 120 |                         href = href[0] if href else ""
+2026-02-09T09:19:42.3642986Z 121 |                     if href and isinstance(href, str) and href.startswith("http") and self.base_url not in href:
+2026-02-09T09:19:42.3643144Z     |                                                                                                     ^^^^^^^^^^^^
+2026-02-09T09:19:42.3643264Z 122 |                         external_links.append(href)
+2026-02-09T09:19:42.3643328Z     |
+2026-02-09T09:19:42.3643339Z 
+2026-02-09T09:19:42.3643425Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3643534Z    --> src/trust_wedo/parsers/site_parser.py:123:1
+2026-02-09T09:19:42.3643594Z     |
+2026-02-09T09:19:42.3643859Z 121 |                     if href and isinstance(href, str) and href.startswith("http") and self.base_url not in href:
+2026-02-09T09:19:42.3643967Z 122 |                         external_links.append(href)
+2026-02-09T09:19:42.3644034Z 123 |                 
+2026-02-09T09:19:42.3644103Z     | ^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3644224Z 124 |                 external_links_count = len(external_links)
+2026-02-09T09:19:42.3644286Z     |
+2026-02-09T09:19:42.3644376Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3644384Z 
+2026-02-09T09:19:42.3644467Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3644571Z    --> src/trust_wedo/parsers/site_parser.py:125:1
+2026-02-09T09:19:42.3644744Z     |
+2026-02-09T09:19:42.3644867Z 124 |                 external_links_count = len(external_links)
+2026-02-09T09:19:42.3644940Z 125 |                 
+2026-02-09T09:19:42.3645006Z     | ^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3645098Z 126 |                 # Count social links
+2026-02-09T09:19:42.3645382Z 127 |                 social_domains = ["twitter.com", "facebook.com", "linkedin.com", "github.com", "instagram.com"]
+2026-02-09T09:19:42.3645442Z     |
+2026-02-09T09:19:42.3645532Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3645542Z 
+2026-02-09T09:19:42.3645619Z E501 Line too long (111 > 100)
+2026-02-09T09:19:42.3645735Z    --> src/trust_wedo/parsers/site_parser.py:127:101
+2026-02-09T09:19:42.3645798Z     |
+2026-02-09T09:19:42.3645887Z 126 |                 # Count social links
+2026-02-09T09:19:42.3646163Z 127 |                 social_domains = ["twitter.com", "facebook.com", "linkedin.com", "github.com", "instagram.com"]
+2026-02-09T09:19:42.3646316Z     |                                                                                                     ^^^^^^^^^^^
+2026-02-09T09:19:42.3646643Z 128 |                 social_links = [l for l in external_links if any(sd in l for sd in social_domains)]
+2026-02-09T09:19:42.3646760Z 129 |                 social_links_count = len(social_links)
+2026-02-09T09:19:42.3646822Z     |
+2026-02-09T09:19:42.3646827Z 
+2026-02-09T09:19:42.3646918Z E741 Ambiguous variable name: `l`
+2026-02-09T09:19:42.3647038Z    --> src/trust_wedo/parsers/site_parser.py:128:39
+2026-02-09T09:19:42.3647100Z     |
+2026-02-09T09:19:42.3647183Z 126 |                 # Count social links
+2026-02-09T09:19:42.3647463Z 127 |                 social_domains = ["twitter.com", "facebook.com", "linkedin.com", "github.com", "instagram.com"]
+2026-02-09T09:19:42.3647691Z 128 |                 social_links = [l for l in external_links if any(sd in l for sd in social_domains)]
+2026-02-09T09:19:42.3647772Z     |                                       ^
+2026-02-09T09:19:42.3647897Z 129 |                 social_links_count = len(social_links)
+2026-02-09T09:19:42.3647971Z     |
+2026-02-09T09:19:42.3647976Z 
+2026-02-09T09:19:42.3648065Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3648179Z    --> src/trust_wedo/parsers/site_parser.py:142:1
+2026-02-09T09:19:42.3648241Z     |
+2026-02-09T09:19:42.3648363Z 140 |                     "social_links_count": social_links_count
+2026-02-09T09:19:42.3648434Z 141 |                 }
+2026-02-09T09:19:42.3648501Z 142 |             
+2026-02-09T09:19:42.3648566Z     | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3648639Z 143 |             return {
+2026-02-09T09:19:42.3648720Z 144 |                 "url": url,
+2026-02-09T09:19:42.3648783Z     |
+2026-02-09T09:19:42.3648874Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3648879Z 
+2026-02-09T09:19:42.3648990Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3649186Z  --> src/trust_wedo/utils/meta.py:3:1
+2026-02-09T09:19:42.3649252Z   |
+2026-02-09T09:19:42.3649351Z 1 |   """Metadata utility for Trust WEDO."""
+2026-02-09T09:19:42.3649416Z 2 |
+2026-02-09T09:19:42.3649504Z 3 | / from datetime import datetime
+2026-02-09T09:19:42.3649591Z 4 | | from trust_wedo import __version__
+2026-02-09T09:19:42.3649666Z   | |__________________________________^
+2026-02-09T09:19:42.3649725Z 5 |
+2026-02-09T09:19:42.3649829Z 6 |   def get_meta(input_source: str) -> dict:
+2026-02-09T09:19:42.3649890Z   |
+2026-02-09T09:19:42.3649973Z help: Organize imports
+2026-02-09T09:19:42.3649979Z 
+2026-02-09T09:19:42.3650086Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3650213Z  --> src/trust_wedo/validators/schema_validator.py:3:1
+2026-02-09T09:19:42.3650279Z   |
+2026-02-09T09:19:42.3650407Z 1 |   """Schema 驗證工具模組"""
+2026-02-09T09:19:42.3650469Z 2 |
+2026-02-09T09:19:42.3650541Z 3 | / import json
+2026-02-09T09:19:42.3650627Z 4 | | from pathlib import Path
+2026-02-09T09:19:42.3650718Z 5 | | from typing import Dict, List, Tuple
+2026-02-09T09:19:42.3650901Z 6 | |
+2026-02-09T09:19:42.3651028Z 7 | | from jsonschema import validate, ValidationError
+2026-02-09T09:19:42.3651125Z   | |________________________________________________^
+2026-02-09T09:19:42.3651186Z   |
+2026-02-09T09:19:42.3651266Z help: Organize imports
+2026-02-09T09:19:42.3651272Z 
+2026-02-09T09:19:42.3651399Z UP035 `typing.Dict` is deprecated, use `dict` instead
+2026-02-09T09:19:42.3651523Z  --> src/trust_wedo/validators/schema_validator.py:5:1
+2026-02-09T09:19:42.3651586Z   |
+2026-02-09T09:19:42.3651656Z 3 | import json
+2026-02-09T09:19:42.3651738Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3651838Z 5 | from typing import Dict, List, Tuple
+2026-02-09T09:19:42.3651916Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3651977Z 6 |
+2026-02-09T09:19:42.3652098Z 7 | from jsonschema import validate, ValidationError
+2026-02-09T09:19:42.3652163Z   |
+2026-02-09T09:19:42.3652168Z 
+2026-02-09T09:19:42.3652288Z UP035 `typing.List` is deprecated, use `list` instead
+2026-02-09T09:19:42.3652414Z  --> src/trust_wedo/validators/schema_validator.py:5:1
+2026-02-09T09:19:42.3652475Z   |
+2026-02-09T09:19:42.3652656Z 3 | import json
+2026-02-09T09:19:42.3652737Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3652828Z 5 | from typing import Dict, List, Tuple
+2026-02-09T09:19:42.3652905Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3652966Z 6 |
+2026-02-09T09:19:42.3653081Z 7 | from jsonschema import validate, ValidationError
+2026-02-09T09:19:42.3653142Z   |
+2026-02-09T09:19:42.3653152Z 
+2026-02-09T09:19:42.3653281Z UP035 `typing.Tuple` is deprecated, use `tuple` instead
+2026-02-09T09:19:42.3653402Z  --> src/trust_wedo/validators/schema_validator.py:5:1
+2026-02-09T09:19:42.3653463Z   |
+2026-02-09T09:19:42.3653535Z 3 | import json
+2026-02-09T09:19:42.3653617Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3653706Z 5 | from typing import Dict, List, Tuple
+2026-02-09T09:19:42.3653781Z   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-02-09T09:19:42.3653845Z 6 |
+2026-02-09T09:19:42.3653956Z 7 | from jsonschema import validate, ValidationError
+2026-02-09T09:19:42.3654022Z   |
+2026-02-09T09:19:42.3654031Z 
+2026-02-09T09:19:42.3654162Z UP006 [*] Use `dict` instead of `Dict` for type annotation
+2026-02-09T09:19:42.3654295Z   --> src/trust_wedo/validators/schema_validator.py:15:23
+2026-02-09T09:19:42.3654355Z    |
+2026-02-09T09:19:42.3654477Z 13 |     def __init__(self, schema_dir: str = "schemas"):
+2026-02-09T09:19:42.3654575Z 14 |         self.schema_dir = Path(schema_dir)
+2026-02-09T09:19:42.3654667Z 15 |         self.schemas: Dict[str, dict] = {}
+2026-02-09T09:19:42.3654742Z    |                       ^^^^
+2026-02-09T09:19:42.3654818Z 16 |         self._load_schemas()
+2026-02-09T09:19:42.3654880Z    |
+2026-02-09T09:19:42.3654961Z help: Replace with `dict`
+2026-02-09T09:19:42.3654967Z 
+2026-02-09T09:19:42.3655107Z UP006 [*] Use `tuple` instead of `Tuple` for type annotation
+2026-02-09T09:19:42.3655243Z   --> src/trust_wedo/validators/schema_validator.py:36:67
+2026-02-09T09:19:42.3655305Z    |
+2026-02-09T09:19:42.3655423Z 34 |                     self.schemas[name] = json.load(f)
+2026-02-09T09:19:42.3655485Z 35 |
+2026-02-09T09:19:42.3655704Z 36 |     def validate_file(self, file_path: Path, schema_name: str) -> Tuple[bool, str]:
+2026-02-09T09:19:42.3655818Z    |                                                                   ^^^^^
+2026-02-09T09:19:42.3655928Z 37 |         """驗證單一檔案
+2026-02-09T09:19:42.3655991Z    |
+2026-02-09T09:19:42.3656074Z help: Replace with `tuple`
+2026-02-09T09:19:42.3656080Z 
+2026-02-09T09:19:42.3656215Z UP006 [*] Use `list` instead of `List` for type annotation
+2026-02-09T09:19:42.3656340Z   --> src/trust_wedo/validators/schema_validator.py:65:51
+2026-02-09T09:19:42.3656403Z    |
+2026-02-09T09:19:42.3656560Z 63 |             return False, f"驗證時發生錯誤: {str(e)}"
+2026-02-09T09:19:42.3656625Z 64 |
+2026-02-09T09:19:42.3656824Z 65 |     def validate_bundle(self, bundle_dir: str) -> List[Tuple[str, bool, str]]:
+2026-02-09T09:19:42.3656922Z    |                                                   ^^^^
+2026-02-09T09:19:42.3657127Z 66 |         """驗證整個 bundle 目錄
+2026-02-09T09:19:42.3657189Z    |
+2026-02-09T09:19:42.3657276Z help: Replace with `list`
+2026-02-09T09:19:42.3657281Z 
+2026-02-09T09:19:42.3657420Z UP006 [*] Use `tuple` instead of `Tuple` for type annotation
+2026-02-09T09:19:42.3657543Z   --> src/trust_wedo/validators/schema_validator.py:65:56
+2026-02-09T09:19:42.3657604Z    |
+2026-02-09T09:19:42.3657749Z 63 |             return False, f"驗證時發生錯誤: {str(e)}"
+2026-02-09T09:19:42.3657809Z 64 |
+2026-02-09T09:19:42.3657998Z 65 |     def validate_bundle(self, bundle_dir: str) -> List[Tuple[str, bool, str]]:
+2026-02-09T09:19:42.3658098Z    |                                                        ^^^^^
+2026-02-09T09:19:42.3658210Z 66 |         """驗證整個 bundle 目錄
+2026-02-09T09:19:42.3658272Z    |
+2026-02-09T09:19:42.3658351Z help: Replace with `tuple`
+2026-02-09T09:19:42.3658357Z 
+2026-02-09T09:19:42.3658470Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3658579Z  --> tests/integration/test_capture_flow.py:1:1
+2026-02-09T09:19:42.3658647Z   |
+2026-02-09T09:19:42.3658721Z 1 | / import os
+2026-02-09T09:19:42.3658879Z 2 | | import subprocess
+2026-02-09T09:19:42.3658947Z 3 | | import json
+2026-02-09T09:19:42.3659029Z 4 | | from pathlib import Path
+2026-02-09T09:19:42.3659197Z   | |________________________^
+2026-02-09T09:19:42.3659262Z 5 |
+2026-02-09T09:19:42.3659356Z 6 |   def test_cli_capture_flow(tmp_path):
+2026-02-09T09:19:42.3659424Z   |
+2026-02-09T09:19:42.3659498Z help: Organize imports
+2026-02-09T09:19:42.3659503Z 
+2026-02-09T09:19:42.3659600Z F401 [*] `pathlib.Path` imported but unused
+2026-02-09T09:19:42.3659712Z  --> tests/integration/test_capture_flow.py:4:21
+2026-02-09T09:19:42.3659782Z   |
+2026-02-09T09:19:42.3659856Z 2 | import subprocess
+2026-02-09T09:19:42.3659923Z 3 | import json
+2026-02-09T09:19:42.3660012Z 4 | from pathlib import Path
+2026-02-09T09:19:42.3660082Z   |                     ^^^^
+2026-02-09T09:19:42.3660142Z 5 |
+2026-02-09T09:19:42.3660232Z 6 | def test_cli_capture_flow(tmp_path):
+2026-02-09T09:19:42.3660305Z   |
+2026-02-09T09:19:42.3660403Z help: Remove unused import: `pathlib.Path`
+2026-02-09T09:19:42.3660412Z 
+2026-02-09T09:19:42.3660500Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3660610Z   --> tests/integration/test_capture_flow.py:9:1
+2026-02-09T09:19:42.3660671Z    |
+2026-02-09T09:19:42.3660759Z  7 |     output_dir = tmp_path / "output"
+2026-02-09T09:19:42.3660860Z  8 |     captures_dir = output_dir / "captures"
+2026-02-09T09:19:42.3660925Z  9 |     
+2026-02-09T09:19:42.3660987Z    | ^^^^
+2026-02-09T09:19:42.3661072Z 10 |     # Run tw capture via subprocess
+2026-02-09T09:19:42.3661144Z 11 |     cmd = [
+2026-02-09T09:19:42.3661208Z    |
+2026-02-09T09:19:42.3661297Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3661303Z 
+2026-02-09T09:19:42.3661393Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3661503Z   --> tests/integration/test_capture_flow.py:18:1
+2026-02-09T09:19:42.3661566Z    |
+2026-02-09T09:19:42.3661660Z 16 |         "--output", str(captures_dir)
+2026-02-09T09:19:42.3661724Z 17 |     ]
+2026-02-09T09:19:42.3661792Z 18 |     
+2026-02-09T09:19:42.3661855Z    | ^^^^
+2026-02-09T09:19:42.3661947Z 19 |     env = os.environ.copy()
+2026-02-09T09:19:42.3662034Z 20 |     env["PYTHONPATH"] = "src"
+2026-02-09T09:19:42.3662096Z    |
+2026-02-09T09:19:42.3662192Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3662197Z 
+2026-02-09T09:19:42.3662284Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3662394Z   --> tests/integration/test_capture_flow.py:21:1
+2026-02-09T09:19:42.3662456Z    |
+2026-02-09T09:19:42.3662544Z 19 |     env = os.environ.copy()
+2026-02-09T09:19:42.3662623Z 20 |     env["PYTHONPATH"] = "src"
+2026-02-09T09:19:42.3662682Z 21 |     
+2026-02-09T09:19:42.3662745Z    | ^^^^
+2026-02-09T09:19:42.3662934Z 22 |     result = subprocess.run(cmd, env=env, capture_output=True, text=True)
+2026-02-09T09:19:42.3662995Z    |
+2026-02-09T09:19:42.3663082Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3663204Z 
+2026-02-09T09:19:42.3663293Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3663401Z   --> tests/integration/test_capture_flow.py:23:1
+2026-02-09T09:19:42.3663462Z    |
+2026-02-09T09:19:42.3663643Z 22 |     result = subprocess.run(cmd, env=env, capture_output=True, text=True)
+2026-02-09T09:19:42.3663706Z 23 |     
+2026-02-09T09:19:42.3663768Z    | ^^^^
+2026-02-09T09:19:42.3663860Z 24 |     assert result.returncode == 0
+2026-02-09T09:19:42.3664017Z 25 |     assert "✅ Schema 驗證成功" in result.stdout
+2026-02-09T09:19:42.3664082Z    |
+2026-02-09T09:19:42.3664170Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3664175Z 
+2026-02-09T09:19:42.3664266Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3664367Z   --> tests/integration/test_capture_flow.py:26:1
+2026-02-09T09:19:42.3664428Z    |
+2026-02-09T09:19:42.3664518Z 24 |     assert result.returncode == 0
+2026-02-09T09:19:42.3664657Z 25 |     assert "✅ Schema 驗證成功" in result.stdout
+2026-02-09T09:19:42.3664727Z 26 |     
+2026-02-09T09:19:42.3664788Z    | ^^^^
+2026-02-09T09:19:42.3664874Z 27 |     # Check if file was created
+2026-02-09T09:19:42.3665106Z 28 |     files = list(captures_dir.glob("capture_*.json"))
+2026-02-09T09:19:42.3665167Z    |
+2026-02-09T09:19:42.3665260Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3665266Z 
+2026-02-09T09:19:42.3665351Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3665454Z   --> tests/integration/test_capture_flow.py:30:1
+2026-02-09T09:19:42.3665520Z    |
+2026-02-09T09:19:42.3665636Z 28 |     files = list(captures_dir.glob("capture_*.json"))
+2026-02-09T09:19:42.3665714Z 29 |     assert len(files) == 1
+2026-02-09T09:19:42.3665777Z 30 |     
+2026-02-09T09:19:42.3665843Z    | ^^^^
+2026-02-09T09:19:42.3665922Z 31 |     with open(files[0]) as f:
+2026-02-09T09:19:42.3665997Z 32 |         data = json.load(f)
+2026-02-09T09:19:42.3666061Z    |
+2026-02-09T09:19:42.3666149Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3666154Z 
+2026-02-09T09:19:42.3666265Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3666371Z  --> tests/integration/test_diff_flow.py:1:1
+2026-02-09T09:19:42.3666437Z   |
+2026-02-09T09:19:42.3666504Z 1 | / import os
+2026-02-09T09:19:42.3666583Z 2 | | import subprocess
+2026-02-09T09:19:42.3666657Z 3 | | import json
+2026-02-09T09:19:42.3666740Z 4 | | from pathlib import Path
+2026-02-09T09:19:42.3666808Z   | |________________________^
+2026-02-09T09:19:42.3666873Z 5 |
+2026-02-09T09:19:42.3666960Z 6 |   def test_cli_diff_flow(tmp_path):
+2026-02-09T09:19:42.3667021Z   |
+2026-02-09T09:19:42.3667096Z help: Organize imports
+2026-02-09T09:19:42.3667101Z 
+2026-02-09T09:19:42.3667188Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3667292Z   --> tests/integration/test_diff_flow.py:13:1
+2026-02-09T09:19:42.3667354Z    |
+2026-02-09T09:19:42.3667436Z 11 |     output_dir.mkdir()
+2026-02-09T09:19:42.3667516Z 12 |     captures_dir.mkdir()
+2026-02-09T09:19:42.3667579Z 13 |     
+2026-02-09T09:19:42.3667724Z    | ^^^^
+2026-02-09T09:19:42.3667816Z 14 |     afb_id = "afb:test-diff-flow"
+2026-02-09T09:19:42.3667879Z    |
+2026-02-09T09:19:42.3667973Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3667978Z 
+2026-02-09T09:19:42.3668067Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3668166Z   --> tests/integration/test_diff_flow.py:15:1
+2026-02-09T09:19:42.3668228Z    |
+2026-02-09T09:19:42.3668314Z 14 |     afb_id = "afb:test-diff-flow"
+2026-02-09T09:19:42.3668376Z 15 |     
+2026-02-09T09:19:42.3668439Z    | ^^^^
+2026-02-09T09:19:42.3668564Z 16 |     # 1. Create a dummy AFB file (required by tw diff)
+2026-02-09T09:19:42.3668736Z 17 |     # The tw diff currently looks at output/afb.json by default in MVP
+2026-02-09T09:19:42.3668797Z    |
+2026-02-09T09:19:42.3668887Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3668891Z 
+2026-02-09T09:19:42.3668978Z W291 [*] Trailing whitespace
+2026-02-09T09:19:42.3669230Z   --> tests/integration/test_diff_flow.py:22:41
+2026-02-09T09:19:42.3669302Z    |
+2026-02-09T09:19:42.3669399Z 20 |     # but the user spec didn't mention it.
+2026-02-09T09:19:42.3669600Z 21 |     # I'll create it in the actual output/ directory of the project for this test
+2026-02-09T09:19:42.3669695Z 22 |     # but that might affect other tests. 
+2026-02-09T09:19:42.3669772Z    |                                         ^
+2026-02-09T09:19:42.3669955Z 23 |     # Better: I'll use the actual output/afb.json if it exists, or create one.
+2026-02-09T09:19:42.3670017Z    |
+2026-02-09T09:19:42.3670101Z help: Remove trailing whitespace
+2026-02-09T09:19:42.3670106Z 
+2026-02-09T09:19:42.3670194Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3670290Z   --> tests/integration/test_diff_flow.py:24:1
+2026-02-09T09:19:42.3670350Z    |
+2026-02-09T09:19:42.3670442Z 22 |     # but that might affect other tests. 
+2026-02-09T09:19:42.3670619Z 23 |     # Better: I'll use the actual output/afb.json if it exists, or create one.
+2026-02-09T09:19:42.3670683Z 24 |     
+2026-02-09T09:19:42.3670749Z    | ^^^^
+2026-02-09T09:19:42.3670866Z 25 |     actual_output_afb = Path("output/afb.json")
+2026-02-09T09:19:42.3671066Z 26 |     original_afb_content = None
+2026-02-09T09:19:42.3671129Z    |
+2026-02-09T09:19:42.3671223Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3671228Z 
+2026-02-09T09:19:42.3671313Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3671410Z   --> tests/integration/test_diff_flow.py:29:1
+2026-02-09T09:19:42.3671472Z    |
+2026-02-09T09:19:42.3671562Z 27 |     if actual_output_afb.exists():
+2026-02-09T09:19:42.3671702Z 28 |         original_afb_content = actual_output_afb.read_text()
+2026-02-09T09:19:42.3671770Z 29 |     
+2026-02-09T09:19:42.3671833Z    | ^^^^
+2026-02-09T09:19:42.3671990Z 30 |     actual_output_afb.parent.mkdir(parents=True, exist_ok=True)
+2026-02-09T09:19:42.3672063Z 31 |     afb_data = {
+2026-02-09T09:19:42.3672123Z    |
+2026-02-09T09:19:42.3672210Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3672215Z 
+2026-02-09T09:19:42.3672300Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3672403Z   --> tests/integration/test_diff_flow.py:36:1
+2026-02-09T09:19:42.3672467Z    |
+2026-02-09T09:19:42.3672530Z 34 |     }
+2026-02-09T09:19:42.3672659Z 35 |     actual_output_afb.write_text(json.dumps(afb_data))
+2026-02-09T09:19:42.3672719Z 36 |     
+2026-02-09T09:19:42.3672781Z    | ^^^^
+2026-02-09T09:19:42.3672845Z 37 |     try:
+2026-02-09T09:19:42.3672931Z 38 |         # 2. Capture something
+2026-02-09T09:19:42.3672993Z    |
+2026-02-09T09:19:42.3673082Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3673087Z 
+2026-02-09T09:19:42.3673175Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3673272Z   --> tests/integration/test_diff_flow.py:41:1
+2026-02-09T09:19:42.3673334Z    |
+2026-02-09T09:19:42.3673453Z 39 |         env = os.environ.copy()
+2026-02-09T09:19:42.3673539Z 40 |         env["PYTHONPATH"] = "src"
+2026-02-09T09:19:42.3673602Z 41 |         
+2026-02-09T09:19:42.3673663Z    | ^^^^^^^^
+2026-02-09T09:19:42.3673897Z 42 |         subprocess.run([
+2026-02-09T09:19:42.3674022Z 43 |             "python3", "-m", "trust_wedo.cli", "capture",
+2026-02-09T09:19:42.3674089Z    |
+2026-02-09T09:19:42.3674180Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3674184Z 
+2026-02-09T09:19:42.3674268Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3674365Z   --> tests/integration/test_diff_flow.py:49:1
+2026-02-09T09:19:42.3674425Z    |
+2026-02-09T09:19:42.3674519Z 47 |             "--output", str(captures_dir)
+2026-02-09T09:19:42.3674595Z 48 |         ], env=env, check=True)
+2026-02-09T09:19:42.3674659Z 49 |         
+2026-02-09T09:19:42.3674724Z    | ^^^^^^^^
+2026-02-09T09:19:42.3674794Z 50 |         # 3. Run diff
+2026-02-09T09:19:42.3674862Z 51 |         cmd = [
+2026-02-09T09:19:42.3674924Z    |
+2026-02-09T09:19:42.3675020Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3675024Z 
+2026-02-09T09:19:42.3675106Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3675209Z   --> tests/integration/test_diff_flow.py:57:1
+2026-02-09T09:19:42.3675277Z    |
+2026-02-09T09:19:42.3675361Z 55 |             "--output", str(diffs_dir)
+2026-02-09T09:19:42.3675430Z 56 |         ]
+2026-02-09T09:19:42.3675495Z 57 |         
+2026-02-09T09:19:42.3675556Z    | ^^^^^^^^
+2026-02-09T09:19:42.3675745Z 58 |         result = subprocess.run(cmd, env=env, capture_output=True, text=True)
+2026-02-09T09:19:42.3675806Z    |
+2026-02-09T09:19:42.3675897Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3675901Z 
+2026-02-09T09:19:42.3675985Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3676081Z   --> tests/integration/test_diff_flow.py:59:1
+2026-02-09T09:19:42.3676146Z    |
+2026-02-09T09:19:42.3676325Z 58 |         result = subprocess.run(cmd, env=env, capture_output=True, text=True)
+2026-02-09T09:19:42.3676386Z 59 |         
+2026-02-09T09:19:42.3676450Z    | ^^^^^^^^
+2026-02-09T09:19:42.3676544Z 60 |         assert result.returncode == 0
+2026-02-09T09:19:42.3676707Z 61 |         assert "✅ Schema 驗證成功" in result.stdout
+2026-02-09T09:19:42.3676772Z    |
+2026-02-09T09:19:42.3676864Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3676953Z 
+2026-02-09T09:19:42.3677038Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3677136Z   --> tests/integration/test_diff_flow.py:63:1
+2026-02-09T09:19:42.3677203Z    |
+2026-02-09T09:19:42.3677350Z 61 |         assert "✅ Schema 驗證成功" in result.stdout
+2026-02-09T09:19:42.3677510Z 62 |         assert "找到 1 個相關 Capture" in result.stdout
+2026-02-09T09:19:42.3677577Z 63 |         
+2026-02-09T09:19:42.3677639Z    | ^^^^^^^^
+2026-02-09T09:19:42.3677713Z 64 |         # Check output
+2026-02-09T09:19:42.3677841Z 65 |         diff_files = list(diffs_dir.glob("diff_*.json"))
+2026-02-09T09:19:42.3677908Z    |
+2026-02-09T09:19:42.3677996Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3678001Z 
+2026-02-09T09:19:42.3678083Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3678184Z   --> tests/integration/test_diff_flow.py:67:1
+2026-02-09T09:19:42.3678254Z    |
+2026-02-09T09:19:42.3678371Z 65 |         diff_files = list(diffs_dir.glob("diff_*.json"))
+2026-02-09T09:19:42.3678463Z 66 |         assert len(diff_files) == 1
+2026-02-09T09:19:42.3678528Z 67 |         
+2026-02-09T09:19:42.3678588Z    | ^^^^^^^^
+2026-02-09T09:19:42.3678674Z 68 |         with open(diff_files[0]) as f:
+2026-02-09T09:19:42.3678755Z 69 |             data = json.load(f)
+2026-02-09T09:19:42.3678815Z    |
+2026-02-09T09:19:42.3678902Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3678908Z 
+2026-02-09T09:19:42.3678998Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3679327Z   --> tests/integration/test_diff_flow.py:73:1
+2026-02-09T09:19:42.3679396Z    |
+2026-02-09T09:19:42.3679519Z 71 |             assert data["summary"]["total_captures"] == 1
+2026-02-09T09:19:42.3679673Z 72 |             assert data["comparisons"][0]["similarity_score"] == 1.0
+2026-02-09T09:19:42.3679738Z 73 |             
+2026-02-09T09:19:42.3679801Z    | ^^^^^^^^^^^^
+2026-02-09T09:19:42.3679992Z 74 |     finally:
+2026-02-09T09:19:42.3680085Z 75 |         # Restore original AFB if any
+2026-02-09T09:19:42.3680150Z    |
+2026-02-09T09:19:42.3680244Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3680254Z 
+2026-02-09T09:19:42.3680366Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3680463Z  --> tests/integration/test_gates.py:1:1
+2026-02-09T09:19:42.3680526Z   |
+2026-02-09T09:19:42.3680599Z 1 | / import json
+2026-02-09T09:19:42.3680670Z 2 | | import pytest
+2026-02-09T09:19:42.3680756Z 3 | | from pathlib import Path
+2026-02-09T09:19:42.3680892Z 4 | | from trust_wedo.core.afb_builder import AFBBuilder
+2026-02-09T09:19:42.3680990Z   | |__________________________________________________^
+2026-02-09T09:19:42.3681051Z 5 |
+2026-02-09T09:19:42.3681137Z 6 |   def test_afb_gate_fail_behavior():
+2026-02-09T09:19:42.3681203Z   |
+2026-02-09T09:19:42.3681280Z help: Organize imports
+2026-02-09T09:19:42.3681285Z 
+2026-02-09T09:19:42.3681365Z F401 [*] `json` imported but unused
+2026-02-09T09:19:42.3681467Z  --> tests/integration/test_gates.py:1:8
+2026-02-09T09:19:42.3681528Z   |
+2026-02-09T09:19:42.3681599Z 1 | import json
+2026-02-09T09:19:42.3681661Z   |        ^^^^
+2026-02-09T09:19:42.3681739Z 2 | import pytest
+2026-02-09T09:19:42.3681819Z 3 | from pathlib import Path
+2026-02-09T09:19:42.3681879Z   |
+2026-02-09T09:19:42.3681969Z help: Remove unused import: `json`
+2026-02-09T09:19:42.3681974Z 
+2026-02-09T09:19:42.3682062Z F401 [*] `pytest` imported but unused
+2026-02-09T09:19:42.3682153Z  --> tests/integration/test_gates.py:2:8
+2026-02-09T09:19:42.3682215Z   |
+2026-02-09T09:19:42.3682281Z 1 | import json
+2026-02-09T09:19:42.3682350Z 2 | import pytest
+2026-02-09T09:19:42.3682412Z   |        ^^^^^^
+2026-02-09T09:19:42.3682494Z 3 | from pathlib import Path
+2026-02-09T09:19:42.3682615Z 4 | from trust_wedo.core.afb_builder import AFBBuilder
+2026-02-09T09:19:42.3682676Z   |
+2026-02-09T09:19:42.3682767Z help: Remove unused import: `pytest`
+2026-02-09T09:19:42.3682772Z 
+2026-02-09T09:19:42.3682873Z F401 [*] `pathlib.Path` imported but unused
+2026-02-09T09:19:42.3682965Z  --> tests/integration/test_gates.py:3:21
+2026-02-09T09:19:42.3683134Z   |
+2026-02-09T09:19:42.3683204Z 1 | import json
+2026-02-09T09:19:42.3683272Z 2 | import pytest
+2026-02-09T09:19:42.3683351Z 3 | from pathlib import Path
+2026-02-09T09:19:42.3683423Z   |                     ^^^^
+2026-02-09T09:19:42.3683545Z 4 | from trust_wedo.core.afb_builder import AFBBuilder
+2026-02-09T09:19:42.3683605Z   |
+2026-02-09T09:19:42.3683705Z help: Remove unused import: `pathlib.Path`
+2026-02-09T09:19:42.3683713Z 
+2026-02-09T09:19:42.3683800Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3683895Z   --> tests/integration/test_gates.py:17:1
+2026-02-09T09:19:42.3683954Z    |
+2026-02-09T09:19:42.3684020Z 15 |     }
+2026-02-09T09:19:42.3684212Z 16 |     html_content = "<html><body><article>Test content</article></body></html>"
+2026-02-09T09:19:42.3684274Z 17 |     
+2026-02-09T09:19:42.3684341Z    | ^^^^
+2026-02-09T09:19:42.3684480Z 18 |     builder = AFBBuilder(html_content, entity_profile)
+2026-02-09T09:19:42.3684604Z 19 |     result = builder.build(input_source="test.html")
+2026-02-09T09:19:42.3684671Z    |
+2026-02-09T09:19:42.3684765Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3684770Z 
+2026-02-09T09:19:42.3684856Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3684950Z   --> tests/integration/test_gates.py:20:1
+2026-02-09T09:19:42.3685014Z    |
+2026-02-09T09:19:42.3685134Z 18 |     builder = AFBBuilder(html_content, entity_profile)
+2026-02-09T09:19:42.3685252Z 19 |     result = builder.build(input_source="test.html")
+2026-02-09T09:19:42.3685316Z 20 |     
+2026-02-09T09:19:42.3685376Z    | ^^^^
+2026-02-09T09:19:42.3685475Z 21 |     # Assertions for Unified Gate Behavior
+2026-02-09T09:19:42.3685567Z 22 |     assert result["eligibility"] == "fail"
+2026-02-09T09:19:42.3685631Z    |
+2026-02-09T09:19:42.3685719Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3685724Z 
+2026-02-09T09:19:42.3685887Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3685981Z   --> tests/integration/test_gates.py:40:1
+2026-02-09T09:19:42.3686045Z    |
+2026-02-09T09:19:42.3686106Z 38 |     }
+2026-02-09T09:19:42.3686360Z 39 |     html_content = "<html><body><article>Excellent high quality content.</article></body></html>"
+2026-02-09T09:19:42.3686425Z 40 |     
+2026-02-09T09:19:42.3686484Z    | ^^^^
+2026-02-09T09:19:42.3686603Z 41 |     builder = AFBBuilder(html_content, entity_profile)
+2026-02-09T09:19:42.3686720Z 42 |     result = builder.build(input_source="test.html")
+2026-02-09T09:19:42.3686781Z    |
+2026-02-09T09:19:42.3686868Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3686873Z 
+2026-02-09T09:19:42.3686961Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3687053Z   --> tests/integration/test_gates.py:43:1
+2026-02-09T09:19:42.3687112Z    |
+2026-02-09T09:19:42.3687229Z 41 |     builder = AFBBuilder(html_content, entity_profile)
+2026-02-09T09:19:42.3687344Z 42 |     result = builder.build(input_source="test.html")
+2026-02-09T09:19:42.3687409Z 43 |     
+2026-02-09T09:19:42.3687469Z    | ^^^^
+2026-02-09T09:19:42.3687573Z 44 |     assert result["eligibility"] == "pass"
+2026-02-09T09:19:42.3687729Z 45 |     assert "reasons" not in result or len(result["reasons"]) == 0
+2026-02-09T09:19:42.3687790Z    |
+2026-02-09T09:19:42.3687887Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3687896Z 
+2026-02-09T09:19:42.3688005Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3688097Z  --> tests/unit/test_capture.py:1:1
+2026-02-09T09:19:42.3688160Z   |
+2026-02-09T09:19:42.3688233Z 1 | / import json
+2026-02-09T09:19:42.3688305Z 2 | | import pytest
+2026-02-09T09:19:42.3688460Z 3 | | from trust_wedo.core.capture_manager import CaptureManager
+2026-02-09T09:19:42.3688574Z   | |__________________________________________________________^
+2026-02-09T09:19:42.3688635Z 4 |
+2026-02-09T09:19:42.3688725Z 5 |   def test_capture_output(tmp_path):
+2026-02-09T09:19:42.3688786Z   |
+2026-02-09T09:19:42.3688868Z help: Organize imports
+2026-02-09T09:19:42.3688873Z 
+2026-02-09T09:19:42.3688960Z F401 [*] `pytest` imported but unused
+2026-02-09T09:19:42.3689224Z  --> tests/unit/test_capture.py:2:8
+2026-02-09T09:19:42.3689299Z   |
+2026-02-09T09:19:42.3689368Z 1 | import json
+2026-02-09T09:19:42.3689437Z 2 | import pytest
+2026-02-09T09:19:42.3689501Z   |        ^^^^^^
+2026-02-09T09:19:42.3689656Z 3 | from trust_wedo.core.capture_manager import CaptureManager
+2026-02-09T09:19:42.3689719Z   |
+2026-02-09T09:19:42.3689807Z help: Remove unused import: `pytest`
+2026-02-09T09:19:42.3689812Z 
+2026-02-09T09:19:42.3689901Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3689987Z   --> tests/unit/test_capture.py:8:1
+2026-02-09T09:19:42.3690047Z    |
+2026-02-09T09:19:42.3690142Z  6 |     output_dir = tmp_path / "captures"
+2026-02-09T09:19:42.3690272Z  7 |     manager = CaptureManager(output_dir=str(output_dir))
+2026-02-09T09:19:42.3690334Z  8 |     
+2026-02-09T09:19:42.3690394Z    | ^^^^
+2026-02-09T09:19:42.3690482Z  9 |     afb_id = "afb:test-capture"
+2026-02-09T09:19:42.3690593Z 10 |     ai_output = "This is a captured AI response."
+2026-02-09T09:19:42.3690657Z    |
+2026-02-09T09:19:42.3690751Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3690756Z 
+2026-02-09T09:19:42.3690840Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3690929Z   --> tests/unit/test_capture.py:12:1
+2026-02-09T09:19:42.3690993Z    |
+2026-02-09T09:19:42.3691103Z 10 |     ai_output = "This is a captured AI response."
+2026-02-09T09:19:42.3691178Z 11 |     source = "test-ai"
+2026-02-09T09:19:42.3691241Z 12 |     
+2026-02-09T09:19:42.3691305Z    | ^^^^
+2026-02-09T09:19:42.3691430Z 13 |     result = manager.capture(afb_id, ai_output, source)
+2026-02-09T09:19:42.3691491Z    |
+2026-02-09T09:19:42.3691585Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3691589Z 
+2026-02-09T09:19:42.3691675Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3691762Z   --> tests/unit/test_capture.py:14:1
+2026-02-09T09:19:42.3691938Z    |
+2026-02-09T09:19:42.3692067Z 13 |     result = manager.capture(afb_id, ai_output, source)
+2026-02-09T09:19:42.3692133Z 14 |     
+2026-02-09T09:19:42.3692193Z    | ^^^^
+2026-02-09T09:19:42.3692284Z 15 |     assert result["afb_id"] == afb_id
+2026-02-09T09:19:42.3692383Z 16 |     assert result["ai_output"] == ai_output
+2026-02-09T09:19:42.3692443Z    |
+2026-02-09T09:19:42.3692530Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3692538Z 
+2026-02-09T09:19:42.3692621Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3692704Z   --> tests/unit/test_capture.py:20:1
+2026-02-09T09:19:42.3692765Z    |
+2026-02-09T09:19:42.3692867Z 18 |     assert result["capture_id"] == "cap:001"
+2026-02-09T09:19:42.3692946Z 19 |     assert "meta" in result
+2026-02-09T09:19:42.3693007Z 20 |     
+2026-02-09T09:19:42.3693069Z    | ^^^^
+2026-02-09T09:19:42.3693145Z 21 |     # Verify file exists
+2026-02-09T09:19:42.3693264Z 22 |     files = list(output_dir.glob("capture_*.json"))
+2026-02-09T09:19:42.3693332Z    |
+2026-02-09T09:19:42.3693422Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3693431Z 
+2026-02-09T09:19:42.3693517Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3693599Z   --> tests/unit/test_capture.py:24:1
+2026-02-09T09:19:42.3693663Z    |
+2026-02-09T09:19:42.3693774Z 22 |     files = list(output_dir.glob("capture_*.json"))
+2026-02-09T09:19:42.3693856Z 23 |     assert len(files) == 1
+2026-02-09T09:19:42.3693924Z 24 |     
+2026-02-09T09:19:42.3693986Z    | ^^^^
+2026-02-09T09:19:42.3694068Z 25 |     with open(files[0]) as f:
+2026-02-09T09:19:42.3694144Z 26 |         data = json.load(f)
+2026-02-09T09:19:42.3694210Z    |
+2026-02-09T09:19:42.3694299Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3694304Z 
+2026-02-09T09:19:42.3694387Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3694473Z   --> tests/unit/test_capture.py:33:1
+2026-02-09T09:19:42.3694536Z    |
+2026-02-09T09:19:42.3694625Z 31 |     output_dir = tmp_path / "captures"
+2026-02-09T09:19:42.3694760Z 32 |     manager = CaptureManager(output_dir=str(output_dir))
+2026-02-09T09:19:42.3694936Z 33 |     
+2026-02-09T09:19:42.3694996Z    | ^^^^
+2026-02-09T09:19:42.3695093Z 34 |     manager.capture("afb:1", "output 1")
+2026-02-09T09:19:42.3695210Z 35 |     result2 = manager.capture("afb:2", "output 2")
+2026-02-09T09:19:42.3695271Z    |
+2026-02-09T09:19:42.3695358Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3695364Z 
+2026-02-09T09:19:42.3695453Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3695536Z   --> tests/unit/test_capture.py:36:1
+2026-02-09T09:19:42.3695596Z    |
+2026-02-09T09:19:42.3695686Z 34 |     manager.capture("afb:1", "output 1")
+2026-02-09T09:19:42.3695796Z 35 |     result2 = manager.capture("afb:2", "output 2")
+2026-02-09T09:19:42.3695858Z 36 |     
+2026-02-09T09:19:42.3695918Z    | ^^^^
+2026-02-09T09:19:42.3696020Z 37 |     assert result2["capture_id"] == "cap:002"
+2026-02-09T09:19:42.3696081Z    |
+2026-02-09T09:19:42.3696168Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3696177Z 
+2026-02-09T09:19:42.3696283Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3696375Z  --> tests/unit/test_ccs.py:1:1
+2026-02-09T09:19:42.3696436Z   |
+2026-02-09T09:19:42.3696506Z 1 | / import pytest
+2026-02-09T09:19:42.3696683Z 2 | | from trust_wedo.core.citation_evaluator import CitationEvaluator
+2026-02-09T09:19:42.3696803Z   | |________________________________________________________________^
+2026-02-09T09:19:42.3696865Z 3 |
+2026-02-09T09:19:42.3696960Z 4 |   def test_evaluate_citations_accept():
+2026-02-09T09:19:42.3697020Z   |
+2026-02-09T09:19:42.3697095Z help: Organize imports
+2026-02-09T09:19:42.3697100Z 
+2026-02-09T09:19:42.3697183Z F401 [*] `pytest` imported but unused
+2026-02-09T09:19:42.3697267Z  --> tests/unit/test_ccs.py:1:8
+2026-02-09T09:19:42.3697330Z   |
+2026-02-09T09:19:42.3697399Z 1 | import pytest
+2026-02-09T09:19:42.3697466Z   |        ^^^^^^
+2026-02-09T09:19:42.3697642Z 2 | from trust_wedo.core.citation_evaluator import CitationEvaluator
+2026-02-09T09:19:42.3697783Z   |
+2026-02-09T09:19:42.3697871Z help: Remove unused import: `pytest`
+2026-02-09T09:19:42.3697883Z 
+2026-02-09T09:19:42.3697959Z E501 Line too long (110 > 100)
+2026-02-09T09:19:42.3698045Z   --> tests/unit/test_ccs.py:15:101
+2026-02-09T09:19:42.3698106Z    |
+2026-02-09T09:19:42.3698200Z 13 | def test_evaluate_citations_reject():
+2026-02-09T09:19:42.3698272Z 14 |     citations = [
+2026-02-09T09:19:42.3698555Z 15 |         {"citation_id": "cite:002", "url": "https://twitter.com/bad", "status": "unverified", "days_old": 500}
+2026-02-09T09:19:42.3698704Z    |                                                                                                     ^^^^^^^^^^
+2026-02-09T09:19:42.3698767Z 16 |     ]
+2026-02-09T09:19:42.3698900Z 17 |     evaluator = CitationEvaluator("afb:test", citations)
+2026-02-09T09:19:42.3698961Z    |
+2026-02-09T09:19:42.3698968Z 
+2026-02-09T09:19:42.3699075Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3699262Z  --> tests/unit/test_diff.py:1:1
+2026-02-09T09:19:42.3699323Z   |
+2026-02-09T09:19:42.3699394Z 1 | / import pytest
+2026-02-09T09:19:42.3699530Z 2 | | from trust_wedo.core.diff_analyzer import DiffAnalyzer
+2026-02-09T09:19:42.3699629Z   | |______________________________________________________^
+2026-02-09T09:19:42.3699692Z 3 |
+2026-02-09T09:19:42.3699771Z 4 |   def test_diff_analysis():
+2026-02-09T09:19:42.3699831Z   |
+2026-02-09T09:19:42.3699905Z help: Organize imports
+2026-02-09T09:19:42.3699911Z 
+2026-02-09T09:19:42.3699997Z F401 [*] `pytest` imported but unused
+2026-02-09T09:19:42.3700078Z  --> tests/unit/test_diff.py:1:8
+2026-02-09T09:19:42.3700138Z   |
+2026-02-09T09:19:42.3700208Z 1 | import pytest
+2026-02-09T09:19:42.3700272Z   |        ^^^^^^
+2026-02-09T09:19:42.3700410Z 2 | from trust_wedo.core.diff_analyzer import DiffAnalyzer
+2026-02-09T09:19:42.3700472Z   |
+2026-02-09T09:19:42.3700563Z help: Remove unused import: `pytest`
+2026-02-09T09:19:42.3700568Z 
+2026-02-09T09:19:42.3700655Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3700742Z   --> tests/unit/test_diff.py:21:1
+2026-02-09T09:19:42.3700920Z    |
+2026-02-09T09:19:42.3700986Z 19 |         }
+2026-02-09T09:19:42.3701048Z 20 |     ]
+2026-02-09T09:19:42.3701111Z 21 |     
+2026-02-09T09:19:42.3701173Z    | ^^^^
+2026-02-09T09:19:42.3701286Z 22 |     analyzer = DiffAnalyzer(afb_data, captures)
+2026-02-09T09:19:42.3701372Z 23 |     result = analyzer.analyze()
+2026-02-09T09:19:42.3701434Z    |
+2026-02-09T09:19:42.3701525Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3701530Z 
+2026-02-09T09:19:42.3701614Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3701700Z   --> tests/unit/test_diff.py:24:1
+2026-02-09T09:19:42.3701760Z    |
+2026-02-09T09:19:42.3701865Z 22 |     analyzer = DiffAnalyzer(afb_data, captures)
+2026-02-09T09:19:42.3701947Z 23 |     result = analyzer.analyze()
+2026-02-09T09:19:42.3702011Z 24 |     
+2026-02-09T09:19:42.3702071Z    | ^^^^
+2026-02-09T09:19:42.3702164Z 25 |     assert result["afb_id"] == "afb:test"
+2026-02-09T09:19:42.3702275Z 26 |     assert len(result["comparisons"]) == 2
+2026-02-09T09:19:42.3702339Z    |
+2026-02-09T09:19:42.3702427Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3702432Z 
+2026-02-09T09:19:42.3702541Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3702624Z  --> tests/unit/test_ec.py:1:1
+2026-02-09T09:19:42.3702685Z   |
+2026-02-09T09:19:42.3702756Z 1 | / import pytest
+2026-02-09T09:19:42.3702899Z 2 | | from trust_wedo.core.entity_scorer import EntityScorer
+2026-02-09T09:19:42.3703001Z   | |______________________________________________________^
+2026-02-09T09:19:42.3703064Z 3 |
+2026-02-09T09:19:42.3703155Z 4 |   def test_calculate_ec_perfect():
+2026-02-09T09:19:42.3703215Z   |
+2026-02-09T09:19:42.3703290Z help: Organize imports
+2026-02-09T09:19:42.3703295Z 
+2026-02-09T09:19:42.3703381Z F401 [*] `pytest` imported but unused
+2026-02-09T09:19:42.3703465Z  --> tests/unit/test_ec.py:1:8
+2026-02-09T09:19:42.3703526Z   |
+2026-02-09T09:19:42.3703707Z 1 | import pytest
+2026-02-09T09:19:42.3703775Z   |        ^^^^^^
+2026-02-09T09:19:42.3703909Z 2 | from trust_wedo.core.entity_scorer import EntityScorer
+2026-02-09T09:19:42.3703974Z   |
+2026-02-09T09:19:42.3704058Z help: Remove unused import: `pytest`
+2026-02-09T09:19:42.3704067Z 
+2026-02-09T09:19:42.3704174Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3704265Z  --> tests/unit/test_graph.py:1:1
+2026-02-09T09:19:42.3704327Z   |
+2026-02-09T09:19:42.3704403Z 1 | / import pytest
+2026-02-09T09:19:42.3704538Z 2 | | from trust_wedo.core.graph_builder import GraphBuilder
+2026-02-09T09:19:42.3704636Z   | |______________________________________________________^
+2026-02-09T09:19:42.3704699Z 3 |
+2026-02-09T09:19:42.3704788Z 4 |   def test_graph_metrics_isolated():
+2026-02-09T09:19:42.3704849Z   |
+2026-02-09T09:19:42.3704926Z help: Organize imports
+2026-02-09T09:19:42.3704931Z 
+2026-02-09T09:19:42.3705019Z F401 [*] `pytest` imported but unused
+2026-02-09T09:19:42.3705102Z  --> tests/unit/test_graph.py:1:8
+2026-02-09T09:19:42.3705166Z   |
+2026-02-09T09:19:42.3705240Z 1 | import pytest
+2026-02-09T09:19:42.3705308Z   |        ^^^^^^
+2026-02-09T09:19:42.3705442Z 2 | from trust_wedo.core.graph_builder import GraphBuilder
+2026-02-09T09:19:42.3705510Z   |
+2026-02-09T09:19:42.3705597Z help: Remove unused import: `pytest`
+2026-02-09T09:19:42.3705602Z 
+2026-02-09T09:19:42.3705708Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3705793Z  --> tests/unit/test_report.py:1:1
+2026-02-09T09:19:42.3705858Z   |
+2026-02-09T09:19:42.3705925Z 1 | / import json
+2026-02-09T09:19:42.3705994Z 2 | | import pytest
+2026-02-09T09:19:42.3706079Z 3 | | from pathlib import Path
+2026-02-09T09:19:42.3706236Z 4 | | from trust_wedo.core.report_generator import ReportGenerator
+2026-02-09T09:19:42.3706352Z   | |____________________________________________________________^
+2026-02-09T09:19:42.3706414Z 5 |
+2026-02-09T09:19:42.3706516Z 6 |   def test_report_generation(tmp_path):
+2026-02-09T09:19:42.3706584Z   |
+2026-02-09T09:19:42.3706661Z help: Organize imports
+2026-02-09T09:19:42.3706667Z 
+2026-02-09T09:19:42.3706836Z F401 [*] `pytest` imported but unused
+2026-02-09T09:19:42.3706920Z  --> tests/unit/test_report.py:2:8
+2026-02-09T09:19:42.3706982Z   |
+2026-02-09T09:19:42.3707055Z 1 | import json
+2026-02-09T09:19:42.3707125Z 2 | import pytest
+2026-02-09T09:19:42.3707189Z   |        ^^^^^^
+2026-02-09T09:19:42.3707272Z 3 | from pathlib import Path
+2026-02-09T09:19:42.3707434Z 4 | from trust_wedo.core.report_generator import ReportGenerator
+2026-02-09T09:19:42.3707498Z   |
+2026-02-09T09:19:42.3707583Z help: Remove unused import: `pytest`
+2026-02-09T09:19:42.3707588Z 
+2026-02-09T09:19:42.3707691Z F401 [*] `pathlib.Path` imported but unused
+2026-02-09T09:19:42.3707777Z  --> tests/unit/test_report.py:3:21
+2026-02-09T09:19:42.3707840Z   |
+2026-02-09T09:19:42.3707908Z 1 | import json
+2026-02-09T09:19:42.3707987Z 2 | import pytest
+2026-02-09T09:19:42.3708069Z 3 | from pathlib import Path
+2026-02-09T09:19:42.3708139Z   |                     ^^^^
+2026-02-09T09:19:42.3708298Z 4 | from trust_wedo.core.report_generator import ReportGenerator
+2026-02-09T09:19:42.3708364Z   |
+2026-02-09T09:19:42.3708466Z help: Remove unused import: `pathlib.Path`
+2026-02-09T09:19:42.3708471Z 
+2026-02-09T09:19:42.3708562Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3708645Z   --> tests/unit/test_report.py:10:1
+2026-02-09T09:19:42.3708708Z    |
+2026-02-09T09:19:42.3708797Z  8 |     bundle_dir = tmp_path / "bundle"
+2026-02-09T09:19:42.3708880Z  9 |     bundle_dir.mkdir()
+2026-02-09T09:19:42.3708946Z 10 |     
+2026-02-09T09:19:42.3709008Z    | ^^^^
+2026-02-09T09:19:42.3709400Z 11 |     entity_data = {"entity_id": "ent:test", "entity_confidence": 0.8, "eligibility": "pass"}
+2026-02-09T09:19:42.3709619Z 12 |     citation_data = {"decision": "accept", "citations": [{"citation_id": "cite:001"}]}
+2026-02-09T09:19:42.3709683Z    |
+2026-02-09T09:19:42.3709778Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3709791Z 
+2026-02-09T09:19:42.3709995Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3710085Z   --> tests/unit/test_report.py:14:1
+2026-02-09T09:19:42.3710150Z    |
+2026-02-09T09:19:42.3710355Z 12 |     citation_data = {"decision": "accept", "citations": [{"citation_id": "cite:001"}]}
+2026-02-09T09:19:42.3710549Z 13 |     graph_data = {"metrics": {"single_source_risk": False, "distinct_sources": 2}}
+2026-02-09T09:19:42.3710612Z 14 |     
+2026-02-09T09:19:42.3710677Z    | ^^^^
+2026-02-09T09:19:42.3710869Z 15 |     (bundle_dir / "entity_profile.json").write_text(json.dumps(entity_data))
+2026-02-09T09:19:42.3711058Z 16 |     (bundle_dir / "citation_eval.json").write_text(json.dumps(citation_data))
+2026-02-09T09:19:42.3711121Z    |
+2026-02-09T09:19:42.3711214Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3711220Z 
+2026-02-09T09:19:42.3711306Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3711390Z   --> tests/unit/test_report.py:18:1
+2026-02-09T09:19:42.3711456Z    |
+2026-02-09T09:19:42.3711641Z 16 |     (bundle_dir / "citation_eval.json").write_text(json.dumps(citation_data))
+2026-02-09T09:19:42.3711819Z 17 |     (bundle_dir / "entity_graph.json").write_text(json.dumps(graph_data))
+2026-02-09T09:19:42.3711885Z 18 |     
+2026-02-09T09:19:42.3711946Z    | ^^^^
+2026-02-09T09:19:42.3712064Z 19 |     generator = ReportGenerator(str(bundle_dir))
+2026-02-09T09:19:42.3712126Z    |
+2026-02-09T09:19:42.3712218Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3712222Z 
+2026-02-09T09:19:42.3712307Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3712391Z   --> tests/unit/test_report.py:20:1
+2026-02-09T09:19:42.3712456Z    |
+2026-02-09T09:19:42.3712565Z 19 |     generator = ReportGenerator(str(bundle_dir))
+2026-02-09T09:19:42.3712628Z 20 |     
+2026-02-09T09:19:42.3712692Z    | ^^^^
+2026-02-09T09:19:42.3712768Z 21 |     # Test JSON report
+2026-02-09T09:19:42.3712876Z 22 |     report_json = generator.generate_json()
+2026-02-09T09:19:42.3712938Z    |
+2026-02-09T09:19:42.3713031Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3713039Z 
+2026-02-09T09:19:42.3713123Z W293 [*] Blank line contains whitespace
+2026-02-09T09:19:42.3713319Z   --> tests/unit/test_report.py:26:1
+2026-02-09T09:19:42.3713382Z    |
+2026-02-09T09:19:42.3713503Z 24 |     assert report_json["summary"]["ec_score"] == 0.8
+2026-02-09T09:19:42.3713584Z 25 |     assert "meta" in report_json
+2026-02-09T09:19:42.3713648Z 26 |     
+2026-02-09T09:19:42.3713714Z    | ^^^^
+2026-02-09T09:19:42.3713795Z 27 |     # Test Markdown report
+2026-02-09T09:19:42.3713903Z 28 |     report_md = generator.generate_markdown()
+2026-02-09T09:19:42.3713967Z    |
+2026-02-09T09:19:42.3714056Z help: Remove whitespace from blank line
+2026-02-09T09:19:42.3714060Z 
+2026-02-09T09:19:42.3714168Z I001 [*] Import block is un-sorted or un-formatted
+2026-02-09T09:19:42.3714262Z  --> tests/unit/test_similarity.py:1:1
+2026-02-09T09:19:42.3714324Z   |
+2026-02-09T09:19:42.3714395Z 1 | / import pytest
+2026-02-09T09:19:42.3714661Z 2 | | from trust_wedo.core.similarity_calculator import calculate_similarity, get_text_differences
+2026-02-09T09:19:42.3714844Z   | |____________________________________________________________________________________________^
+2026-02-09T09:19:42.3714908Z 3 |
+2026-02-09T09:19:42.3715011Z 4 |   def test_calculate_similarity_identical():
+2026-02-09T09:19:42.3715077Z   |
+2026-02-09T09:19:42.3715155Z help: Organize imports
+2026-02-09T09:19:42.3715161Z 
+2026-02-09T09:19:42.3715246Z F401 [*] `pytest` imported but unused
+2026-02-09T09:19:42.3715339Z  --> tests/unit/test_similarity.py:1:8
+2026-02-09T09:19:42.3715401Z   |
+2026-02-09T09:19:42.3715469Z 1 | import pytest
+2026-02-09T09:19:42.3715535Z   |        ^^^^^^
+2026-02-09T09:19:42.3715796Z 2 | from trust_wedo.core.similarity_calculator import calculate_similarity, get_text_differences
+2026-02-09T09:19:42.3715857Z   |
+2026-02-09T09:19:42.3715944Z help: Remove unused import: `pytest`
+2026-02-09T09:19:42.3715949Z 
+2026-02-09T09:19:42.3716020Z Found 234 errors.
+2026-02-09T09:19:42.3716314Z [*] 192 fixable with the `--fix` option (11 hidden fixes can be enabled with the `--unsafe-fixes` option).
+2026-02-09T09:19:42.3726263Z ##[error]Process completed with exit code 1.
