@@ -23,9 +23,9 @@ export default function Report() {
           'Authorization': `Bearer ${session.access_token}`
         }
       })
-      
+
       if (!response.ok) throw new Error('無法讀取報告')
-      
+
       const data = await response.json()
       setReport(data)
     } catch (err: any) {
@@ -37,6 +37,20 @@ export default function Report() {
 
   const handleReAudit = () => {
     navigate('/dashboard', { state: { prefillUrl: report.url } })
+  }
+
+  const handleExportPDF = () => {
+    // 隱藏不需要列印的元素
+    const elementsToHide = document.querySelectorAll('.no-print')
+    elementsToHide.forEach(el => el.classList.add('hidden'))
+
+    // 觸發列印
+    window.print()
+
+    // 恢復隱藏的元素
+    setTimeout(() => {
+      elementsToHide.forEach(el => el.classList.remove('hidden'))
+    }, 100)
   }
 
   if (loading) {
@@ -64,11 +78,11 @@ export default function Report() {
   return (
     <div className="max-w-4xl mx-auto py-10 px-6">
       <header className="mb-10 flex items-center justify-between">
-        <Link to="/dashboard" className="inline-flex items-center gap-2 text-brand-blue font-bold hover:translate-x-[-4px] transition-transform">
+        <Link to="/dashboard" className="no-print inline-flex items-center gap-2 text-brand-blue font-bold hover:translate-x-[-4px] transition-transform">
           ← 返回健檢列表
         </Link>
         <div className="text-sm font-bold text-brand-slate dark:text-brand-light/40">
-           健檢網址: <span className="text-brand-navy dark:text-brand-light">{report.url}</span>
+          健檢網址: <span className="text-brand-navy dark:text-brand-light">{report.url}</span>
         </div>
       </header>
 
@@ -85,12 +99,12 @@ export default function Report() {
           </div>
           <div className="text-center md:text-left flex-1">
             <div className="inline-block px-4 py-1 rounded-full bg-brand-blue/10 text-brand-blue text-sm font-black uppercase tracking-widest mb-4">
-               可信度等級: {summary.grade}
+              可信度等級: {summary.grade}
             </div>
             <h1 className="text-3xl md:text-4xl font-black leading-tight">
               {summary.conclusion}
             </h1>
-            
+
             {/* CTA Close Loop */}
             <div className="flex flex-col sm:flex-row gap-4 mt-8">
               <button
@@ -100,6 +114,7 @@ export default function Report() {
                 ✅ 我已修正，重新健檢
               </button>
               <button
+                onClick={handleExportPDF}
                 className="flex-1 py-4 bg-white dark:bg-brand-navy border-2 border-brand-blue text-brand-blue rounded-2xl font-black text-lg hover:bg-brand-blue/5 transition-all"
               >
                 📄 匯出 PDF 報告
@@ -108,7 +123,7 @@ export default function Report() {
           </div>
         </div>
       </div>
-      
+
       <div className="grid md:grid-cols-2 gap-8 mb-8 text-brand-navy dark:text-brand-light">
         {/* 2. Key Issues */}
         <div className="bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
@@ -138,7 +153,7 @@ export default function Report() {
             </ul>
           )}
         </div>
-        
+
         {/* 3. Action Suggestions */}
         <div className="bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
           <h2 className="text-xl font-black mb-6 flex items-center gap-2 tracking-tight">
@@ -151,7 +166,7 @@ export default function Report() {
             <ul className="space-y-6">
               {suggestions.map((suggestion: any, i: number) => (
                 <li key={i} className="flex items-start gap-4">
-                  <span className="text-2xl text-brand-success font-black">0{i+1}</span>
+                  <span className="text-2xl text-brand-success font-black">0{i + 1}</span>
                   <div>
                     <div className="font-bold mb-1 leading-tight">
                       {suggestion.action}
@@ -160,11 +175,11 @@ export default function Report() {
                       效果：{suggestion.impact_desc || suggestion.impact}
                     </div>
                     <div className="space-y-2 mt-3">
-                       {suggestion.how_to && suggestion.how_to.map((step: string, idx: number) => (
-                         <div key={idx} className="text-xs text-brand-slate dark:text-brand-light/60 bg-brand-light/50 dark:bg-brand-navy p-2 rounded-lg border border-brand-navy/5">
-                            {step}
-                         </div>
-                       ))}
+                      {suggestion.how_to && suggestion.how_to.map((step: string, idx: number) => (
+                        <div key={idx} className="text-xs text-brand-slate dark:text-brand-light/60 bg-brand-light/50 dark:bg-brand-navy p-2 rounded-lg border border-brand-navy/5">
+                          {step}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </li>
@@ -173,25 +188,25 @@ export default function Report() {
           )}
         </div>
       </div>
-      
+
       {/* 4. Advanced Technical Details */}
       <details className="group bg-brand-navy/5 dark:bg-brand-navy/30 rounded-[2rem] overflow-hidden transition-all border border-transparent hover:border-brand-blue/10">
         <summary className="p-8 font-black text-brand-navy dark:text-brand-light cursor-pointer list-none flex items-center justify-between">
           <span className="flex items-center gap-3">
-             <span className="text-xl">🧬</span> 進階技術分析資料 (Report Version: {report.report_version})
+            <span className="text-xl">🧬</span> 進階技術分析資料 (Report Version: {report.report_version})
           </span>
           <span className="text-brand-blue group-open:rotate-180 transition-transform font-black">↓</span>
         </summary>
         <div className="px-8 pb-8">
-           <div className="bg-black/90 rounded-2xl p-6 font-mono text-xs text-green-400 overflow-x-auto shadow-inner">
-             <pre>{JSON.stringify(report, null, 2)}</pre>
-           </div>
+          <div className="bg-black/90 rounded-2xl p-6 font-mono text-xs text-green-400 overflow-x-auto shadow-inner">
+            <pre>{JSON.stringify(report, null, 2)}</pre>
+          </div>
         </div>
       </details>
 
       <div className="mt-12 text-center text-brand-slate dark:text-brand-light/40 text-sm font-medium">
-         這份報告是由 Trust WEDO AI 引擎基於您的網站結構自動生成。<br />
-         引擎版本: {report.report_version} • 掃描編號: {report.job_id}
+        這份報告是由 Trust WEDO AI 引擎基於您的網站結構自動生成。<br />
+        引擎版本: {report.report_version} • 掃描編號: {report.job_id}
       </div>
     </div>
   )
