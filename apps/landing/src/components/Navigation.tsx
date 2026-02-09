@@ -68,12 +68,12 @@ export const Navigation = () => {
             <span>🌐</span>
             <span className="text-sm font-medium text-brand-navy dark:text-brand-light">{currentLang}</span>
           </button>
-          <a
-            href="https://github.com/Trust-WEDO"
+          <Link
+            to="/signup"
             className="bg-brand-navy dark:bg-brand-light text-white dark:text-brand-navy px-5 py-2 rounded-full text-sm font-bold hover:scale-105 transition-transform"
           >
             {t('nav.getStarted')}
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Toggle */}
@@ -125,12 +125,13 @@ export const Navigation = () => {
               {link.name}
             </Link>
           ))}
-          <a
-            href="https://github.com/Trust-WEDO"
+          <Link
+            to="/signup"
+            onClick={() => setIsOpen(false)}
             className="w-full text-center bg-brand-blue text-white py-4 rounded-xl text-xl font-bold"
           >
             {t('nav.getStarted')}
-          </a>
+          </Link>
         </div>
       </div>
     </nav>

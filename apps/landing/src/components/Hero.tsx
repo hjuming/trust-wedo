@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 export const Hero = () => {
@@ -32,12 +33,12 @@ export const Hero = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="https://github.com/Trust-WEDO"
-            className="w-full sm:w-auto px-8 py-4 bg-brand-blue text-white rounded-2xl font-bold text-lg hover:bg-brand-blue/90 hover:scale-105 transition-all shadow-lg shadow-brand-blue/25"
+          <Link
+            to="/signup"
+            className="w-full sm:w-auto px-8 py-4 bg-brand-blue text-white rounded-2xl font-bold text-lg hover:bg-brand-blue/90 hover:scale-105 transition-all shadow-lg shadow-brand-blue/25 text-center"
           >
             {t('hero.ctaPrimary')}
-          </a>
+          </Link>
           <button className="w-full sm:w-auto px-8 py-4 bg-brand-navy/5 dark:bg-brand-light/5 text-brand-navy dark:text-brand-light rounded-2xl font-bold text-lg hover:bg-brand-navy/10 dark:hover:bg-brand-light/10 transition-all border border-brand-navy/10 dark:border-brand-light/10">
             {t('hero.ctaSecondary')}
           </button>

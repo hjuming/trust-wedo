@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 export const FinalCTA = () => {
@@ -17,9 +18,9 @@ export const FinalCTA = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button className="w-full sm:w-auto px-10 py-5 bg-white text-brand-blue rounded-2xl font-black text-xl hover:scale-105 transition-transform shadow-xl">
+          <Link to="/signup" className="w-full sm:w-auto px-10 py-5 bg-white text-brand-blue rounded-2xl font-black text-xl hover:scale-105 transition-transform shadow-xl inline-block text-center">
             {t('finalCta.primaryCta')}
-          </button>
+          </Link>
           <button className="w-full sm:w-auto px-10 py-5 bg-transparent text-white border-2 border-white/30 rounded-2xl font-black text-xl hover:bg-white/10 transition-colors">
             {t('finalCta.secondaryCta')}
           </button>

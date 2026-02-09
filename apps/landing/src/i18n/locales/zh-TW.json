@@ -85,6 +85,27 @@
         "primaryCta": "免費開始使用",
         "secondaryCta": "加入 Discord"
     },
+    "auth": {
+        "login": {
+            "title": "登入",
+            "email": "電子郵件",
+            "password": "密碼",
+            "submit": "登入",
+            "loading": "登入中...",
+            "noAccount": "還沒有帳號？",
+            "signupLink": "立即註冊"
+        },
+        "signup": {
+            "title": "註冊",
+            "fullName": "姓名",
+            "email": "電子郵件",
+            "password": "密碼",
+            "submit": "註冊",
+            "loading": "註冊中...",
+            "hasAccount": "已有帳號？",
+            "loginLink": "立即登入"
+        }
+    },
     "footer": {
         "description": "值得信賴的 AI 編碼夥伴，掌控您的程式碼庫並自我驗證每項變更。",
         "product": "產品",

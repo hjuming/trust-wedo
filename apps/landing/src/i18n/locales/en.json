@@ -85,6 +85,27 @@
         "primaryCta": "Get Started for Free",
         "secondaryCta": "Join the Discord"
     },
+    "auth": {
+        "login": {
+            "title": "Login",
+            "email": "Email",
+            "password": "Password",
+            "submit": "Login",
+            "loading": "Logging in...",
+            "noAccount": "Don't have an account?",
+            "signupLink": "Sign up now"
+        },
+        "signup": {
+            "title": "Sign Up",
+            "fullName": "Full Name",
+            "email": "Email",
+            "password": "Password",
+            "submit": "Sign Up",
+            "loading": "Signing up...",
+            "hasAccount": "Already have an account?",
+            "loginLink": "Login here"
+        }
+    },
     "footer": {
         "description": "The trustworthy agentic coding partner that takes ownership of your codebase and self-verifies every change.",
         "product": "Product",
