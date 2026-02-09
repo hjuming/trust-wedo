@@ -11,5 +11,3 @@ pydantic[email]>=2.5.3
 pydantic-settings>=2.1.0
 python-dotenv>=1.0.0
 supabase>=2.0.0
-pytest>=8.0.0
-pytest-cov>=4.0.0
