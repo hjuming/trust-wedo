@@ -3,9 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { Navigation } from '../components/Navigation'
 import { Hero } from '../components/Hero'
 import { Footer } from '../components/Footer'
+import { ProblemSection } from '../components/ProblemSection'
+import { HowItWorks } from '../components/HowItWorks'
+import { PricingSection } from '../components/PricingSection'
+import { FinalCTA } from '../components/FinalCTA'
 
 const Features = () => {
   const { t } = useTranslation()
+  
   const features = [
     {
       title: t('features.verification.title'),
@@ -53,8 +58,11 @@ export default function Home() {
       <Navigation />
       <main>
         <Hero />
+        <ProblemSection />
         <Features />
-        {/* Other sections would go here */}
+        <HowItWorks />
+        <PricingSection />
+        <FinalCTA />
       </main>
       <Footer />
     </div>

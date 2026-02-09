@@ -27,6 +27,46 @@
             "desc": "From planning to PR, handle complex workflows without constant supervision."
         }
     },
+    "problem": {
+        "title": "Tired of \"AI Slop\"?",
+        "description": "Most AI coding tools generate code that looks right but fails in production. You spend more time debugging the AI than you would have spent writing it yourself."
+    },
+    "howItWorks": {
+        "title": "How It Works",
+        "step1": {
+            "title": "Define your task",
+            "desc": "Describe what you need in plain English or via CLI."
+        },
+        "step2": {
+            "title": "Agent Executes",
+            "desc": "The agent plans, implements, and tests the solution autonomously."
+        },
+        "step3": {
+            "title": "Review & Merge",
+            "desc": "Receive a PR with a full report and passing test logs."
+        }
+    },
+    "pricing": {
+        "title": "Pricing",
+        "beta": {
+            "title": "Beta Access",
+            "price": "$0/month",
+            "description": "We're currently in closed beta. Join now to get unlimited access to all features while we refine the future of agentic coding.",
+            "features": [
+                "Unlimited access to all features",
+                "Automated testing & verification",
+                "Deep codebase understanding",
+                "Priority support"
+            ],
+            "cta": "Request Beta Access"
+        }
+    },
+    "finalCta": {
+        "title": "Ready to trust your AI?",
+        "subtitle": "Stop babysitting and start building.",
+        "primaryCta": "Get Started for Free",
+        "secondaryCta": "Join the Discord"
+    },
     "footer": {
         "description": "The trustworthy agentic coding partner that takes ownership of your codebase and self-verifies every change.",
         "product": "Product",
