@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { supabase } from '../lib/supabase'
 
 export default function Signup() {
   const { t } = useTranslation()
@@ -17,22 +18,22 @@ export default function Signup() {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email, 
-          password, 
-          full_name: fullName 
-        }),
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
+        },
       })
 
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.detail || 'Signup failed')
+      if (error) {
+        throw error
       }
 
-      // Automatically login after signup or redirect to login
+      // Supabase by default requires email confirmation
+      alert(t('auth.signup.successMessage') || 'Check your email for the confirmation link!')
       navigate('/login')
     } catch (err: any) {
       setError(err.message || 'Registration failed')

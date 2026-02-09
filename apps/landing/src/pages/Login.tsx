@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { supabase } from '../lib/supabase'
 
 export default function Login() {
   const { t } = useTranslation()
@@ -16,19 +17,15 @@ export default function Login() {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:8000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       })
 
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.detail || 'Login failed')
+      if (error) {
+        throw error
       }
 
-      const data = await response.json()
-      localStorage.setItem('token', data.access_token)
       navigate('/dashboard')
     } catch (err: any) {
       setError(err.message || 'Invalid email or password')

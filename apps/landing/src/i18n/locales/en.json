@@ -85,6 +85,35 @@
         "primaryCta": "Get Started for Free",
         "secondaryCta": "Join the Discord"
     },
+    "dashboard": {
+        "welcome": "Welcome back",
+        "nav": {
+            "overview": "Overview",
+            "scans": "Scans",
+            "reports": "Reports",
+            "settings": "Settings",
+            "logout": "Logout"
+        },
+        "stats": {
+            "totalScans": "Total Scans",
+            "completed": "Completed",
+            "failed": "Failed"
+        },
+        "createScan": "Create New Scan"
+    },
+    "scans": {
+        "newScan": "New Scan",
+        "create": "Create Scan",
+        "creating": "Creating...",
+        "loading": "Loading...",
+        "empty": "No scan records found",
+        "status": {
+            "pending": "Pending",
+            "processing": "Processing",
+            "completed": "Completed",
+            "failed": "Failed"
+        }
+    },
     "auth": {
         "login": {
             "title": "Login",

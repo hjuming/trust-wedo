@@ -6,12 +6,32 @@
         "getStarted": "立即開始"
     },
     "hero": {
-        "badge": "v0.4.0 Beta 現已上線",
-        "headline1": "交付無懈可擊的程式碼",
-        "headline2": "無需人工監督 AI。",
-        "subheadline": "唯一能自我驗證每一行程式碼的 AI 代理。我們不僅生成程式碼；在您看到 PR 之前，我們已證明它能運作。",
-        "ctaPrimary": "免費開始使用",
-        "ctaSecondary": "查看文件"
+        "title": "你的網站，AI 看得懂嗎？",
+        "subtitle": "Trust WEDO 幫你檢查網站是否具備\nAI 可理解、可引用、可信任的結構",
+        "description": "不需要工程背景，不需要懂 AI\n只要輸入網址，就能知道哪裡有問題、怎麼補",
+        "cta": "開始網站可信度健檢（免費）"
+    },
+    "problem": {
+        "title": "為什麼你的內容，AI 不引用？",
+        "pain1": "網站內容很多，但 AI 卻「看不到你是誰」",
+        "pain2": "明明有專業文章，卻沒有被當成可信來源",
+        "pain3": "不知道該補資料、補作者，還是補引用",
+        "conclusion": "多數網站不是內容不夠好\n而是 結構錯了，AI 無法理解"
+    },
+    "solution": {
+        "title": "Trust WEDO 幫你做什麼？",
+        "step1": {
+            "title": "了解你是誰",
+            "desc": "檢查你的網站是否清楚表達\n「你是誰、你是否值得被信任」"
+        },
+        "step2": {
+            "title": "檢查內容可信度",
+            "desc": "分析你的內容是否有\n清楚來源、可驗證依據"
+        },
+        "step3": {
+            "title": "給你一份可行建議",
+            "desc": "不只告訴你問題\n還告訴你 下一步怎麼補、怎麼改"
+        }
     },
     "features": {
         "verification": {
@@ -44,10 +64,6 @@
             "value": "工程師打造",
             "label": "為工程師而生"
         }
-    },
-    "problem": {
-        "title": "厭倦了「AI 垃圾」？",
-        "description": "大多數 AI 編碼工具生成的程式碼看起來正確，但在生產環境中卻會失敗。您花在除錯 AI 的時間，比自己寫程式碼還要多。"
     },
     "howItWorks": {
         "title": "運作方式",
@@ -85,6 +101,35 @@
         "primaryCta": "免費開始使用",
         "secondaryCta": "加入 Discord"
     },
+    "dashboard": {
+        "welcome": "歡迎回來",
+        "nav": {
+            "overview": "總覽",
+            "scans": "掃描記錄",
+            "reports": "報告",
+            "settings": "設定",
+            "logout": "登出"
+        },
+        "stats": {
+            "totalScans": "總掃描次數",
+            "completed": "已完成",
+            "failed": "失敗"
+        },
+        "createScan": "建立新掃描"
+    },
+    "scans": {
+        "newScan": "新增掃描",
+        "create": "建立掃描",
+        "creating": "建立中...",
+        "loading": "載入中...",
+        "empty": "尚無掃描記錄",
+        "status": {
+            "pending": "等待中",
+            "processing": "處理中",
+            "completed": "已完成",
+            "failed": "失敗"
+        }
+    },
     "auth": {
         "login": {
             "title": "登入",
@@ -103,7 +148,8 @@
             "submit": "註冊",
             "loading": "註冊中...",
             "hasAccount": "已有帳號？",
-            "loginLink": "立即登入"
+            "loginLink": "立即登入",
+            "successMessage": "註冊成功！請檢查您的 Email 驗證信。"
         }
     },
     "footer": {

@@ -88,3 +88,11 @@ dist-ssr/
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables (NEVER commit these!)
+.env
+.env.local
+.env.*.local
+
+# Keep example files
+!.env.example

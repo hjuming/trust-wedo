@@ -10,6 +10,7 @@ export const Navigation = () => {
   const [scrolled, setScrolled] = useState(false)
   const { isDark, toggleDarkMode } = useDarkMode()
   const { currentLang, toggleLanguage } = useLanguage()
+  const isAuthenticated = !!localStorage.getItem('token')
 
   const navLinks = [
     { name: t('nav.docs'), href: '/docs' },
@@ -69,10 +70,10 @@ export const Navigation = () => {
             <span className="text-sm font-medium text-brand-navy dark:text-brand-light">{currentLang}</span>
           </button>
           <Link
-            to="/signup"
+            to={isAuthenticated ? "/dashboard" : "/signup"}
             className="bg-brand-navy dark:bg-brand-light text-white dark:text-brand-navy px-5 py-2 rounded-full text-sm font-bold hover:scale-105 transition-transform"
           >
-            {t('nav.getStarted')}
+            {isAuthenticated ? t('dashboard.nav.overview') : t('nav.getStarted')}
           </Link>
         </div>
 
@@ -126,11 +127,11 @@ export const Navigation = () => {
             </Link>
           ))}
           <Link
-            to="/signup"
+            to={isAuthenticated ? "/dashboard" : "/signup"}
             onClick={() => setIsOpen(false)}
             className="w-full text-center bg-brand-blue text-white py-4 rounded-xl text-xl font-bold"
           >
-            {t('nav.getStarted')}
+            {isAuthenticated ? t('dashboard.nav.overview') : t('nav.getStarted')}
           </Link>
         </div>
       </div>

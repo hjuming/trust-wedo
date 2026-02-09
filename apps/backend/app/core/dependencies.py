@@ -1,28 +1,41 @@
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
-from sqlalchemy.orm import Session
-from app.database import get_db
-from app.config import settings
-from app.models.user import User
+from fastapi import Depends, HTTPException, Header
+from app.core.supabase import supabase
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
-
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+def get_current_user(authorization: str = Header(...)):
+    """取得當前使用者"""
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
+        token = authorization.replace("Bearer ", "")
+        user = supabase.auth.get_user(token)
+        return user.user
+    except Exception:
+        raise HTTPException(status_code=401, detail="無效的 token")
+
+def get_current_org(
+    user = Depends(get_current_user),
+    org_id: str = Header(None, alias="X-Org-ID")
+):
+    """取得當前組織"""
+    if not org_id:
+        # 取得使用者的第一個 org
+        result = supabase.table("org_members")\
+            .select("org_id")\
+            .eq("user_id", user.id)\
+            .limit(1)\
+            .execute()
         
-    user = db.query(User).filter(User.email == email).first()
-    if user is None:
-        raise credentials_exception
-    return user
+        if result.data:
+            org_id = result.data[0]["org_id"]
+        else:
+            raise HTTPException(status_code=400, detail="找不到組織")
+    
+    # 驗證成員資格
+    result = supabase.table("org_members")\
+        .select("*")\
+        .eq("org_id", org_id)\
+        .eq("user_id", user.id)\
+        .execute()
+    
+    if not result.data:
+        raise HTTPException(status_code=403, detail="您不是此組織的成員")
+    
+    return org_id

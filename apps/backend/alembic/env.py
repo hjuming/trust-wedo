@@ -9,6 +9,7 @@ from alembic import context
 from app.config import settings
 from app.database import Base
 from app.models.user import User  # 確保 User 模型被加載
+from app.models.scan import Scan  # 確保 Scan 模型被加載
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
