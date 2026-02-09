@@ -10,3 +10,7 @@ python-multipart==0.0.6
 pydantic[email]==2.5.3
 pydantic-settings==2.1.0
 python-dotenv==1.0.0
+supabase==2.27.3
+pytest==9.0.2
+pytest-cov==7.0.0
+-e /Users/MING/Sites/Trust-WEDO

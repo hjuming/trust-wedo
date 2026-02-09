@@ -1,5 +1,7 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 from app.models.signals import SiteSignals
+from app.services.scoring import calculate_weighted_score, score_to_grade
+from app.services.site_classifier import classify_site_type, generate_custom_suggestions
 
 class Rule:
     """單一規則"""
@@ -14,9 +16,9 @@ class Rule:
         return self.condition(signals)
 
 class ReportEngine:
-    """報告引擎 v1.0"""
+    """報告引擎 v2.0"""
     
-    VERSION = "r1.0"
+    VERSION = "r2.0"
     
     def __init__(self):
         self.rules = self._init_rules()
@@ -142,8 +144,12 @@ class ReportEngine:
         ]
     
     def generate_report(self, signals: SiteSignals) -> Dict[str, Any]:
-        """產生報告"""
-        # 評估所有規則
+        """產生報告（更新版）"""
+        
+        # 1. 識別網站類型
+        site_type, confidence = classify_site_type(signals)
+        
+        # 2. 評估規則
         fired_rules = []
         issues = []
         suggestions = []
@@ -154,34 +160,36 @@ class ReportEngine:
                 issues.append(rule.issue)
                 suggestions.append(rule.suggestion)
         
-        # 計算可信度等級
-        grade = self._calculate_grade(signals, len(fired_rules))
+        # 3. 加入客製化建議
+        custom_suggestions = generate_custom_suggestions(signals, site_type)
+        suggestions.extend(custom_suggestions)
+        
+        # 4. 計算評分
+        grade, score = self._calculate_grade(signals, len(fired_rules))
         conclusion = self._generate_conclusion(grade, len(fired_rules))
         
         return {
             "report_version": self.VERSION,
             "signals": signals.model_dump(),
+            "score": score,
+            "site_type": site_type,
+            "site_type_confidence": confidence,
             "rules_fired": fired_rules,
             "summary": {
                 "conclusion": conclusion,
                 "grade": grade,
+                "score": score,
                 "total_issues": len(issues)
             },
             "issues": issues,
-            "suggestions": suggestions
+            "suggestions": suggestions[:8]  # 限制建議數量
         }
     
-    def _calculate_grade(self, signals: SiteSignals, issues_count: int) -> str:
-        """計算可信度等級"""
-        # 簡化規則
-        if issues_count == 0:
-            return "A"
-        elif issues_count <= 2:
-            return "B"
-        elif issues_count <= 4:
-            return "C"
-        else:
-            return "D"
+    def _calculate_grade(self, signals: SiteSignals, issues_count: int) -> Tuple[str, int]:
+        """計算可信度等級（使用加權評分）"""
+        score = calculate_weighted_score(signals)
+        grade = score_to_grade(score)
+        return grade, score
     
     def _generate_conclusion(self, grade: str, issues_count: int) -> str:
         """產生一句話結論"""
