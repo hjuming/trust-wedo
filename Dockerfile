@@ -23,7 +23,11 @@ COPY . /app
 RUN pip install .
 
 # 設定環境變數
-ENV PYTHONPATH=/app
+# 確保 Python 模組結構正確 (即使 Git 忽略了 __init__.py)
+RUN touch apps/__init__.py apps/backend/__init__.py apps/backend/app/__init__.py
+
+# 設定環境變數 - 明確將 /app 加入 PYTHONPATH
+ENV PYTHONPATH=/app:$PYTHONPATH
 ENV PORT=8080
 
 # 暴露端口
