@@ -88,7 +88,7 @@ def run_scan_pipeline(job_id: str, url: str):
             "error_message": str(e)
         }).eq("id", job_id).execute()
 
-@router.post("/")
+@router.post("")
 def create_scan(
     scan_data: ScanCreate,
     background_tasks: BackgroundTasks,
@@ -115,7 +115,7 @@ def create_scan(
     
     return result.data[0]
 
-@router.get("/")
+@router.get("")
 def get_scans(org_id: str = Depends(get_current_org)):
     """取得組織的掃描列表"""
     result = supabase.table("scan_jobs")\
