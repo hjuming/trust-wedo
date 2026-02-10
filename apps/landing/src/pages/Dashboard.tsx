@@ -7,7 +7,7 @@ export default function Dashboard() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
-  
+
   const [url, setUrl] = useState(location.state?.prefillUrl || '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -41,21 +41,22 @@ export default function Dashboard() {
     let interval = 2000 // 初始 2 秒
     let attempts = 0
     const maxAttempts = 30 // 最多約 2-3 分鐘（隨退避增加）
-    
+
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
 
     const poll = async () => {
       attempts++
-      
+
       try {
-        const response = await fetch(`http://localhost:8000/api/scans/${jobId}`, {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+        const response = await fetch(`${apiUrl}/api/scans/${jobId}`, {
           headers: {
             'Authorization': `Bearer ${session.access_token}`
           }
         })
         const job = await response.json()
-        
+
         if (job.progress_stage) {
           setProgressStage(job.progress_stage)
         }
@@ -80,7 +81,7 @@ export default function Dashboard() {
         setTimeout(poll, 5000) // 出錯則固定 5 秒後再試
       }
     }
-    
+
     poll()
   }
 
@@ -94,7 +95,8 @@ export default function Dashboard() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Session expired')
 
-      const response = await fetch('http://localhost:8000/api/scans', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const response = await fetch(`${apiUrl}/api/scans`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -136,13 +138,13 @@ export default function Dashboard() {
             </p>
             <div className="space-y-4 text-left bg-brand-light/50 dark:bg-brand-navy/30 p-6 rounded-2xl border border-brand-navy/5">
               <div className={`flex items-center gap-3 font-bold ${progressStage.includes('讀取') ? 'text-brand-blue animate-pulse' : 'text-brand-success'}`}>
-                 <span>{progressStage.includes('讀取') ? '⏳' : '✅'}</span> <span>讀取網站中內容</span>
+                <span>{progressStage.includes('讀取') ? '⏳' : '✅'}</span> <span>讀取網站中內容</span>
               </div>
               <div className={`flex items-center gap-3 font-bold ${progressStage.includes('分析') ? 'text-brand-blue animate-pulse' : progressStage.includes('報告') || progressStage.includes('完成') ? 'text-brand-success' : 'text-brand-slate/40'}`}>
-                 <span>{progressStage.includes('分析') ? '⏳' : progressStage.includes('報告') || progressStage.includes('完成') ? '✅' : '⚪'}</span> <span>分析 AI 識別特徵</span>
+                <span>{progressStage.includes('分析') ? '⏳' : progressStage.includes('報告') || progressStage.includes('完成') ? '✅' : '⚪'}</span> <span>分析 AI 識別特徵</span>
               </div>
               <div className={`flex items-center gap-3 font-bold ${progressStage.includes('報告') ? 'text-brand-blue animate-pulse' : progressStage.includes('完成') ? 'text-brand-success' : 'text-brand-slate/40'}`}>
-                 <span>{progressStage.includes('報告') ? '⏳' : progressStage.includes('完成') ? '✅' : '⚪'}</span> <span>產生成信度報告</span>
+                <span>{progressStage.includes('報告') ? '⏳' : progressStage.includes('完成') ? '✅' : '⚪'}</span> <span>產生成信度報告</span>
               </div>
             </div>
           </div>
@@ -152,17 +154,17 @@ export default function Dashboard() {
       {/* Main Form */}
       <div className="bg-white dark:bg-brand-navy/50 p-12 rounded-[2.5rem] border border-brand-navy/5 dark:border-brand-light/5 shadow-2xl relative overflow-hidden group">
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-brand-blue/5 rounded-full blur-3xl group-hover:bg-brand-blue/10 transition-colors" />
-        
+
         <div className="relative">
           <h1 className="text-4xl md:text-5xl font-black text-brand-navy dark:text-brand-light mb-4 text-center tracking-tight text-brand-navy dark:text-brand-light">
             開始一次網站可信度健檢
           </h1>
-          
+
           <p className="text-center text-xl text-brand-slate dark:text-brand-light/60 mb-12 max-w-2xl mx-auto leading-relaxed">
             適合內容創作者、行銷人、品牌網站。<br />
             輸入網址，讓 AI 告訴你如何提升權威感。
           </p>
-          
+
           <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
             <div className="relative">
               <label className="block text-sm font-bold text-brand-navy/40 dark:text-brand-light/40 mb-3 ml-2 uppercase tracking-widest">
@@ -177,7 +179,7 @@ export default function Dashboard() {
                 className="w-full px-8 py-5 rounded-2xl border-2 border-brand-navy/5 dark:border-brand-light/10 bg-brand-light/50 dark:bg-brand-navy focus:outline-none focus:ring-4 focus:ring-brand-blue/20 focus:border-brand-blue text-brand-navy dark:text-brand-light text-xl transition-all shadow-inner"
               />
             </div>
-            
+
             {error && (
               <div className="p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-xl text-red-600 dark:text-red-400 text-sm font-bold text-center">
                 ❌ {error}
@@ -194,7 +196,7 @@ export default function Dashboard() {
           </form>
         </div>
       </div>
-      
+
       {/* 歷史記錄 */}
       <div className="mt-20">
         <div className="flex items-center justify-between mb-8 px-4">
@@ -202,7 +204,7 @@ export default function Dashboard() {
             歷史檢查記錄
           </h2>
         </div>
-        
+
         {recentScans.length === 0 ? (
           <div className="bg-white/50 dark:bg-brand-navy/30 border-2 border-dashed border-brand-navy/5 dark:border-brand-light/5 rounded-[2rem] py-16 text-center text-brand-navy dark:text-brand-light">
             <p className="text-brand-slate dark:text-brand-light/40 text-lg font-medium">
@@ -212,8 +214,8 @@ export default function Dashboard() {
         ) : (
           <div className="grid gap-4">
             {recentScans.map((scan) => (
-              <div 
-                key={scan.id} 
+              <div
+                key={scan.id}
                 onClick={() => scan.status === 'completed' && navigate(`/dashboard/reports/${scan.id}`)}
                 className={`bg-white dark:bg-brand-navy/40 p-6 rounded-2xl border border-brand-navy/5 dark:border-brand-light/5 flex items-center justify-between group transition-all ${scan.status === 'completed' ? 'hover:border-brand-blue/20 cursor-pointer' : ''}`}
               >
@@ -226,11 +228,10 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter ${
-                    scan.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400' :
+                  <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter ${scan.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400' :
                     scan.status === 'failed' ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400' :
-                    'bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
-                  }`}>
+                      'bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
+                    }`}>
                     {scan.status}
                   </span>
                   <div className="w-10 h-10 rounded-xl bg-brand-navy/5 dark:bg-brand-light/5 flex items-center justify-center group-hover:bg-brand-blue/10 transition-colors">

@@ -22,7 +22,8 @@ export default function Scans() {
   const fetchScans = async () => {
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch('http://localhost:8000/api/scans', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const response = await fetch(`${apiUrl}/api/scans`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -44,7 +45,8 @@ export default function Scans() {
 
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch('http://localhost:8000/api/scans', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const response = await fetch(`${apiUrl}/api/scans`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
