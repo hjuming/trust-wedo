@@ -13,8 +13,11 @@ router = APIRouter()
 class ScanCreate(BaseModel):
     url: HttpUrl
 
-def run_scan_pipeline(job_id: str, url: str):
-    """背景任務：執行 CLI pipeline（MVP 版本）"""
+import asyncio
+from trust_wedo.parsers.site_parser import SiteParser
+
+async def run_scan_pipeline(job_id: str, url: str):
+    """背景任務：執行 CLI pipeline（直接調用庫，無需 CLI）"""
     try:
         # 1. 更新狀態為 processing - 階段 1
         supabase.table("scan_jobs").update({
@@ -27,37 +30,29 @@ def run_scan_pipeline(job_id: str, url: str):
         output_dir = Path(f"output/{job_id}")
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        # 2. 執行 tw scan（核心步驟）
-        # 更新進度階段
+        # 2. 執行 SiteParser (Core Logic)
         supabase.table("scan_jobs").update({
             "progress_stage": "正在分析 AI 識別特徵..."
         }).eq("id", job_id).execute()
         
-        scan_result = subprocess.run(
-            ["tw", "scan", url],
-            capture_output=True,
-            text=True,
-            timeout=120
-        )
+        # Direct Library Call
+        parser = SiteParser(url, max_pages=10)
         
-        if scan_result.returncode != 0:
-            raise Exception(f"Scan failed: {scan_result.stderr}")
+        try:
+            # 設置 120 秒超時
+            site_data = await asyncio.wait_for(parser.scan(), timeout=120)
+        except asyncio.TimeoutError:
+            raise Exception("分析超時（超過 120 秒）")
         
-        # 3. 讀取並儲存成果
+        # 3. 儲存成果 (File + DB)
         supabase.table("scan_jobs").update({
             "progress_stage": "正在產生成信度報告..."
         }).eq("id", job_id).execute()
         
-        default_site_json = Path("output/site.json")
-        if not default_site_json.exists():
-            raise Exception("site.json not found after scan")
-        
+        # Write to file (local persistence in container, for debugging)
         target_site_json = output_dir / "site.json"
-        with open(default_site_json, 'r') as f:
-            site_data = json.load(f)
-            
         with open(target_site_json, 'w') as f:
-            json.dump(site_data, f)
+            json.dump(site_data, f, ensure_ascii=False)
         
         # 4. 儲存到 artifacts 表
         supabase.table("artifacts").insert({
@@ -72,13 +67,6 @@ def run_scan_pipeline(job_id: str, url: str):
             "status": "completed",
             "progress_stage": "分析完成",
             "completed_at": "now()"
-        }).eq("id", job_id).execute()
-        
-    except subprocess.TimeoutExpired:
-        supabase.table("scan_jobs").update({
-            "status": "failed",
-            "progress_stage": "分析超時",
-            "error_message": "分析超時（超過 120 秒）"
         }).eq("id", job_id).execute()
         
     except Exception as e:
