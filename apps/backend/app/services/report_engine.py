@@ -16,7 +16,7 @@ class Rule:
         return self.condition(signals)
 
 class ReportEngine:
-    """報告引擎 v2.0"""
+    """報告引擎 v2.0 - 強化版"""
     
     VERSION = "r2.0"
     
@@ -74,7 +74,7 @@ class ReportEngine:
             ),
             Rule(
                 rule_id="R003",
-                condition=lambda s: s.schema_count == 0,
+                condition=lambda s: not s.has_jsonld,
                 issue={
                     "severity": "high",
                     "title": "缺少結構化資料（Schema.org）",
@@ -140,9 +140,123 @@ class ReportEngine:
                         "4. 更新所有內部連結為 HTTPS"
                     ]
                 }
+            ),
+            # 新增規則 R006-R008
+            Rule(
+                rule_id="R006",
+                condition=lambda s: not s.has_organization,
+                issue={
+                    "severity": "medium",
+                    "title": "缺少組織資訊",
+                    "description": "缺少 Organization schema 讓 AI 難以確認網站的營運主體。",
+                    "why": "組織身分驗證是信任的基石"
+                },
+                suggestion={
+                    "priority": "medium",
+                    "effort": "medium",
+                    "impact": "medium",
+                    "action": "新增 Organization 結構化資料",
+                    "impact_desc": "建立網站的實體權威感"
+                }
+            ),
+            Rule(
+                rule_id="R007",
+                condition=lambda s: not s.has_social_proof,
+                issue={
+                    "severity": "low",
+                    "title": "社群證明不足",
+                    "description": "網站未連結足夠的社群平台（Facebook, Twitter, LinkedIn 等）。",
+                    "why": "社群連結可增加網站的社會認可"
+                },
+                suggestion={
+                    "priority": "low",
+                    "effort": "easy",
+                    "impact": "low",
+                    "action": "在頁尾或關於頁面加入社群媒體連結",
+                    "impact_desc": "提升品牌可尋性與多管道信任"
+                }
             )
         ]
-    
+
+    def extract_signals(self, artifacts: List[Dict[str, Any]]) -> SiteSignals:
+        """從 artifacts 提取所有信號 (Refactored Logic)"""
+        signals = SiteSignals()
+        
+        scan_artifact = next((a for a in artifacts if a['stage'] == 'scan'), None)
+        if not scan_artifact:
+            return signals
+            
+        payload = scan_artifact['jsonb_payload']
+        site_url = payload.get('site', '')
+        signals.has_https = site_url.startswith('https://')
+        
+        pages = payload.get('pages', [])
+        if not pages:
+            return signals
+            
+        first_page = pages[0]
+        
+        # 1. 基礎信號
+        signals.has_title = not first_page.get('title_missing', True)
+        signals.has_description = not first_page.get('meta_missing', True)
+        signals.has_favicon = first_page.get('has_favicon', False)
+        
+        # 2. Schema.org 檢測
+        self._extract_schema_types(first_page, signals)
+        
+        # 3. 作者資訊提取
+        self._extract_author_info(first_page, signals)
+        
+        # 4. 社群連結提取
+        self._extract_social_links(first_page, signals)
+        
+        # 5. 外部連結分析
+        self._analyze_outbound_links(first_page, signals)
+        
+        # 6. 頁面與聯繫
+        signals.has_about_page = any(p.get('is_about_author', False) for p in pages)
+        signals.has_contact = any('contact' in p.get('url', '').lower() for p in pages)
+        
+        return signals
+
+    def _extract_schema_types(self, page_data: Dict[str, Any], signals: SiteSignals):
+        """解析 JSON-LD 類型"""
+        signals.has_jsonld = page_data.get('has_jsonld', False)
+        # 注意：目前 CLI artifact 可能未將完整 schemas 列表傳回，
+        # 這裡假設未來會有一個 'schemas' 欄位或使用 has_jsonld 作為基礎
+        # 暫時依賴已有的 flags (如果有)
+        # 假設 CLI 擴充後會有 schema_types 陣列
+        types = page_data.get('schema_types', [])
+        signals.schema_types = types
+        signals.schema_count = len(types)
+        signals.has_organization = 'Organization' in types
+        signals.has_person = 'Person' in types
+        signals.has_website = 'WebSite' in types
+        signals.has_article = any(t in types for t in ['Article', 'BlogPosting'])
+
+    def _extract_author_info(self, page_data: Dict[str, Any], signals: SiteSignals):
+        """提取作者資訊"""
+        # 優先使用 CLI 判斷的 is_about_author
+        signals.has_author = page_data.get('is_about_author', False)
+        # 假設未來有作者名稱列表
+        signals.author_names = page_data.get('authors', [])
+        signals.author_count = len(signals.author_names)
+
+    def _extract_social_links(self, page_data: Dict[str, Any], signals: SiteSignals):
+        """識別社群連結"""
+        signals.social_links_count = page_data.get('social_links_count', 0)
+        signals.has_social_proof = signals.social_links_count >= 2
+        # 假設未來有 platforms 列表
+        signals.social_platforms = page_data.get('social_platforms', [])
+
+    def _analyze_outbound_links(self, page_data: Dict[str, Any], signals: SiteSignals):
+        """分析外部連結"""
+        signals.outbound_links_count = page_data.get('external_links_count', 0)
+        # 假設未來有權威網域列表
+        authorities = page_data.get('authority_domains', [])
+        signals.authority_domains = authorities
+        signals.has_authority_links = len(authorities) > 0
+
     def generate_report(self, signals: SiteSignals) -> Dict[str, Any]:
         """產生報告（更新版）"""
         
@@ -182,7 +296,7 @@ class ReportEngine:
                 "total_issues": len(issues)
             },
             "issues": issues,
-            "suggestions": suggestions[:8]  # 限制建議數量
+            "suggestions": suggestions[:8]
         }
     
     def _calculate_grade(self, signals: SiteSignals, issues_count: int) -> Tuple[str, int]:
@@ -197,6 +311,8 @@ class ReportEngine:
             "A": "🎉 恭喜！你的網站已具備優秀的 AI 可信度結構",
             "B": "✅ 你的網站已具備基本可信結構，但仍有改善空間",
             "C": "⚠️ 你的網站缺少多項關鍵資訊，建議優先改善",
-            "D": "❌ 目前你的網站尚未具備穩定的 AI 可引用可信度"
+            "D": "❌ 目前你的網站尚未具備穩定的 AI 可引用可信度",
+            "F": "🚫 分析失敗",
+            "P": "⏳ 分析中..."
         }
         return conclusions.get(grade, "⏳ 分析中...")

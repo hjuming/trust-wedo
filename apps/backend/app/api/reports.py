@@ -64,7 +64,7 @@ def get_report(
         }
     
     # 4. 提取 signals 並產生報告
-    signals = SiteSignals.from_artifacts(artifacts)
+    signals = engine.extract_signals(artifacts)
     report = engine.generate_report(signals)
     
     # 5. 加入任務基本資訊
