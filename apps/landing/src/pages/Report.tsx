@@ -18,7 +18,8 @@ export default function Report() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Unauthorized')
 
-      const response = await fetch(`http://localhost:8000/api/reports/${jobId}`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const response = await fetch(`${apiUrl}/api/reports/${jobId}`, {
         headers: {
           'Authorization': `Bearer ${session.access_token}`
         }
@@ -64,10 +65,18 @@ export default function Report() {
     )
   }
 
-  const { summary, issues, suggestions } = report
+  const { summary, issues, suggestions, signals, site_type, site_type_confidence } = report
+
+  const siteTypeNames: any = {
+    'ecommerce': '電商網站',
+    'blog': '部落格 / 內容網站',
+    'corporate': '企業官方網站',
+    'personal': '個人品牌網站',
+    'unknown': '一般網站'
+  }
 
   return (
-    <div className="print-container max-w-4xl mx-auto py-10 px-6">
+    <div className="max-w-4xl mx-auto py-10 px-6">
       <header className="mb-10 flex items-center justify-between">
         <Link to="/dashboard" className="no-print inline-flex items-center gap-2 text-brand-blue font-bold hover:translate-x-[-4px] transition-transform">
           ← 返回健檢列表
@@ -110,6 +119,65 @@ export default function Report() {
               >
                 📄 匯出 PDF 報告
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 1.5. Site Identity & Signals */}
+      <div className="print-avoid-break grid md:grid-cols-3 gap-6 mb-8">
+        {/* Site Identity Card */}
+        <div className="md:col-span-1 bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg flex flex-col items-center text-center">
+          <div className="text-4xl mb-4">🪪</div>
+          <h3 className="text-sm font-bold text-brand-slate dark:text-brand-light/40 uppercase tracking-widest mb-2">網站類型識別</h3>
+          <div className="text-xl font-black text-brand-navy dark:text-brand-light mb-1">
+            {siteTypeNames[site_type] || '未知類型'}
+          </div>
+          <div className="text-xs font-bold text-brand-blue">
+            AI 信心度 {Math.round(site_type_confidence * 100)}%
+          </div>
+        </div>
+
+        {/* Signals Visualization */}
+        <div className="md:col-span-2 bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
+          <h3 className="text-sm font-bold text-brand-slate dark:text-brand-light/40 uppercase tracking-widest mb-6">偵測到的信任信號</h3>
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <div className="text-xs font-bold text-brand-slate dark:text-brand-light/40 mb-2">Schema.org 結構化資料</div>
+              <div className="flex flex-wrap gap-2">
+                {signals.schema_types && signals.schema_types.length > 0 ? (
+                  signals.schema_types.map((type: string) => (
+                    <span key={type} className="px-2 py-1 bg-brand-blue/10 text-brand-blue text-[10px] font-black rounded-md border border-brand-blue/20">
+                      {type}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-sm text-brand-slate/40 italic">未偵測到有效標記</span>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-brand-slate dark:text-brand-light/40 mb-2">身分與連結</div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-brand-slate dark:text-brand-light/60">作者資訊</span>
+                  <span className={signals.has_author ? 'text-brand-success font-bold' : 'text-brand-slate/40'}>
+                    {signals.has_author ? `已偵測 (${signals.author_count})` : '未發現'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-brand-slate dark:text-brand-light/60">外部引用連結</span>
+                  <span className="text-brand-navy dark:text-brand-light font-bold">
+                    {signals.outbound_links_count} 條
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-brand-slate dark:text-brand-light/60">社群證明</span>
+                  <span className={signals.has_social_proof ? 'text-brand-success font-bold' : 'text-brand-slate/40'}>
+                    {signals.has_social_proof ? '已連結' : '不足'}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
