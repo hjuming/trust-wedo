@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 LABEL "language"="python"
 LABEL "framework"="fastapi"
+LABEL "build_timestamp"="2026-02-10_1700"
 
 WORKDIR /app
 
