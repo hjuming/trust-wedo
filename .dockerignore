@@ -1,0 +1,33 @@
+
+# 忽略版本控制
+.git
+.gitignore
+
+# 忽略本地環境
+.venv
+venv
+env
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# 忽略本地測試報告與快取
+.pytest_cache
+.coverage
+htmlcov
+
+# 忽略 IDE 設定
+.vscode
+.idea
+*.swp
+*.swo
+
+# 忽略本地日誌
+*.log
+
+# 忽略 OS 檔案
+.DS_Store
+
+# 確保 apps 目錄被包含 (其實預設就會包含，但這裡排除其他雜項)
+# 注意：不要忽略 apps/ 
