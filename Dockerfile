@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# 複製後端的 requirements.txt
-COPY apps/backend/requirements.txt /app/requirements.txt
+# 複製 requirements.txt (已移至根目錄以簡化)
+COPY requirements.txt /app/requirements.txt
 
 # 安裝相依套件
 RUN pip install --no-cache-dir -r requirements.txt
