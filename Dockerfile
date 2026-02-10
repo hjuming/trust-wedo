@@ -18,7 +18,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /app
 
 # 設定環境變數
-ENV PYTHONPATH=/app
+# /app/apps/backend -> 讓 'from app import ...' 工作
+# /app/src -> 讓 'import trust_wedo' 工作
+# /app -> 讓 'import apps' 工作
+ENV PYTHONPATH=/app/apps/backend:/app/src:/app:$PYTHONPATH
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
 
