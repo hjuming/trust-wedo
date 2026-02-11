@@ -203,24 +203,31 @@ class SiteParser:
                 url_path = urlparse(url).path.lower()
                 is_about_author = any(kw in url_path for kw in about_author_keywords)
                 
-                # Count external links (修復:使用網域比對而非完整 URL)
+                # Count external links (Improved Logic)
                 all_links = soup.find_all("a", href=True)
                 external_links = []
                 
-                # 從 base_url 提取主網域
-                base_domain = urlparse(self.base_url).netloc.replace('www.', '')
+                # Helper to extract root domain (simple version)
+                def get_root_domain(url_str):
+                    try:
+                        netloc = urlparse(url_str).netloc.lower().replace('www.', '')
+                        parts = netloc.split('.')
+                        if len(parts) >= 2:
+                            return f"{parts[-2]}.{parts[-1]}"
+                        return netloc
+                    except:
+                        return ""
+
+                base_root = get_root_domain(self.base_url)
                 
                 for l in all_links:
                     href = l.get("href")
                     if isinstance(href, list):
                         href = href[0] if href else ""
                     
-                    # 只處理絕對 URL
                     if href and isinstance(href, str) and href.startswith("http"):
-                        link_domain = urlparse(href).netloc.replace('www.', '')
-                        
-                        # 如果網域不同,才算外部連結
-                        if link_domain and link_domain != base_domain:
+                        link_root = get_root_domain(href)
+                        if link_root and link_root != base_root:
                             external_links.append(href)
                 
                 external_links_count = len(external_links)

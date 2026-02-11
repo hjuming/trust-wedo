@@ -19,9 +19,11 @@ interface DimensionProgressBarsProps {
 }
 
 export function DimensionProgressBars({ dimensions }: DimensionProgressBarsProps) {
+    const validDims = Object.entries(dimensions).filter(([_, dim]) => dim.max > 0);
+
     return (
         <div className="space-y-6">
-            {Object.entries(dimensions).map(([key, dim]) => (
+            {validDims.map(([key, dim]) => (
                 <div key={key} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     {/* 標題與分數 */}
                     <div className="flex items-center justify-between mb-4">
@@ -88,9 +90,10 @@ function getItemDisplayName(name: string): string {
         'schema_variety': 'Schema 多樣性',
         'schema_quality': 'Schema 質量',
         'social_links': '社群連結',
-        'authority_links': '權威連結',
+        'authority_links': '外部引用連結',
         'https': 'HTTPS 安全協定',
-        'performance': '頁面載入速度'
+        'performance': '頁面載入速度',
+        'basic_usability': '網站基本可用性'
     };
 
     return nameMap[name] || name;
