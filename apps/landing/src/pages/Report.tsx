@@ -184,6 +184,38 @@ export default function Report() {
             worstDimension={worstDimension}
           />
 
+          {/* Scoring Guide */}
+          <div className="bg-brand-blue/5 border border-brand-blue/10 rounded-3xl p-6 my-6 print-avoid-break no-print">
+            <h3 className="text-lg font-bold text-brand-navy dark:text-brand-light mb-4 flex items-center gap-2">
+              📏 評分標準說明
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+              <div>
+                <div className="font-black text-brand-success text-xl">A級 (80+)</div>
+                <div className="text-xs font-bold text-brand-slate/60 dark:text-brand-light/40">優秀</div>
+              </div>
+              <div>
+                <div className="font-black text-brand-blue text-xl">B級 (60-79)</div>
+                <div className="text-xs font-bold text-brand-slate/60 dark:text-brand-light/40">良好</div>
+              </div>
+              <div>
+                <div className="font-black text-yellow-500 text-xl">C級 (40-59)</div>
+                <div className="text-xs font-bold text-brand-slate/60 dark:text-brand-light/40">及格</div>
+              </div>
+              <div>
+                <div className="font-black text-orange-500 text-xl">D級 (20-39)</div>
+                <div className="text-xs font-bold text-brand-slate/60 dark:text-brand-light/40">需改善</div>
+              </div>
+              <div>
+                <div className="font-black text-red-500 text-xl">F級 (&lt;20)</div>
+                <div className="text-xs font-bold text-brand-slate/60 dark:text-brand-light/40">不及格</div>
+              </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-brand-navy/5 dark:border-brand-light/5 text-xs text-brand-slate dark:text-brand-light/60 font-medium">
+              💡 參考標竿: <span className="font-bold">Apple.com</span> 約 65 分 (B級), <span className="font-bold">Google.com</span> 約 30 分 (D級)
+            </div>
+          </div>
+
           <div className="no-print flex flex-col sm:flex-row gap-4 mt-6">
             <button
               onClick={handleReAudit}
