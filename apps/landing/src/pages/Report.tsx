@@ -67,8 +67,44 @@ export default function Report() {
     navigate('/dashboard', { state: { prefillUrl: report.url } })
   }
 
-  const handleExportPDF = () => {
-    window.print()
+  const handleExportPDF = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const response = await fetch(`${apiUrl}/api/reports/${jobId}/pdf`, {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      if (!response.ok) throw new Error('無法下載 PDF')
+
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+
+      const contentDisposition = response.headers.get('Content-Disposition')
+      let filename = `trust-wedo-report-${jobId}.pdf`
+      if (contentDisposition) {
+        const matches = /filename="([^"]*)"/.exec(contentDisposition)
+        if (matches && matches[1]) {
+          filename = matches[1]
+        }
+      }
+
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (err) {
+      console.error(err)
+      // Fallback to browser print if backend PDF fails
+      window.print()
+    }
   }
 
   const getWorstDimension = (dims: any) => {

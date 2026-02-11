@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from app.core.dependencies import get_current_user, get_current_org
 from app.core.supabase import supabase
 from app.models.signals import SiteSignals
 from app.services.report_engine import ReportEngine
+from app.services.report_pdf import generate_report_pdf
 from app.services.scoring import calculate_dimension_scores, score_to_grade
 from app.services.quick_wins import generate_quick_wins
 
@@ -156,3 +158,64 @@ def get_report_dimensions(
         "dimensions": formatted_dimensions,
         "quick_wins": quick_wins
     }
+
+
+@router.get("/{job_id}/pdf")
+def download_report_pdf(
+    job_id: str,
+    user = Depends(get_current_user),
+    org_id: str = Depends(get_current_org)
+):
+    """下載 PDF 報告"""
+    
+    # 1. 取得 scan job
+    job_result = supabase.table("scan_jobs")\
+        .select("*")\
+        .eq("id", job_id)\
+        .eq("org_id", org_id)\
+        .single()\
+        .execute()
+    
+    if not job_result.data:
+        raise HTTPException(status_code=404, detail="Scan job not found")
+    
+    job = job_result.data
+    
+    # 2. 取得 artifacts
+    artifacts_result = supabase.table("artifacts")\
+        .select("*")\
+        .eq("job_id", job_id)\
+        .execute()
+    
+    if not artifacts_result.data:
+        raise HTTPException(status_code=400, detail="Report not ready yet")
+    
+    artifacts = artifacts_result.data
+    
+    # 3. 生成報告數據 (Text Report)
+    signals = engine.extract_signals(artifacts)
+    report = engine.generate_report(signals)
+    report["url"] = job['url']
+    
+    # 4. 生成維度數據 (Dimensions & Scores)
+    dimension_scores = calculate_dimension_scores(signals)
+    quick_wins = generate_quick_wins(signals, dimension_scores)
+    total_score = sum(d['score'] for d in dimension_scores.values())
+    
+    dimensions_data = {
+        "dimensions": dimension_scores,
+        "quick_wins": quick_wins,
+        "total_score": total_score
+    }
+    
+    # 5. 生成 PDF
+    filename, pdf_content = generate_report_pdf(report, dimensions_data)
+    
+    # 6. 回傳檔案
+    return Response(
+        content=bytes(pdf_content),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"'
+        }
+    )
