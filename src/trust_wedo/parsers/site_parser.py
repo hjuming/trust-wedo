@@ -1,8 +1,9 @@
 """Site parser module for Trust WEDO."""
 
+import asyncio
 import json
 from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import List, Dict, Any, Set, Optional
 import httpx
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
@@ -160,7 +161,7 @@ class SiteParser:
             schema_types = []
             has_favicon = False
             social_platforms = []
-
+            
             if fetched and soup:
                 # 解析 JSON-LD Schema.org
                 schema_types = self._parse_jsonld(soup)
@@ -183,15 +184,25 @@ class SiteParser:
                 url_path = urlparse(url).path.lower()
                 is_about_author = any(kw in url_path for kw in about_author_keywords)
                 
-                # Count external links
+                # Count external links (修復:使用網域比對而非完整 URL)
                 all_links = soup.find_all("a", href=True)
                 external_links = []
+                
+                # 從 base_url 提取主網域
+                base_domain = urlparse(self.base_url).netloc.replace('www.', '')
+                
                 for l in all_links:
                     href = l.get("href")
                     if isinstance(href, list):
                         href = href[0] if href else ""
-                    if href and isinstance(href, str) and href.startswith("http") and self.base_url not in href:
-                        external_links.append(href)
+                    
+                    # 只處理絕對 URL
+                    if href and isinstance(href, str) and href.startswith("http"):
+                        link_domain = urlparse(href).netloc.replace('www.', '')
+                        
+                        # 如果網域不同,才算外部連結
+                        if link_domain and link_domain != base_domain:
+                            external_links.append(href)
                 
                 external_links_count = len(external_links)
                 

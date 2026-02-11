@@ -24,10 +24,16 @@
 - [x] **Supabase Integration**: 整合 Auth 與 Database。
 - [x] **Asynchronous Processing**: 實作背景任務處理掃描請求。
 
-### Phase 3: Frontend Dashboard (v0.3)
-- [x] **React App**: 建立 Landing Page 與 Dashboard。
-- [x] **Scan Visualization**: 視覺化呈現掃描進度與結果。
-- [x] **Multi-language**: 支援 i18n 多語系切換。
+## Phase 3: 視覺化與互動 (COMPLETED)
+- [x] Backend API 擴充 (`/api/reports/{scan_id}/dimensions`)
+- [x] Frontend 視覺化元件 (`ReportRadarChart`, `DimensionProgressBars`)
+- [x] 快速勝利建議模組 (`QuickWins`)
+- [x] 整合至報告頁面
+
+## Bug Fixes (COMPLETED)
+- [x] Schema.org 解析錯誤 (Apple.com 0分問題)
+- [x] `site_parser.py` UnboundLocalError & ImportError 修復
+- [x] 外部連結計算邏輯修正 (Domain comparison)
 
 ### Phase 4: Production & Optimization (v1.0)
 - [x] **Report Engine Upgrade**: 擴充 Schema.org 檢測與加權評分。
