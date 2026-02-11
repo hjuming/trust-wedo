@@ -13,6 +13,7 @@ export default function Report() {
   const [dimensions, setDimensions] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [isExporting, setIsExporting] = useState(false)
 
   useEffect(() => {
     fetchReport()
@@ -192,9 +193,10 @@ export default function Report() {
             </button>
             <button
               onClick={handleExportPDF}
-              className="flex-1 py-4 bg-white dark:bg-brand-navy border-2 border-brand-blue text-brand-blue rounded-2xl font-black text-lg hover:bg-brand-blue/5 transition-all"
+              disabled={isExporting}
+              className={`flex-1 py-4 bg-white dark:bg-brand-navy border-2 border-brand-blue text-brand-blue rounded-2xl font-black text-lg hover:bg-brand-blue/5 transition-all ${isExporting ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
-              📄 匯出 PDF 報告
+              {isExporting ? '⏳ 生成 PDF 中...' : '📄 匯出 PDF 報告'}
             </button>
           </div>
         </div>

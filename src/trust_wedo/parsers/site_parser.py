@@ -22,7 +22,13 @@ class SiteParser:
 
     async def scan(self) -> Dict[str, Any]:
         """Perform site scan."""
-        async with httpx.AsyncClient(follow_redirects=True) as client:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 TrustWEDO/1.0",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9,zh-TW;q=0.8,zh;q=0.7"
+        }
+        
+        async with httpx.AsyncClient(follow_redirects=True, headers=headers, timeout=30.0) as client:
             # 1. Check robots.txt (minimal check)
             if self.base_url.startswith("file://"):
                 self.checks["robots_ok"] = True
@@ -30,7 +36,8 @@ class SiteParser:
                 try:
                     robots_resp = await client.get(f"{self.base_url}/robots.txt")
                     self.checks["robots_ok"] = robots_resp.status_code == 200
-                except Exception:
+                except Exception as e:
+                    print(f"[WARN] Failed to check robots.txt: {e}")
                     self.checks["robots_ok"] = False
 
             # 2. Check sitemap.xml
@@ -38,21 +45,30 @@ class SiteParser:
                 self.checks["sitemap_ok"] = False
                 urls_to_scan = [self.base_url]
             else:
-                sitemap_urls = await self._find_sitemap_urls(client)
-                if sitemap_urls:
-                    self.checks["sitemap_ok"] = True
-                    urls_to_scan = sitemap_urls[:self.max_pages]
-                else:
+                try:
+                    sitemap_urls = await self._find_sitemap_urls(client)
+                    if sitemap_urls:
+                        self.checks["sitemap_ok"] = True
+                        urls_to_scan = sitemap_urls[:self.max_pages]
+                    else:
+                        self.checks["sitemap_ok"] = False
+                        urls_to_scan = [self.base_url]
+                except Exception as e:
+                    print(f"[WARN] Failed to check sitemap: {e}")
                     self.checks["sitemap_ok"] = False
                     urls_to_scan = [self.base_url]
 
             # 3. Scan pages
+            print(f"[INFO] Starting scan for {self.base_url} with {len(urls_to_scan)} URLs")
             for url in urls_to_scan:
                 if len(self.pages) >= self.max_pages:
                     break
-                page_info = await self._scan_page(client, url)
-                if page_info:
-                    self.pages.append(page_info)
+                try:
+                    page_info = await self._scan_page(client, url)
+                    if page_info:
+                        self.pages.append(page_info)
+                except Exception as e:
+                    print(f"[ERROR] Failed to scan page {url}: {e}")
 
         return {
             "site": self.base_url,
@@ -171,6 +187,9 @@ class SiteParser:
                 title = soup.find("title")
                 has_meta_desc = bool(soup.find("meta", attrs={"name": "description"}))
                 has_meta = has_meta_desc
+                
+                print(f"[DEBUG] Parsed {url}: Title={bool(title)}, Desc={has_meta_desc}, Schema={len(schema_types)}")
+
                 
                 # Favicon 偵測
                 has_favicon = bool(

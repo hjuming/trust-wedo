@@ -214,15 +214,17 @@ def calculate_weighted_score(signals: SiteSignals) -> int:
 
 
 def score_to_grade(score: int) -> str:
-    """分數轉換為等級"""
-    if score >= 85:
+    """分數轉換為等級 (v2.1 - 優化門檻)"""
+    if score >= 80:
         return 'A'
-    elif score >= 70:
+    elif score >= 60:
         return 'B'
-    elif score >= 50:
+    elif score >= 40:
         return 'C'
-    else:
+    elif score >= 20:
         return 'D'
+    else:
+        return 'F'
 
 
 # === 向後相容:保留舊版權重配置 ===
