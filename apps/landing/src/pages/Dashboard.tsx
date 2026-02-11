@@ -224,7 +224,7 @@ export default function Dashboard() {
                     {scan.url}
                   </div>
                   <div className="text-sm text-brand-slate dark:text-brand-light/40 font-medium">
-                    {new Date(scan.created_at).toLocaleDateString()}
+                    {new Date(scan.created_at).toLocaleString('zh-TW', { hour12: false, year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
                 <div className="flex items-center gap-4">

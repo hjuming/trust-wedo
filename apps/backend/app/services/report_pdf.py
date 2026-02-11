@@ -174,5 +174,11 @@ def generate_report_pdf(report_data: dict, dimensions: dict) -> tuple[str, bytes
     pdf = TrustWedoReportPDF(report_data, dimensions)
     content = pdf.generate()
     
-    filename = f"Trust_WEDO_{pdf.domain}_{pdf.date_str}.pdf"
+    # Sanitize URL for filename (remove protocol, replace slashes with underscores)
+    safe_url = report_data.get("url", "").replace("https://", "").replace("http://", "").replace("/", "_").replace(":", "").strip("_")
+    # Truncate if too long to avoid filesystem errors
+    if len(safe_url) > 50:
+        safe_url = safe_url[:50]
+        
+    filename = f"Trust_WEDO_{safe_url}_{pdf.date_str}.pdf"
     return filename, content
