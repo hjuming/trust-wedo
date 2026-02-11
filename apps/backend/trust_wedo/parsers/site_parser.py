@@ -73,6 +73,65 @@ class SiteParser:
             pass
         return []
 
+    def _parse_jsonld(self, soup: BeautifulSoup) -> List[str]:
+        """解析 JSON-LD 結構化資料,提取所有 @type 欄位。
+        
+        支援格式:
+        1. 單一物件: {"@type": "Organization", ...}
+        2. @graph 格式: {"@graph": [{"@type": "Organization"}, ...]}
+        3. 陣列格式: [{"@type": "WebSite"}, {"@type": "Organization"}]
+        
+        Returns:
+            List[str]: 所有找到的 @type 值列表
+        """
+        schema_types = []
+        scripts = soup.find_all("script", type="application/ld+json")
+        
+        for script in scripts:
+            if not script.string:
+                continue
+                
+            try:
+                data = json.loads(script.string)
+                
+                # 處理陣列格式
+                if isinstance(data, list):
+                    for item in data:
+                        if isinstance(item, dict) and "@type" in item:
+                            type_value = item["@type"]
+                            # @type 可能是字串或陣列
+                            if isinstance(type_value, list):
+                                schema_types.extend(type_value)
+                            else:
+                                schema_types.append(type_value)
+                
+                # 處理物件格式
+                elif isinstance(data, dict):
+                    # 處理 @graph 格式 (常見於 Google 推薦的格式)
+                    if "@graph" in data:
+                        for item in data["@graph"]:
+                            if isinstance(item, dict) and "@type" in item:
+                                type_value = item["@type"]
+                                if isinstance(type_value, list):
+                                    schema_types.extend(type_value)
+                                else:
+                                    schema_types.append(type_value)
+                    
+                    # 處理單一物件
+                    elif "@type" in data:
+                        type_value = data["@type"]
+                        if isinstance(type_value, list):
+                            schema_types.extend(type_value)
+                        else:
+                            schema_types.append(type_value)
+                            
+            except (json.JSONDecodeError, TypeError, KeyError):
+                # 忽略無效的 JSON-LD
+                continue
+        
+        # 去除重複
+        return list(set(schema_types))
+
     async def _scan_page(self, client: httpx.AsyncClient, url: str) -> Optional[Dict[str, Any]]:
         """Scan a single page."""
         if url in self.visited_urls:
@@ -98,13 +157,26 @@ class SiteParser:
 
             has_jsonld = False
             has_meta = False
+            schema_types = []
+            has_favicon = False
+            social_platforms = []
 
             if fetched and soup:
-                has_jsonld = bool(soup.find("script", type="application/ld+json"))
+                # 解析 JSON-LD Schema.org
+                schema_types = self._parse_jsonld(soup)
+                has_jsonld = len(schema_types) > 0 or bool(soup.find("script", type="application/ld+json"))
                 
+                # 基本 meta 資訊
                 title = soup.find("title")
                 has_meta_desc = bool(soup.find("meta", attrs={"name": "description"}))
                 has_meta = has_meta_desc
+                
+                # Favicon 偵測
+                has_favicon = bool(
+                    soup.find("link", rel="icon") or 
+                    soup.find("link", rel="shortcut icon") or
+                    soup.find("link", rel="apple-touch-icon")
+                )
                 
                 # Check for about/author pages
                 about_author_keywords = ["about", "author", "team", "contact", "關於", "作者"]
@@ -123,33 +195,56 @@ class SiteParser:
                 
                 external_links_count = len(external_links)
                 
-                # Count social links
-                social_domains = ["twitter.com", "facebook.com", "linkedin.com", "github.com", "instagram.com"]
-                social_links = [l for l in external_links if any(sd in l for sd in social_domains)]
+                # Count social links & platforms
+                social_domains = {
+                    "twitter.com": "Twitter",
+                    "x.com": "X (Twitter)",
+                    "facebook.com": "Facebook",
+                    "linkedin.com": "LinkedIn",
+                    "github.com": "GitHub",
+                    "instagram.com": "Instagram",
+                    "youtube.com": "YouTube",
+                    "tiktok.com": "TikTok"
+                }
+                social_links = []
+                for link in external_links:
+                    for domain, platform in social_domains.items():
+                        if domain in link:
+                            social_links.append(link)
+                            if platform not in social_platforms:
+                                social_platforms.append(platform)
+                            break
+                
                 social_links_count = len(social_links)
 
                 return {
                     "url": url,
                     "fetched": fetched,
                     "has_jsonld": has_jsonld,
+                    "schema_types": schema_types,  # 新增欄位
                     "has_meta": has_meta,
+                    "has_favicon": has_favicon,   # 新增欄位
                     "title_missing": not bool(title),
                     "meta_missing": not has_meta_desc,
                     "is_about_author": is_about_author,
                     "external_links_count": external_links_count,
-                    "social_links_count": social_links_count
+                    "social_links_count": social_links_count,
+                    "social_platforms": social_platforms  # 新增欄位
                 }
             
             return {
                 "url": url,
                 "fetched": False,
                 "has_jsonld": False,
+                "schema_types": [],
                 "has_meta": False,
+                "has_favicon": False,
                 "title_missing": True,
                 "meta_missing": True,
                 "is_about_author": False,
                 "external_links_count": 0,
-                "social_links_count": 0
+                "social_links_count": 0,
+                "social_platforms": []
             }
         except Exception:
             return {

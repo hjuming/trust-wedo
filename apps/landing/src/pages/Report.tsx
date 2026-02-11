@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { ReportRadarChart } from '../components/report/ReportRadarChart'
+import { DimensionProgressBars } from '../components/report/DimensionProgressBars'
+import { QuickWins } from '../components/report/QuickWins'
 
 export default function Report() {
   const { jobId } = useParams()
   const navigate = useNavigate()
   const [report, setReport] = useState<any>(null)
+  const [dimensions, setDimensions] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
     fetchReport()
+    fetchDimensions()
   }, [jobId])
 
   const fetchReport = async () => {
@@ -33,6 +38,27 @@ export default function Report() {
       setError(err.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchDimensions = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const response = await fetch(`${apiUrl}/api/reports/${jobId}/dimensions`, {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setDimensions(data)
+      }
+    } catch (err) {
+      console.error('無法讀取維度資料:', err)
     }
   }
 
@@ -182,6 +208,43 @@ export default function Report() {
           </div>
         </div>
       </div>
+
+      {/* Phase 3: 視覺化元件區塊 */}
+      {dimensions && (
+        <>
+          {/* 雷達圖 */}
+          <div className="print-avoid-break bg-white dark:bg-brand-navy/50 p-10 rounded-[2.5rem] mb-8 border-2 border-brand-blue/20 shadow-xl">
+            <h2 className="text-2xl font-black mb-6 text-brand-navy dark:text-brand-light flex items-center gap-3">
+              <span className="text-3xl">📊</span>
+              五大維度總覽
+            </h2>
+            <ReportRadarChart dimensions={dimensions.dimensions} />
+            <div className="mt-6 text-center">
+              <div className="inline-block px-6 py-3 bg-brand-blue/10 rounded-full">
+                <span className="text-sm font-bold text-brand-slate dark:text-brand-light/60 mr-2">總分:</span>
+                <span className="text-3xl font-black text-brand-blue">{dimensions.total_score}</span>
+                <span className="text-sm font-bold text-brand-slate dark:text-brand-light/60">/100</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 快速勝利 */}
+          {dimensions.quick_wins && dimensions.quick_wins.length > 0 && (
+            <div className="print-avoid-break mb-8">
+              <QuickWins quickWins={dimensions.quick_wins} />
+            </div>
+          )}
+
+          {/* 維度明細進度條 */}
+          <div className="print-avoid-break mb-8">
+            <h2 className="text-2xl font-black mb-6 text-brand-navy dark:text-brand-light flex items-center gap-3">
+              <span className="text-3xl">📈</span>
+              各維度詳細分析
+            </h2>
+            <DimensionProgressBars dimensions={dimensions.dimensions} />
+          </div>
+        </>
+      )}
 
       <div className="grid md:grid-cols-2 gap-8 mb-8 text-brand-navy dark:text-brand-light">
         {/* 2. Key Issues */}

@@ -2,142 +2,101 @@
 
 **Answer Trust Infrastructure for Generative Systems.**
 
-This tool converts content into verifiable, rejectable, and AI-usable answer objects.
+> Trust WEDO 是一個針對生成式 AI 系統設計的信任基礎設施。
+> 它將網頁內容轉換為可驗證 (Verifiable)、可拒絕 (Rejectable)、且 AI 可用 (AI-usable) 的「答案物件 (Answer Objects)」。
 
-**This is not SEO. This is trust engineering for answers.**
-
----
-
-## 📌 唯一真理文件（工程規格來源）
-
-> **PR 討論若與以下文件衝突，以這三份為準。**
-
-1. **[DEVELOPMENT_BLUEPRINT.md](DEVELOPMENT_BLUEPRINT.md)** - 流程與驗收入口
-2. **[MVP_BEHAVIOR.md](MVP_BEHAVIOR.md)** - 每個指令的最小行為規格
-3. **[ISSUES.md](ISSUES.md)** - 工程任務拆分與 DoD
-
-**工程 KPI（v0.2 最小成功定義）：**
-- ✅ `./scripts/verify_mvp.sh` exit code = 0
-- ✅ `output/` 產出所有必要 JSON 檔案
-- ✅ EC gate / CCS gate / single_source_risk 都能被測試觸發
-
-**硬規則：任何 PR 沒讓 `./scripts/verify_mvp.sh` 更接近全綠，就不合併。**
+![Status](https://img.shields.io/badge/Status-Production_Stable-success)
+![Frontend](https://img.shields.io/badge/Frontend-React_19-blue)
+![Backend](https://img.shields.io/badge/Backend-FastAPI-green)
+![Database](https://img.shields.io/badge/Database-Supabase-emerald)
 
 ---
 
+## 🚀 核心功能 (Core Features)
+
+Trust WEDO 透過一系列標準化流程，建立內容的信任度：
+
+1.  **🔍 深度掃描 (Deep Scan)**
+    -   解析網頁結構、Schema.org 標記、Metadata 與作者資訊。
+    -   識別網站類型 (電商、部落格、企業、個人)。
+
+2.  **📊 信任評分 (Trust Scoring)**
+    -   基於 **EC (Entity Confidence)** 演算法計算可信度。
+    -   分析一致性 (Consistency)、權威性 (Authority)、與社群信號 (Social Signals)。
+
+3.  **🧱 AFB 建構 (Answer-First Block)**
+    -   生成標準化的 JSON 結構，專供 AI (LLMs) 引用與檢索。
+    -   阻擋低品質或惡意內容進入 AI 上下文。
+
+4.  **🕸️ 實體圖譜 (Trust Graph)**
+    -   建立跨網頁的實體關係鏈，偵測孤立資訊與單一來源風險。
 
 ---
 
-## 快速開始
+## 🛠️ 技術架構 (Tech Stack)
 
-### 安裝
+是一個現代化的 **Full-stack Monorepo**：
 
-```bash
-# 建立虛擬環境
-python3 -m venv .venv
-source .venv/bin/activate
-
-# 安裝套件
-pip install -e .
-```
-
-### 基本使用
-
-```bash
-# 1. 掃描網站
-tw scan https://example.com
-
-# 2. 計算實體信任評分
-tw entity score output/site.json
-
-# 3. 產生 Answer-First Block
-tw afb build samples/sample_page.html --entity output/entity_profile.json
-
-# 4. 評估引用可信度
-tw citation eval output/afb.json
-
-# 5. 建立實體關係圖
-tw graph build output/
-
-# 6. 產生最終報告
-tw report output/
-
-# 7. 捕獲 AI 輸出 (Phase 3)
-tw capture afb:page:example --ai-output "AI 的回答內容" --source "chatgpt-4"
-
-# 8. 差異分析 (Phase 4)
-tw diff afb:page:example
-```
+| Layer | Technology | Description |
+|-------|------------|-------------|
+| **Frontend** | React 19, Vite, TailwindCSS | 位於 `apps/landing`。提供直覺的分析 Dashboard 與報告介面。 |
+| **Backend** | FastAPI, Python 3.10+ | 位於 `apps/backend`。內嵌核心引擎，處理高併發分析請求。 |
+| **Core** | Trust WEDO Library | 位於 `src/trust_wedo`。核心演算法與 CLI 工具。 |
+| **Database** | Supabase (PostgreSQL) | 儲存使用者資料、掃描任務與 RLS 權限控管。 |
+| **Infra** | Zeabur & Cloudflare | 自動化 CI/CD 部署流程。 |
 
 ---
 
-## CLI 指令
+## 🚦 開發指南 (Development)
 
-| 指令 | 說明 | 輸出 |
-|------|------|------|
-| `tw scan <url>` | 掃描網站內容 | `output/site.json` |
-| `tw entity score <site.json>` | 計算實體信任評分 | `output/entity_profile.json` |
-| `tw afb build <page.html> --entity <entity.json>` | 產生答案物件 | `output/afb.json` |
-| `tw citation eval <afb.json>` | 評估引用可信度 | `output/citation_eval.json` |
-| `tw graph build <bundle/>` | 建立實體關係圖 | `output/entity_graph.json` |
-| `tw report <bundle/>` | 產生最終報告 | `output/trust-wedo-report.md` |
-| `tw capture <afb_id> --ai-output <text>` | 捕獲 AI 輸出 | `output/captures/*.json` |
-| `tw diff <afb_id>` | 差異分析 | `output/diffs/*.json` |
+### 前置需求
+- Node.js 18+
+- Python 3.10+
+- Supabase Account
 
----
+### 啟動本地開發環境
 
-## 專案結構
+1.  **安裝依賴**
+    ```bash
+    # Backend
+    cd apps/backend
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
 
-```
-trust-wedo/
-├── schemas/              # JSON Schema 定義
-├── samples/              # 範例資料
-├── src/                  # 原始碼
-│   ├── commands/         # CLI 指令實作
-│   ├── core/             # 核心邏輯
-│   ├── parsers/          # 內容解析器
-│   ├── validators/       # Schema 驗證器
-│   └── utils/            # 工具函式
-├── tests/                # 測試檔案
-└── output/               # CLI 輸出目錄
-```
+    # Frontend
+    cd ../../apps/landing
+    npm install
+    ```
 
----
+2.  **設定環境變數**
+    複製 `.env.example` 並填入 Supabase 設定。
 
-## 核心概念
+3.  **啟動服務**
+    ```bash
+    # Backend (Port 8000)
+    cd apps/backend
+    uvicorn app.main:app --reload
 
-### Entity Confidence (EC)
-實體信任評分，基於以下信號計算：
-- **Consistency**：內容一致性
-- **Authority**：權威性
-- **Citation**：引用品質
-- **Frequency**：出現頻率
-- **Social**：社群信號
-
-**規則**：EC < 0.60 → 不產生 AFB
-
-### Citation Confidence Score (CCS)
-引用可信度評分
-
-**規則**：CCS < 0.60 → reject citation
-
-### Answer-First Block (AFB)
-可被 AI 安全使用的答案物件，包含：
-- AI 快速答案
-- 使用情境限制
-- 信任信號
-- 結構化 payload
+    # Frontend (Port 5173)
+    cd apps/landing
+    npm run dev
+    ```
 
 ---
 
-## 文件
+## 📚 文件索引 (Documentation)
 
-- [PRODUCT.md](PRODUCT.md) - 產品定義與範圍
-- [CLI.md](CLI.md) - CLI 指令詳細規格
-- [ACCEPTANCE_TESTS.md](ACCEPTANCE_TESTS.md) - 驗收測試標準
+- **[DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md)**: 開發進度與未來路線圖 (Roadmap)。
+- **[DEVELOPMENT_BLUEPRINT.md](DEVELOPMENT_BLUEPRINT.md)**: 詳細工程架構與設計藍圖。
+- **[CLI.md](CLI.md)**: 核心 CLI 指令規格說明。
+- **[ISSUES.md](ISSUES.md)**: 已知問題與任務追蹤。
+
+### 最新優化計劃 (2026-02-11)
+- **評分引擎重構**: 修復 Apple.com 評分錯誤問題 (詳見 [DEVELOPMENT_STATUS.md](DEVELOPMENT_STATUS.md#phase-5))
 
 ---
 
 ## License
 
-MIT
+MIT © Trust WEDO Team
