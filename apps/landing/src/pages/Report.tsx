@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { ReportRadarChart } from '../components/report/ReportRadarChart'
 import { DimensionProgressBars } from '../components/report/DimensionProgressBars'
 import { QuickWins } from '../components/report/QuickWins'
+import { ReportSummaryCard } from '../components/report/ReportSummaryCard'
 
 export default function Report() {
   const { jobId } = useParams()
@@ -67,8 +68,32 @@ export default function Report() {
   }
 
   const handleExportPDF = () => {
-    // 觸發列印，CSS 會處理隱藏與格式
     window.print()
+  }
+
+  const getWorstDimension = (dims: any) => {
+    if (!dims) return { name: '未知', score: 0, max: 100 };
+    let worstKey = '';
+    let minPercentage = 200;
+
+    Object.keys(dims).forEach(key => {
+      const d = dims[key];
+      if (!d.max) return;
+
+      const percentage = d.score / d.max;
+      if (percentage < minPercentage) {
+        minPercentage = percentage;
+        worstKey = key;
+      }
+    });
+
+    if (!worstKey) return { name: '無', score: 0, max: 100 };
+
+    return {
+      name: worstKey,
+      score: dims[worstKey].score,
+      max: dims[worstKey].max
+    };
   }
 
   if (loading) {
@@ -91,7 +116,8 @@ export default function Report() {
     )
   }
 
-  const { summary, issues, suggestions, signals, site_type, site_type_confidence } = report
+  const { issues, suggestions, signals, site_type, site_type_confidence } = report
+  const worstDimension = dimensions ? getWorstDimension(dimensions.dimensions) : { name: '', score: 0, max: 0 };
 
   const siteTypeNames: any = {
     'ecommerce': '電商網站',
@@ -112,47 +138,34 @@ export default function Report() {
         </div>
       </header>
 
-      {/* 1. Summary Card */}
-      <div className="print-avoid-break bg-white dark:bg-brand-navy/50 p-10 rounded-[2.5rem] mb-8 border-2 border-brand-blue/20 shadow-xl relative overflow-hidden">
-        <div className="flex flex-col md:flex-row items-center gap-8 relative z-10 text-brand-navy dark:text-brand-light">
-          <div className="text-8xl">
-            {summary.grade === 'A' && '🎉'}
-            {summary.grade === 'B' && '✅'}
-            {summary.grade === 'C' && '⚠️'}
-            {summary.grade === 'D' && '❌'}
-            {summary.grade === 'F' && '🚫'}
-            {summary.grade === 'P' && '⏳'}
-          </div>
-          <div className="text-center md:text-left flex-1">
-            <div className="inline-block px-4 py-1 rounded-full bg-brand-blue/10 text-brand-blue text-sm font-black uppercase tracking-widest mb-4">
-              可信度等級: {summary.grade}
-            </div>
-            <h1 className="text-3xl md:text-4xl font-black leading-tight">
-              {summary.conclusion}
-            </h1>
+      {/* 1. Summary Card (New) */}
+      {dimensions && (
+        <div className="print-avoid-break mb-8">
+          <ReportSummaryCard
+            score={dimensions.total_score}
+            grade={dimensions.grade}
+            worstDimension={worstDimension}
+          />
 
-            {/* CTA Close Loop */}
-            <div className="no-print flex flex-col sm:flex-row gap-4 mt-8">
-              <button
-                onClick={handleReAudit}
-                className="flex-1 py-4 bg-brand-blue text-white rounded-2xl font-black text-lg hover:bg-brand-blue/90 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-brand-blue/25"
-              >
-                ✅ 我已修正，重新健檢
-              </button>
-              <button
-                onClick={handleExportPDF}
-                className="flex-1 py-4 bg-white dark:bg-brand-navy border-2 border-brand-blue text-brand-blue rounded-2xl font-black text-lg hover:bg-brand-blue/5 transition-all"
-              >
-                📄 匯出 PDF 報告
-              </button>
-            </div>
+          <div className="no-print flex flex-col sm:flex-row gap-4 mt-6">
+            <button
+              onClick={handleReAudit}
+              className="flex-1 py-4 bg-brand-blue text-white rounded-2xl font-black text-lg hover:bg-brand-blue/90 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-brand-blue/25"
+            >
+              ✅ 我已修正，重新健檢
+            </button>
+            <button
+              onClick={handleExportPDF}
+              className="flex-1 py-4 bg-white dark:bg-brand-navy border-2 border-brand-blue text-brand-blue rounded-2xl font-black text-lg hover:bg-brand-blue/5 transition-all"
+            >
+              📄 匯出 PDF 報告
+            </button>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* 1.5. Site Identity & Signals */}
+      {/* 2. Site Identity & Signals */}
       <div className="print-avoid-break grid md:grid-cols-3 gap-6 mb-8">
-        {/* Site Identity Card */}
         <div className="md:col-span-1 bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg flex flex-col items-center text-center">
           <div className="text-4xl mb-4">🪪</div>
           <h3 className="text-sm font-bold text-brand-slate dark:text-brand-light/40 uppercase tracking-widest mb-2">網站類型識別</h3>
@@ -164,7 +177,6 @@ export default function Report() {
           </div>
         </div>
 
-        {/* Signals Visualization */}
         <div className="md:col-span-2 bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
           <h3 className="text-sm font-bold text-brand-slate dark:text-brand-light/40 uppercase tracking-widest mb-6">偵測到的信任信號</h3>
           <div className="grid grid-cols-2 gap-6">
@@ -209,33 +221,23 @@ export default function Report() {
         </div>
       </div>
 
-      {/* Phase 3: 視覺化元件區塊 */}
+      {/* 3. Visualizations */}
       {dimensions && (
         <>
-          {/* 雷達圖 */}
           <div className="print-avoid-break bg-white dark:bg-brand-navy/50 p-10 rounded-[2.5rem] mb-8 border-2 border-brand-blue/20 shadow-xl">
             <h2 className="text-2xl font-black mb-6 text-brand-navy dark:text-brand-light flex items-center gap-3">
               <span className="text-3xl">📊</span>
               五大維度總覽
             </h2>
             <ReportRadarChart dimensions={dimensions.dimensions} />
-            <div className="mt-6 text-center">
-              <div className="inline-block px-6 py-3 bg-brand-blue/10 rounded-full">
-                <span className="text-sm font-bold text-brand-slate dark:text-brand-light/60 mr-2">總分:</span>
-                <span className="text-3xl font-black text-brand-blue">{dimensions.total_score}</span>
-                <span className="text-sm font-bold text-brand-slate dark:text-brand-light/60">/100</span>
-              </div>
-            </div>
           </div>
 
-          {/* 快速勝利 */}
           {dimensions.quick_wins && dimensions.quick_wins.length > 0 && (
             <div className="print-avoid-break mb-8">
               <QuickWins quickWins={dimensions.quick_wins} />
             </div>
           )}
 
-          {/* 維度明細進度條 */}
           <div className="print-avoid-break mb-8">
             <h2 className="text-2xl font-black mb-6 text-brand-navy dark:text-brand-light flex items-center gap-3">
               <span className="text-3xl">📈</span>
@@ -246,8 +248,8 @@ export default function Report() {
         </>
       )}
 
+      {/* 4. Analysis Details */}
       <div className="grid md:grid-cols-2 gap-8 mb-8 text-brand-navy dark:text-brand-light">
-        {/* 2. Key Issues */}
         <div className="print-avoid-break bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
           <h2 className="text-xl font-black mb-6 flex items-center gap-2 tracking-tight">
             <span className="w-2 h-8 bg-red-500 rounded-full" />
@@ -276,7 +278,6 @@ export default function Report() {
           )}
         </div>
 
-        {/* 3. Action Suggestions */}
         <div className="print-avoid-break bg-white dark:bg-brand-navy/50 p-8 rounded-3xl border border-brand-navy/5 dark:border-brand-light/5 shadow-lg">
           <h2 className="text-xl font-black mb-6 flex items-center gap-2 tracking-tight">
             <span className="w-2 h-8 bg-brand-success rounded-full" />
@@ -311,21 +312,7 @@ export default function Report() {
         </div>
       </div>
 
-      {/* 4. Advanced Technical Details */}
-      <details className="no-print group bg-brand-navy/5 dark:bg-brand-navy/30 rounded-[2rem] overflow-hidden transition-all border border-transparent hover:border-brand-blue/10">
-        <summary className="p-8 font-black text-brand-navy dark:text-brand-light cursor-pointer list-none flex items-center justify-between">
-          <span className="flex items-center gap-3">
-            <span className="text-xl">🧬</span> 進階技術分析資料 (Report Version: {report.report_version})
-          </span>
-          <span className="text-brand-blue group-open:rotate-180 transition-transform font-black">↓</span>
-        </summary>
-        <div className="px-8 pb-8">
-          <div className="bg-black/90 rounded-2xl p-6 font-mono text-xs text-green-400 overflow-x-auto shadow-inner">
-            <pre>{JSON.stringify(report, null, 2)}</pre>
-          </div>
-        </div>
-      </details>
-
+      {/* 5. Footer */}
       <div className="mt-12 text-center text-brand-slate dark:text-brand-light/40 text-sm font-medium">
         這份報告是由 Trust WEDO AI 引擎基於您的網站結構自動生成。<br />
         引擎版本: {report.report_version} • 掃描編號: {report.job_id}
