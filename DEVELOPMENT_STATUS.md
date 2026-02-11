@@ -29,13 +29,17 @@
 - [x] Frontend 視覺化元件 (`ReportRadarChart`, `DimensionProgressBars`)
 - [x] 快速勝利建議模組 (`QuickWins`)
 - [x] 整合至報告頁面
-
 ## Bug Fixes (COMPLETED)
 - [x] Schema.org 解析錯誤 (Apple.com 0分問題)
 - [x] `site_parser.py` UnboundLocalError & ImportError 修復
 - [x] 外部連結計算邏輯修正 (Domain comparison)
 
-### Phase 4: Production & Optimization (v1.0)
+## Phase 4: 文案與體驗優化 (COMPLETED)
+- [x] 報告摘要卡片 (`ReportSummaryCard`)
+- [x] 最弱維度視覺化提示
+- [x] Quick Wins 優先級展示
+- [x] PDF 輸出樣式優化 (`print.css` + `window.print`)
+Production & Optimization (v1.0)
 - [x] **Report Engine Upgrade**: 擴充 Schema.org 檢測與加權評分。
 - [x] **Deployment**: Zeabur (Backend) + Cloudflare (Frontend) 全自動部署。
 - [x] **Stability Fixes**: 解決 CORS, Redirects, RLS Recursion 等關鍵問題。
