@@ -23,9 +23,13 @@ class SiteParser:
     async def scan(self) -> Dict[str, Any]:
         """Perform site scan."""
         headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 TrustWEDO/1.0",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9,zh-TW;q=0.8,zh;q=0.7"
+            "Accept-Language": "en-US,en;q=0.9,zh-TW;q=0.8,zh;q=0.7",
+            "Cache-Control": "max-age=0",
+            "Sec-Ch-Ua": '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
+            "Sec-Ch-Ua-Mobile": "?0",
+            "Sec-Ch-Ua-Platform": '"macOS"'
         }
         
         async with httpx.AsyncClient(follow_redirects=True, headers=headers, timeout=30.0) as client:
@@ -184,11 +188,17 @@ class SiteParser:
                 has_jsonld = len(schema_types) > 0 or bool(soup.find("script", type="application/ld+json"))
                 
                 # 基本 meta 資訊
-                title = soup.find("title")
-                has_meta_desc = bool(soup.find("meta", attrs={"name": "description"}))
+                title_tag = soup.find("title")
+                has_title = bool(title_tag and title_tag.string and title_tag.string.strip())
+                
+                meta_desc = soup.find("meta", attrs={"name": "description"})
+                if not meta_desc:
+                    meta_desc = soup.find("meta", attrs={"property": "og:description"})
+                
+                has_meta_desc = bool(meta_desc and meta_desc.get("content", "").strip())
                 has_meta = has_meta_desc
                 
-                print(f"[DEBUG] Parsed {url}: Title={bool(title)}, Desc={has_meta_desc}, Schema={len(schema_types)}")
+                print(f"[DEBUG] Parsed {url}: Title={has_title}, Desc={has_meta_desc}, Schema={len(schema_types)}")
 
                 
                 # Favicon 偵測
@@ -261,7 +271,7 @@ class SiteParser:
                     "schema_types": schema_types,  # 新增欄位
                     "has_meta": has_meta,
                     "has_favicon": has_favicon,   # 新增欄位
-                    "title_missing": not bool(title),
+                    "title_missing": not has_title,
                     "meta_missing": not has_meta_desc,
                     "is_about_author": is_about_author,
                     "external_links_count": external_links_count,

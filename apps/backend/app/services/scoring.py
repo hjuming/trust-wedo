@@ -3,25 +3,36 @@ from typing import Dict, Any
 
 def score_to_grade(score: int) -> str:
     """
-    評級標準 (配合新權重 - Scheme A)
+    評級標準 (配合新權重 - Scheme B)
+    A: 80-100 (優秀)
+    B: 60-79 (良好)
+    C: 40-59 (及格)
+    D: 20-39 (需改善)
+    F: 0-19 (不及格)
     """
-    if score >= 70:
-        return 'A'  # 優秀
-    if score >= 55:
-        return 'B'  # 良好
-    if score >= 35:
-        return 'C'  # 及格
+    if score >= 80:
+        return 'A'
+    if score >= 60:
+        return 'B'
+    if score >= 40:
+        return 'C'
     if score >= 20:
-        return 'D'  # 需改善
-    return 'F'      # 不及格
+        return 'D'
+    return 'F'
 
 def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
     """
-    新版評分系統 (2.0) - Scheme A
-    移除罕見元素,聚焦可控制指標 (Discovery, Structure, Technical)
+    新版評分系統 (2.0) - Scheme B
+    調整權重分配以解決高權威網站(如 Wikipedia)低分問題
+    
+    Weights:
+    - AI Discoverability: 25% (Title 15, Desc 5, Favicon 5)
+    - Content Structure: 25% (JSON-LD 10, Variety 10, Quality 5)
+    - Technical Basis: 20% (HTTPS 15, Usability 5)
+    - Social Trust: 30% (Ext Links 20, Social Links 10)
     """
     
-    # 1. AI 可發現性 (30 分) - 最基本的 SEO
+    # 1. AI 可發現性 (25 分)
     discoverability_score = 0
     discoverability_items = []
     
@@ -42,10 +53,10 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
         })
     
     if signals.has_description:
-        discoverability_score += 10
+        discoverability_score += 5
         discoverability_items.append({
             'name': 'description',
-            'score': 10,
+            'score': 5,
             'status': 'pass',
             'details': '已設置'
         })
@@ -73,7 +84,7 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
             'suggestion': '加入 favicon.ico 或 <link rel="icon">'
         })
     
-    # 2. 內容結構化 (35 分) - 最重要的 AI 可讀性
+    # 2. 內容結構化 (25 分)
     structure_score = 0
     structure_items = []
     
@@ -94,22 +105,22 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
             'suggestion': '加入 JSON-LD 結構化資料'
         })
     
-    # Schema 多樣性
+    # Schema 多樣性 (Max 10 分)
     schema_count = signals.schema_count
     if schema_count == 0 and signals.has_jsonld:
          schema_count = 1
          
-    schema_variety_score = min(schema_count * 5, 20)
+    schema_variety_score = min(schema_count * 5, 10)
     structure_score += schema_variety_score
     
     structure_items.append({
         'name': 'schema_variety',
         'score': schema_variety_score,
         'status': 'pass' if schema_variety_score > 0 else 'fail',
-        'details': f"{schema_count} 種類型: {', '.join(signals.schema_types[:3])}" if signals.schema_types else "一般",
+        'details': f"{schema_count} 種類型" if signals.schema_types else "一般",
     })
     
-    # Schema 質量
+    # Schema 質量 (5 分)
     high_value_schemas = {'Organization', 'Person', 'Product', 'Article', 'WebSite', 'BreadcrumbList'}
     has_high_value = any(t in high_value_schemas for t in signals.schema_types)
     
@@ -149,7 +160,7 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
             'suggestion': '啟用 HTTPS 加密連線'
         })
     
-    # 基本可用性
+    # 基本可用性 (5 分)
     if signals.has_title or signals.has_description:
         technical_score += 5
         technical_items.append({
@@ -165,11 +176,11 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
             'status': 'fail'
         })
     
-    # 4. 社群信任 (15 分)
+    # 4. 社群信任 (30 分) - 權重提升
     social_score = 0
     social_items = []
     
-    # 社群連結
+    # 社群連結 (10 分)
     social_count = signals.social_links_count
     if social_count >= 2:
         social_score += 10
@@ -196,15 +207,24 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
             'suggestion': '在頁尾加入社群連結'
         })
     
-    # 權威連結
+    # 權威連結 (20 分) - 只要有夠多外部鏈接就給高分
     outbound_count = signals.outbound_links_count
-    if outbound_count >= 1:
-        social_score += 5
+    if outbound_count >= 5:
+        social_score += 20
         social_items.append({
             'name': 'authority_links',
-            'score': 5,
+            'score': 20,
             'status': 'pass',
-            'details': f"{outbound_count} 條外部連結"
+            'details': f"{outbound_count}+ 條外部連結"
+        })
+    elif outbound_count >= 1:
+        social_score += 10
+        social_items.append({
+            'name': 'authority_links',
+            'score': 10,
+            'status': 'partial',
+            'details': f"{outbound_count} 條外部連結",
+            'suggestion': '增加外部權威引用以提升信任度'
         })
     else:
         social_items.append({
@@ -216,10 +236,10 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
     
     # 計算總分
     total_score = (
-        discoverability_score +  # 最多 30
-        structure_score +         # 最多 35
-        technical_score +         # 最多 20
-        social_score              # 最多 15
+        discoverability_score +  # 最多 25
+        structure_score +        # 最多 25
+        technical_score +        # 最多 20
+        social_score             # 最多 30
     )
     
     return {
@@ -228,12 +248,12 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
         'dimensions': {
             'discoverability': {
                 'score': discoverability_score,
-                'max': 30,
+                'max': 25,
                 'items': discoverability_items
             },
             'structure': {
                 'score': structure_score,
-                'max': 35,
+                'max': 25,
                 'items': structure_items
             },
             'technical': {
@@ -243,13 +263,13 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
             },
             'social': {
                 'score': social_score,
-                'max': 15,
+                'max': 30,
                 'items': social_items
             },
-            # 保留 identity 以防前端報錯 (雖不計分但結構需存在)
             'identity': {
-                'score': 0, # 已被移除權重
+                'score': 0,
                 'max': 0,
+                'percentage': 0,
                 'items': []
             }
         }
