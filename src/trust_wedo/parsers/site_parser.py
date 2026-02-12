@@ -26,6 +26,13 @@ class SiteParser:
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.9,zh-TW;q=0.8,zh;q=0.7",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
             "Cache-Control": "max-age=0",
             "Sec-Ch-Ua": '"Not A(Brand";v="99", "Google Chrome";v="121", "Chromium";v="121"',
             "Sec-Ch-Ua-Mobile": "?0",
@@ -169,10 +176,26 @@ class SiteParser:
                 # but we only need the content here.
                 soup = BeautifulSoup(content, "html.parser")
             else:
-                resp = await client.get(url)
-                fetched = resp.status_code == 200
+                resp = None
+                # Add simple retry logic (2 attempts)
+                for attempt in range(2):
+                    try:
+                        resp = await client.get(url, timeout=30.0)
+                        if resp.status_code == 200:
+                            break
+                        # Retry on potential temporary failures or rate limits
+                        if resp.status_code in [429, 500, 502, 503, 504]:
+                            await asyncio.sleep(2)
+                    except Exception as e:
+                        print(f"[WARN] Fetch attempt {attempt+1} failed for {url}: {e}")
+                        await asyncio.sleep(1)
+                
+                fetched = resp is not None and resp.status_code == 200
                 if fetched:
                     soup = BeautifulSoup(resp.content, "html.parser")
+                    # Quick check if blocked
+                    if not soup.find("title"):
+                        print(f"[WARN] No title tag found for {url} (status {resp.status_code})")
                 else:
                     soup = None
 

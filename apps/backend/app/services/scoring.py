@@ -110,7 +110,14 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
     if schema_count == 0 and signals.has_jsonld:
          schema_count = 1
          
-    schema_variety_score = min(schema_count * 5, 10)
+    if schema_count >= 3:
+        schema_variety_score = 10
+    elif schema_count == 2:
+        schema_variety_score = 7
+    elif schema_count == 1:
+        schema_variety_score = 5
+    else:
+        schema_variety_score = 0
     structure_score += schema_variety_score
     
     structure_items.append({
@@ -209,7 +216,7 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
     
     # 權威連結 (20 分) - 只要有夠多外部鏈接就給高分
     outbound_count = signals.outbound_links_count
-    if outbound_count >= 5:
+    if outbound_count >= 20:
         social_score += 20
         social_items.append({
             'name': 'authority_links',
@@ -217,7 +224,15 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
             'status': 'pass',
             'details': f"{outbound_count}+ 條外部連結"
         })
-    elif outbound_count >= 1:
+    elif outbound_count >= 10:
+        social_score += 15
+        social_items.append({
+            'name': 'authority_links',
+            'score': 15,
+            'status': 'pass',
+            'details': f"{outbound_count} 條外部連結"
+        })
+    elif outbound_count >= 5:
         social_score += 10
         social_items.append({
             'name': 'authority_links',
@@ -225,6 +240,15 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
             'status': 'partial',
             'details': f"{outbound_count} 條外部連結",
             'suggestion': '增加外部權威引用以提升信任度'
+        })
+    elif outbound_count >= 1:
+        social_score += 5
+        social_items.append({
+            'name': 'authority_links',
+            'score': 5,
+            'status': 'partial',
+            'details': f"{outbound_count} 條外部連結",
+            'suggestion': '建議增加更多外部權威引用'
         })
     else:
         social_items.append({
