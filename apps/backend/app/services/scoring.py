@@ -1,7 +1,7 @@
 from app.models.signals import SiteSignals
 from typing import Dict, Any
 
-def get_grade(score: int) -> str:
+def score_to_grade(score: int) -> str:
     """
     評級標準 (配合新權重 - Scheme A)
     """
@@ -224,7 +224,7 @@ def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
     
     return {
         'score': min(total_score, 100),
-        'grade': get_grade(total_score),
+        'grade': score_to_grade(total_score),
         'dimensions': {
             'discoverability': {
                 'score': discoverability_score,
