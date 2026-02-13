@@ -89,10 +89,21 @@ export default function Report() {
 
       const contentDisposition = response.headers.get('Content-Disposition')
       let filename = `trust-wedo-report-${jobId}.pdf`
+
       if (contentDisposition) {
         const matches = /filename="([^"]*)"/.exec(contentDisposition)
         if (matches && matches[1]) {
           filename = matches[1]
+        }
+      } else if (report?.url) {
+        // 從 URL 提取域名生成更有意義的檔名
+        try {
+          const urlObj = new URL(report.url)
+          const domain = urlObj.hostname.replace('www.', '')
+          const date = new Date().toISOString().split('T')[0]
+          filename = `Trust-WEDO-${domain}-${date}.pdf`
+        } catch {
+          filename = `trust-wedo-report-${jobId}.pdf`
         }
       }
 

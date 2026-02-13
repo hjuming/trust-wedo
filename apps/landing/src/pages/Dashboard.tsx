@@ -228,6 +228,23 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
+                  {/* 分數顯示 (如果有的話) */}
+                  {scan.status === 'completed' && scan.result?.total_score && (
+                    <div className="hidden md:flex flex-col items-end mr-2">
+                      <div className="text-lg font-black text-brand-navy dark:text-brand-light leading-none">
+                        {scan.result.total_score}
+                        <span className="text-xs text-brand-slate dark:text-brand-light/60 ml-0.5 font-medium">/100</span>
+                      </div>
+                      <div className={`text-[10px] font-bold px-1.5 py-0.5 rounded mt-1 ${scan.result.grade === 'A' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                          scan.result.grade === 'B' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                            scan.result.grade === 'C' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                              'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                        }`}>
+                        等級 {scan.result.grade}
+                      </div>
+                    </div>
+                  )}
+
                   <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-tighter ${scan.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400' :
                     scan.status === 'failed' ? 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400' :
                       'bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'

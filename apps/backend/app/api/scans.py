@@ -7,14 +7,19 @@ import json
 import os
 from pathlib import Path
 from typing import List
+from datetime import datetime
+import asyncio
+from trust_wedo.parsers.site_parser import SiteParser
+
+from app.services.report_engine import ReportEngine
+from app.services.scoring import calculate_dimension_scores, score_to_grade
+
+engine = ReportEngine()
 
 router = APIRouter()
 
 class ScanCreate(BaseModel):
     url: HttpUrl
-
-import asyncio
-from trust_wedo.parsers.site_parser import SiteParser
 
 async def run_scan_pipeline(job_id: str, url: str):
     """背景任務：執行 CLI pipeline（直接調用庫，無需 CLI）"""
@@ -50,23 +55,44 @@ async def run_scan_pipeline(job_id: str, url: str):
         }).eq("id", job_id).execute()
         
         # Write to file (local persistence in container, for debugging)
-        target_site_json = output_dir / "site.json"
+         target_site_json = output_dir / "site.json"
         with open(target_site_json, 'w') as f:
             json.dump(site_data, f, ensure_ascii=False)
         
         # 4. 儲存到 artifacts 表
-        supabase.table("artifacts").insert({
+        # 構造 artifact 格式以供 extract_signals 使用
+        artifact_payload = {
             "job_id": job_id,
             "stage": "scan",
             "jsonb_payload": site_data,
             "schema_version": "1.0"
-        }).execute()
+        }
+        
+        supabase.table("artifacts").insert(artifact_payload).execute()
+        
+        # 計算分數 (新增邏輯)
+        try:
+            signals = engine.extract_signals([artifact_payload])
+            dimension_scores = calculate_dimension_scores(signals)
+            total_score = sum(d['score'] for d in dimension_scores.values())
+            grade = score_to_grade(total_score)
+            
+            result_data = {
+                "total_score": total_score,
+                "grade": grade,
+                "dimension_scores": dimension_scores,
+                "generated_at": datetime.utcnow().isoformat()
+            }
+        except Exception as score_err:
+            print(f"Scoring error: {score_err}")
+            result_data = None
         
         # 5. 更新狀態為 completed
         supabase.table("scan_jobs").update({
             "status": "completed",
             "progress_stage": "分析完成",
-            "completed_at": "now()"
+            "completed_at": "now()",
+            "result": result_data # 儲存計算結果
         }).eq("id", job_id).execute()
         
     except Exception as e:
