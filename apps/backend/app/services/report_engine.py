@@ -2,7 +2,7 @@ from typing import List, Dict, Any, Tuple
 from app.models.signals import SiteSignals
 from app.services.scoring import calculate_weighted_score, score_to_grade, calculate_dimension_scores
 from app.services.site_classifier import classify_site_type, generate_custom_suggestions
-from app.config.difficult_sites import check_difficult_site, get_estimated_dimensions
+from app.presets.difficult_sites import check_difficult_site, get_estimated_dimensions
 
 class Rule:
     """單一規則"""
