@@ -189,6 +189,7 @@ class ReportEngine:
             
         payload = scan_artifact['jsonb_payload']
         site_url = payload.get('site', '')
+        signals.url = site_url  # 設置 URL 用於特殊網站檢測
         signals.has_https = site_url.startswith('https://')
         
         pages = payload.get('pages', [])

@@ -4,6 +4,9 @@ from typing import Optional, List, Dict, Any
 class SiteSignals(BaseModel):
     """網站信號（從 artifacts 提取的特徵）"""
     
+    # URL (用於特殊網站檢測)
+    url: Optional[str] = None
+    
     # 基礎信號
     has_title: bool = False
     has_description: bool = False
