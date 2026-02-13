@@ -182,6 +182,11 @@ export default function Report() {
             score={dimensions.total_score}
             grade={dimensions.grade}
             worstDimension={worstDimension}
+            isDifficultSite={report.is_difficult_site}
+            difficultSiteInfo={report.difficult_site_info}
+            estimatedScore={report.estimated_score}
+            estimatedGrade={report.estimated_grade}
+            detectionMessage={report.detection_message}
           />
 
           {/* Scoring Guide */}

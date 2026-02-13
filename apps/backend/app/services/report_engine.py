@@ -1,7 +1,8 @@
 from typing import List, Dict, Any, Tuple
 from app.models.signals import SiteSignals
-from app.services.scoring import calculate_weighted_score, score_to_grade
+from app.services.scoring import calculate_weighted_score, score_to_grade, calculate_dimension_scores
 from app.services.site_classifier import classify_site_type, generate_custom_suggestions
+from app.config.difficult_sites import check_difficult_site, get_estimated_dimensions
 
 class Rule:
     """單一規則"""
@@ -258,7 +259,10 @@ class ReportEngine:
         signals.has_authority_links = len(authorities) > 0
 
     def generate_report(self, signals: SiteSignals) -> Dict[str, Any]:
-        """產生報告（更新版）"""
+        """產生報告（更新版 - 支持特殊網站檢測）"""
+        
+        # 0. 檢查是否為特殊網站
+        difficult_site_info = check_difficult_site(signals.url) if hasattr(signals, 'url') else None
         
         # 1. 識別網站類型
         site_type, confidence = classify_site_type(signals)
@@ -278,14 +282,17 @@ class ReportEngine:
         custom_suggestions = generate_custom_suggestions(signals, site_type)
         suggestions.extend(custom_suggestions)
         
-        # 4. 計算評分
+        # 4. 計算評分和維度分數
         grade, score = self._calculate_grade(signals, len(fired_rules))
+        dimensions = calculate_dimension_scores(signals)
         conclusion = self._generate_conclusion(grade, len(fired_rules))
         
-        return {
+        # 5. 如果是特殊網站且評分異常低,添加預估信息
+        base_report = {
             "report_version": self.VERSION,
             "signals": signals.model_dump(),
             "score": score,
+            "dimensions": dimensions,
             "site_type": site_type,
             "site_type_confidence": confidence,
             "rules_fired": fired_rules,
@@ -298,6 +305,42 @@ class ReportEngine:
             "issues": issues,
             "suggestions": suggestions[:8]
         }
+        
+        # 如果是特殊網站且檢測失敗(分數過低)
+        if difficult_site_info and score < 50:
+            estimated_dims = get_estimated_dimensions(difficult_site_info)
+            estimated_total = sum(estimated_dims.values())
+            estimated_grade = score_to_grade(estimated_total)
+            
+            # 構建完整的維度結構(包含 max 和 items)
+            estimated_dimensions_full = {}
+            dimension_max_scores = {
+                'discoverability': 25,
+                'structure': 25,
+                'technical': 20,
+                'social': 30
+            }
+            
+            for dim_name, dim_score in estimated_dims.items():
+                estimated_dimensions_full[dim_name] = {
+                    'score': dim_score,
+                    'max': dimension_max_scores.get(dim_name, 25),
+                    'items': []  # 預估模式下不提供詳細項目
+                }
+            
+            base_report.update({
+                'is_difficult_site': True,
+                'difficult_site_info': difficult_site_info,
+                'estimated_score': estimated_total,
+                'estimated_grade': estimated_grade,
+                'estimated_dimensions': estimated_dimensions_full,
+                'detection_status': 'failed',
+                'detection_message': f'由於{difficult_site_info["reason"]},無法完整檢測網站信息。以下為基於網站類型的預估分數。'
+            })
+        else:
+            base_report['is_difficult_site'] = False
+        
+        return base_report
     
     def _calculate_grade(self, signals: SiteSignals, issues_count: int) -> Tuple[str, int]:
         """計算可信度等級（使用加權評分）"""
