@@ -19,17 +19,23 @@ export default function Login() {
     setError('')
 
     try {
+      // Supabase 會根據初始化時的 storage 設置自動處理 session 持久化
+      // 這裡我們只需要正常登入即可
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
-        options: {
-          // 如果勾選「保持登入」,設置較長的 session 時間
-          persistSession: rememberMe,
-        }
       })
 
       if (error) {
         throw error
+      }
+
+      // 如果用戶選擇「保持登入」,我們可以在本地存儲一個標記
+      // Supabase 默認會將 session 存儲在 localStorage 中
+      if (rememberMe) {
+        localStorage.setItem('trust-wedo-remember-me', 'true')
+      } else {
+        localStorage.removeItem('trust-wedo-remember-me')
       }
 
       navigate('/dashboard')
