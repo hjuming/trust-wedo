@@ -55,7 +55,7 @@ async def run_scan_pipeline(job_id: str, url: str):
         }).eq("id", job_id).execute()
         
         # Write to file (local persistence in container, for debugging)
-         target_site_json = output_dir / "site.json"
+        target_site_json = output_dir / "site.json"
         with open(target_site_json, 'w') as f:
             json.dump(site_data, f, ensure_ascii=False)
         
