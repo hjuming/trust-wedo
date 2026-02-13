@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface DifficultSiteWarningProps {
     siteInfo: {
@@ -9,13 +9,38 @@ interface DifficultSiteWarningProps {
         estimated_grade: string;
         note: string;
     };
+    estimatedDimensions?: {
+        discoverability: number;
+        structure: number;
+        technical: number;
+        social: number;
+    };
     detectionMessage?: string;
 }
 
 export const DifficultSiteWarning: React.FC<DifficultSiteWarningProps> = ({
     siteInfo,
+    estimatedDimensions,
     detectionMessage
 }) => {
+    const [showDimensions, setShowDimensions] = useState(false);
+
+    // 維度名稱映射
+    const dimensionNames: Record<string, string> = {
+        discoverability: 'AI 可發現性',
+        structure: '內容結構化',
+        technical: '技術基礎',
+        social: '社群信任',
+    };
+
+    // 維度最大值
+    const dimensionMax: Record<string, number> = {
+        discoverability: 25,
+        structure: 25,
+        technical: 20,
+        social: 30,
+    };
+
     return (
         <div className="mb-6 rounded-lg border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-900/20">
             <div className="p-4">
@@ -38,7 +63,7 @@ export const DifficultSiteWarning: React.FC<DifficultSiteWarningProps> = ({
                         <h4 className="font-bold text-amber-900 dark:text-amber-200 text-base mb-1">
                             ⚠️ 評分可能不準確
                         </h4>
-                        <p className="text-sm text-amber-800 dark:text-amber-300">
+                        <p className="text-sm text-amber-800 dark:text-amber-300 leading-relaxed break-words">
                             {detectionMessage || siteInfo.reason}
                         </p>
                     </div>
@@ -88,6 +113,52 @@ export const DifficultSiteWarning: React.FC<DifficultSiteWarningProps> = ({
                     </div>
                 </div>
 
+                {/* Estimated Dimensions (Collapsible) */}
+                {estimatedDimensions && (
+                    <div className="mb-3">
+                        <button
+                            onClick={() => setShowDimensions(!showDimensions)}
+                            className="w-full flex items-center justify-between p-2 hover:bg-amber-100/50 dark:hover:bg-amber-900/10 rounded-md transition-colors"
+                        >
+                            <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                                預估維度分數
+                            </span>
+                            <svg
+                                className={`w-4 h-4 text-amber-600 dark:text-amber-400 transition-transform ${showDimensions ? 'rotate-180' : ''
+                                    }`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        {showDimensions && (
+                            <div className="mt-2 p-3 bg-white/50 dark:bg-black/20 rounded-md space-y-2">
+                                {Object.entries(estimatedDimensions).map(([key, value]) => (
+                                    <div key={key} className="flex items-center justify-between text-sm">
+                                        <span className="text-amber-800 dark:text-amber-300">
+                                            {dimensionNames[key]}
+                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-medium text-amber-900 dark:text-amber-100">
+                                                {value}/{dimensionMax[key]}
+                                            </span>
+                                            <div className="w-16 h-2 bg-amber-200 dark:bg-amber-800 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-amber-600 dark:bg-amber-400 rounded-full"
+                                                    style={{ width: `${(value / dimensionMax[key]) * 100}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 {/* Note */}
                 <div className="flex items-start gap-2 p-3 bg-amber-100/50 dark:bg-amber-900/10 rounded-md">
                     <svg
@@ -103,7 +174,7 @@ export const DifficultSiteWarning: React.FC<DifficultSiteWarningProps> = ({
                             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                     </svg>
-                    <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                    <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed break-words">
                         💡 {siteInfo.note}
                     </p>
                 </div>

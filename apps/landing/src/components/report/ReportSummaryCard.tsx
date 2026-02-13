@@ -16,6 +16,12 @@ interface ReportSummaryCardProps {
     };
     estimatedScore?: number;
     estimatedGrade?: string;
+    estimatedDimensions?: {
+        discoverability: number;
+        structure: number;
+        technical: number;
+        social: number;
+    };
     detectionMessage?: string;
 }
 
@@ -27,6 +33,7 @@ export function ReportSummaryCard({
     difficultSiteInfo,
     estimatedScore,
     estimatedGrade,
+    estimatedDimensions,
     detectionMessage
 }: ReportSummaryCardProps) {
     // 決定要顯示的分數和等級
@@ -60,6 +67,7 @@ export function ReportSummaryCard({
             {isDifficultSite && difficultSiteInfo && (
                 <DifficultSiteWarning
                     siteInfo={difficultSiteInfo}
+                    estimatedDimensions={estimatedDimensions}
                     detectionMessage={detectionMessage}
                 />
             )}

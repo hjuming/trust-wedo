@@ -186,6 +186,7 @@ export default function Report() {
             difficultSiteInfo={report.difficult_site_info}
             estimatedScore={report.estimated_score}
             estimatedGrade={report.estimated_grade}
+            estimatedDimensions={report.estimated_dimensions}
             detectionMessage={report.detection_message}
           />
 
