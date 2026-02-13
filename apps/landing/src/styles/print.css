@@ -24,9 +24,7 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     font-size: 10pt !important;
-    /* 縮小字體以容納更多內容 */
     line-height: 1.4 !important;
-    /* 緊湊行距 */
   }
 
   /* 移除 Tailwind 的 dark mode 影響 */
@@ -58,68 +56,68 @@
   /* 緊湊間距 - 關鍵優化 */
   .mb-8,
   .my-8 {
-    margin-bottom: 12px !important;
+    margin-bottom: 10px !important;
   }
 
   .mb-6,
   .my-6 {
-    margin-bottom: 8px !important;
+    margin-bottom: 6px !important;
   }
 
   .mb-4,
   .my-4 {
-    margin-bottom: 6px !important;
+    margin-bottom: 4px !important;
   }
 
   .p-10 {
-    padding: 16px !important;
-  }
-
-  .p-8 {
     padding: 12px !important;
   }
 
-  .p-6 {
+  .p-8 {
     padding: 10px !important;
   }
 
-  .p-4 {
+  .p-6 {
     padding: 8px !important;
+  }
+
+  .p-4 {
+    padding: 6px !important;
   }
 
   /* 標題縮小 */
   h1 {
-    font-size: 20pt !important;
-    margin-bottom: 8px !important;
-  }
-
-  h2 {
-    font-size: 16pt !important;
+    font-size: 18pt !important;
     margin-bottom: 6px !important;
   }
 
-  h3 {
-    font-size: 13pt !important;
+  h2 {
+    font-size: 14pt !important;
     margin-bottom: 4px !important;
+  }
+
+  h3 {
+    font-size: 11pt !important;
+    margin-bottom: 3px !important;
   }
 
   h4,
   h5,
   h6 {
-    font-size: 11pt !important;
-    margin-bottom: 3px !important;
+    font-size: 10pt !important;
+    margin-bottom: 2px !important;
   }
 
-  /* 避免卡片被切頁 - 但允許必要時分頁 */
+  /* 避免卡片被切頁 */
   .print-avoid-break {
     break-inside: avoid-page;
     page-break-inside: avoid;
-    margin-bottom: 10px !important;
+    margin-bottom: 8px !important;
   }
 
   /* 維度卡片 - 使用緊湊的網格布局 */
   .grid {
-    gap: 8px !important;
+    gap: 6px !important;
   }
 
   /* 確保顏色正確顯示 */
@@ -128,122 +126,191 @@
     print-color-adjust: exact !important;
   }
 
-  /* 簡化邊框和陰影 - 現代簡約風格 */
+  /* 簡化邊框和陰影 */
   .shadow-xl,
   .shadow-lg,
   .shadow-2xl,
   .shadow-sm {
     box-shadow: none !important;
     border: 0.5px solid #e5e7eb !important;
-    /* 極細邊框 */
   }
 
   .rounded-3xl,
   .rounded-2xl,
-  .rounded-xl,
-  .rounded-\\[2\\.5rem\\] {
+  .rounded-xl {
     border-radius: 6px !important;
-    /* 適度圓角 */
   }
 
   /* 確保文字顏色在列印時足夠深 */
   .text-brand-slate,
-  .text-brand-light\\/60,
-  .text-brand-light\\/40,
   .text-gray-500,
   .text-gray-600 {
     color: #374151 !important;
-    /* 深灰色,易讀 */
   }
 
-  /* 分數顯示優化 */
+  /* 字體大小優化 */
   .text-6xl {
-    font-size: 36pt !important;
+    font-size: 28pt !important;
   }
 
-  .text-2xl {
+  .text-4xl {
+    font-size: 20pt !important;
+    margin-bottom: 4px !important;
+  }
+
+  .text-3xl {
     font-size: 16pt !important;
   }
 
-  .text-xl {
+  .text-2xl {
     font-size: 13pt !important;
   }
 
-  .text-lg {
+  .text-xl {
     font-size: 11pt !important;
   }
 
+  .text-lg {
+    font-size: 10pt !important;
+  }
+
   .text-sm {
-    font-size: 9pt !important;
+    font-size: 8.5pt !important;
   }
 
   .text-xs {
-    font-size: 8pt !important;
+    font-size: 7.5pt !important;
   }
 
-  /* 背景色優化 - 使用淺色以節省墨水 */
-  .bg-brand-blue\\/5,
-  .bg-blue-50,
-  .bg-gray-50 {
-    background-color: #f9fafb !important;
-  }
-
+  /* 背景色優化 */
   .bg-amber-50 {
     background-color: #fffbeb !important;
   }
 
-  /* 進度條和圖表 - 保持視覺效果但縮小 */
-  svg {
-    max-height: 120px !important;
+  /* === 針對前四個圖表的激進優化 === */
+
+  /* 1. 摘要卡片 - 第一個 print-avoid-break */
+  .print-avoid-break:first-of-type {
+    margin-bottom: 6px !important;
   }
 
-  /* Quick Wins 區塊優化 */
+  /* 2. 網站類型和信號 - 3欄網格 */
+  .grid[class*="md:grid-cols-3"] {
+    gap: 4px !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* 3. 雷達圖容器 - 大幅縮小 */
+  .border-2 {
+    padding: 10px !important;
+    margin-bottom: 6px !important;
+    border-width: 0.5px !important;
+  }
+
+  /* 雷達圖和所有 SVG - 限制高度 */
+  svg,
+  canvas {
+    max-height: 150px !important;
+  }
+
+  /* 特別針對雷達圖 */
+  .border-2 svg,
+  .border-2 canvas {
+    max-height: 160px !important;
+    height: 160px !important;
+  }
+
+  /* 4. 進度條區塊 */
+  .space-y-6>*+*,
   .space-y-4>*+* {
-    margin-top: 6px !important;
+    margin-top: 3px !important;
   }
 
-  .space-y-6>*+* {
-    margin-top: 8px !important;
+  /* 進度條高度 */
+  .h-3,
+  .h-4 {
+    height: 5px !important;
+  }
+
+  /* 卡片標題統一縮小 */
+  h2[class*="text-2xl"] {
+    font-size: 13pt !important;
+    margin-bottom: 4px !important;
+  }
+
+  h3[class*="text-sm"] {
+    font-size: 8.5pt !important;
+    margin-bottom: 2px !important;
+  }
+
+  /* 信號列表緊湊 */
+  .grid[class*="grid-cols-2"] {
+    gap: 4px !important;
+  }
+
+  /* Quick Wins 區塊 */
+  .bg-gradient-to-br {
+    padding: 8px !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* 詳細分析雙欄 */
+  .grid[class*="md:grid-cols-2"] {
+    gap: 6px !important;
+  }
+
+  /* 列表緊湊 */
+  ul,
+  ol {
+    margin: 3px 0 !important;
+    padding-left: 14px !important;
+  }
+
+  ul li,
+  ol li {
+    margin-bottom: 1px !important;
+    line-height: 1.3 !important;
   }
 
   /* 表格優化 */
   table {
-    font-size: 9pt !important;
+    font-size: 8.5pt !important;
     border-collapse: collapse !important;
   }
 
   th,
   td {
-    padding: 4px 6px !important;
-  }
-
-  /* 列表優化 */
-  ul,
-  ol {
-    margin: 4px 0 !important;
-    padding-left: 16px !important;
-  }
-
-  li {
-    margin-bottom: 2px !important;
+    padding: 3px 5px !important;
   }
 
   /* 徽章和標籤 */
   .px-4 {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
   }
 
-  .py-1\\.5,
   .py-2 {
-    padding-top: 3px !important;
-    padding-bottom: 3px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
   }
 
-  /* 強制單頁顯示關鍵內容 */
-  .print-keep-together {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
+  /* 圖示縮小 */
+  .w-6,
+  .h-6 {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .w-5,
+  .h-5 {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .w-4,
+  .h-4 {
+    width: 10px !important;
+    height: 10px !important;
   }
 
   /* 移除不必要的空白 */
@@ -251,41 +318,21 @@
     padding: 0 !important;
   }
 
-  /* 優化警告 Banner */
+  /* 警告 Banner 優化 */
   .border-l-4 {
-    border-left-width: 3px !important;
-  }
-
-  /* 圖示縮小 */
-  .w-6,
-  .h-6 {
-    width: 16px !important;
-    height: 16px !important;
-  }
-
-  .w-5,
-  .h-5 {
-    width: 14px !important;
-    height: 14px !important;
-  }
-
-  .w-4,
-  .h-4 {
-    width: 12px !important;
-    height: 12px !important;
+    border-left-width: 2px !important;
   }
 }
 
 /* 紙張設定 - 優化邊距 */
 @page {
   size: A4;
-  margin: 12mm 10mm;
-  /* 減小邊距以容納更多內容 */
+  margin: 10mm 8mm;
 }
 
 /* 首頁特殊設定 */
 @page :first {
-  margin-top: 10mm;
+  margin-top: 8mm;
 }
 
 /* 避免孤行和寡行 */
@@ -293,8 +340,8 @@
 
   p,
   li {
-    orphans: 3;
-    widows: 3;
+    orphans: 2;
+    widows: 2;
   }
 
   h1,
