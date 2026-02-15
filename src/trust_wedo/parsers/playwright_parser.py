@@ -35,6 +35,7 @@ class PlaywrightParser:
                     args=[
                         '--no-sandbox', 
                         '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage',
                         '--disable-blink-features=AutomationControlled'  # Stealth: Hide webdriver
                     ]
                 )
