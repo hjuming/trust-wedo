@@ -83,7 +83,8 @@ class PlaywrightParser:
             # Navigate
             # networkidle is important for SPAs to finish initial rendering
             try:
-                response = await page.goto(url, wait_until='networkidle', timeout=timeout)
+                # 1. Navigation with extended timeout (30s)
+                response = await page.goto(url, wait_until='networkidle', timeout=30000)
                 
                 if not response:
                     logger.error(f"Playwright received no response for {url}")
@@ -95,6 +96,17 @@ class PlaywrightParser:
                     # For 403/401, it's likely blocking. We log it.
                     if response.status in [403, 401]:
                          logger.warning(f"Access denied (Anti-scraping?) for {url}")
+                         
+                # 2. Explicitly wait for DOM to be present (Hydration check)
+                try:
+                    # Wait for body to be attached to DOM
+                    await page.wait_for_selector('body', timeout=10000)
+                except Exception:
+                    logger.warning(f"Timeout waiting for body selector on {url}")
+
+                # 3. Fixed delay for React/Vue hydration (Critical for Scoring 2.0)
+                # Some SPAs render 'body' but content comes later via JS
+                await page.wait_for_timeout(3000)
                 
             except PlaywrightTimeoutError:
                 logger.warning(f"Playwright navigation timeout for {url} (networkidle). Returning content loaded so far.")
