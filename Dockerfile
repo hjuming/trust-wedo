@@ -20,19 +20,21 @@ RUN pip install --no-cache-dir -r /app/apps/backend/requirements.txt
 # 2. 複製整個項目代碼
 COPY . /app
 
-# 3. 安裝本地 trust_wedo 包 (關鍵修復：解決 ModuleNotFoundError)
-# 根目錄有 pyproject.toml，這會安裝 src/trust_wedo 作為可導入包
-RUN pip install --no-cache-dir -e .
+# 3. 確保 trust_wedo 被正確安裝 (移除 symlink 依賴，直接安裝核心庫)
+# 這樣不論 PYTHONPATH 如何，trust_wedo 都會在 site-packages 中
+RUN pip install --no-cache-dir .
 
 # 設定環境變數
-# 確保 Python 能找到 src 下的 trust_wedo 與 apps/backend 下的 app
-ENV PYTHONPATH=/app/src:/app/apps/backend
+# /app/apps/backend -> 讓 'import app' 找到 FastAPI 應用
+# /app/src -> 雙重保證
+ENV PYTHONPATH=/app/apps/backend:/app/src:/app
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
 
 EXPOSE 8080
 
 # 啟動命令
-# 使用 python -m uvicorn 以確保路徑加載正確
+# 確保從 apps/backend 目錄運行或正確指定路徑
 CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
+
 
