@@ -6,18 +6,19 @@ import DashboardLayout from './components/DashboardLayout'
 import Dashboard from './pages/Dashboard'
 import Scans from './pages/Scans'
 import Report from './pages/Report'
+import PDFReportTemplate from './pages/PDFReportTemplate'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
-  
+
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-brand-light dark:bg-brand-navy">
       <div className="w-10 h-10 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin" />
     </div>
   }
-  
+
   if (!user) {
     return <Navigate to="/login" replace />
   }
@@ -45,9 +46,12 @@ function App() {
           <Route path="/pricing" element={<Home />} /> {/* Placeholder */}
           <Route path="/playground" element={<Home />} /> {/* Placeholder */}
 
+          {/* PDF Report Template (for PDF generation) */}
+          <Route path="/pdf-report/:scanId" element={<PDFReportTemplate />} />
+
           {/* Protected Dashboard Routes */}
-          <Route 
-            path="/dashboard" 
+          <Route
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <DashboardLayout />
