@@ -43,14 +43,21 @@ FRONTEND_URL=https://trust.wedopr.com
    ```
 5. Save Changes
 
-### Zeabur
-1. 進入 https://dash.zeabur.com
-2. 選擇 project → backend service
-3. Variables
-4. 添加:
+### Zeabur (你的後端部署平台)
+1. 登入 https://dash.zeabur.com
+2. 選擇你的 Project
+3. 點擊 Backend Service (`trust-wedo`)
+4. 進入 **Variables** 標籤
+5. 添加變數:
    ```
-   FRONTEND_URL=https://trust.wedopr.com
+   Key: FRONTEND_URL
+   Value: https://trust.wedopr.com
    ```
+6. 點擊 Add 並確認服務重新部署
+
+**注意**: 你的後端網址是 `https://trust-wedo.zeabur.app/`
+但 `FRONTEND_URL` 是指**前端**的網址 (`https://trust.wedopr.com`)
+後端需要知道前端在哪裡,才能生成 PDF。
 
 ### Cloudflare Workers / Pages Functions
 1. 進入 Cloudflare Dashboard
@@ -89,6 +96,25 @@ curl -I https://trust.wedopr.com/pdf-report/test
 1. 完成一次網站掃描
 2. 點擊「下載 PDF」
 3. 檢查 PDF 是否正確生成
+
+## 雙向連結設定 (重要！)
+
+系統運作需要 **前端** 與 **後端** 互相知道對方的網址：
+
+1. **後端 (Zeabur)** 需要 `FRONTEND_URL` → 用來生成 PDF
+2. **前端 (Cloudflare)** 需要 `VITE_API_URL` → 用來呼叫 API
+
+### Cloudflare Pages (你的前端部署平台)
+
+請確保在 **Settings** → **Environment variables** 中設定：
+
+| Variable Name | Value |
+|--------------|-------|
+| `VITE_API_URL` | `https://trust-wedo.zeabur.app` |
+| `VITE_SUPABASE_URL` | *(參考本地 .env)* |
+| `VITE_SUPABASE_ANON_KEY` | *(參考本地 .env)* |
+
+**注意**: Cloudflare Pages 設定變數後，必須 **Redeploy** (重新構建) 才會生效！
 
 ## 故障排除
 
