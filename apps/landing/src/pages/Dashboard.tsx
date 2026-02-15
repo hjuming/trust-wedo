@@ -49,7 +49,7 @@ export default function Dashboard() {
       attempts++
 
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+        const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://trust-wedo.zeabur.app')
         const response = await fetch(`${apiUrl}/api/scans/${jobId}`, {
           headers: {
             'Authorization': `Bearer ${session.access_token}`
@@ -95,7 +95,7 @@ export default function Dashboard() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) throw new Error('Session expired')
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://trust-wedo.zeabur.app')
       const response = await fetch(`${apiUrl}/api/scans`, {
         method: 'POST',
         headers: {

@@ -23,7 +23,7 @@ export default function Report() {
         const { data: { session } } = await supabase.auth.getSession()
         if (!session) throw new Error('Unauthorized')
 
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+        const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://trust-wedo.zeabur.app')
         const response = await fetch(`${apiUrl}/api/reports/${jobId}`, {
           headers: {
             'Authorization': `Bearer ${session.access_token}`
@@ -67,7 +67,7 @@ export default function Report() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://trust-wedo.zeabur.app')
       const response = await fetch(`${apiUrl}/api/reports/${jobId}/dimensions`, {
         headers: {
           'Authorization': `Bearer ${session.access_token}`
@@ -94,7 +94,7 @@ export default function Report() {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://trust-wedo.zeabur.app')
       const response = await fetch(`${apiUrl}/api/reports/${jobId}/pdf`, {
         headers: { 'Authorization': `Bearer ${session.access_token}` }
       })

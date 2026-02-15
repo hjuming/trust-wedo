@@ -22,7 +22,7 @@ export default function Scans() {
   const fetchScans = async () => {
     try {
       const token = localStorage.getItem('token')
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://trust-wedo.zeabur.app')
       const response = await fetch(`${apiUrl}/api/scans`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -45,7 +45,7 @@ export default function Scans() {
 
     try {
       const token = localStorage.getItem('token')
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+      const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://trust-wedo.zeabur.app')
       const response = await fetch(`${apiUrl}/api/scans`, {
         method: 'POST',
         headers: {
