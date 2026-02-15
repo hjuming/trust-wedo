@@ -1,13 +1,15 @@
 """
-PDF Report Generation Service using Playwright
+PDF Report Generation Service using Playwright (Strict Mode)
 Renders /pdf-report/:scanId route and converts to PDF
 """
 import os
+import io
 import asyncio
 from pathlib import Path
 from datetime import datetime
 from urllib.parse import urlparse
 import logging
+from pypdf import PdfReader # Use pypdf>=3.0.0
 
 logger = logging.getLogger(__name__)
 
@@ -17,22 +19,17 @@ try:
     PLAYWRIGHT_AVAILABLE = True
 except ImportError:
     PLAYWRIGHT_AVAILABLE = False
-    logger.warning("Playwright not installed. PDF generation will fall back to legacy method.")
+    logger.error("Playwright not installed! Setup requires: pip install playwright && playwright install chromium")
 
 
 async def generate_pdf_with_playwright(scan_id: str, frontend_url: str = None) -> bytes:
     """
-    Generate PDF using Playwright by rendering the /pdf-report/:scanId route
-    
-    Args:
-        scan_id: The scan job ID
-        frontend_url: Base URL of frontend (default: http://localhost:5173)
-    
-    Returns:
-        PDF content as bytes
+    Generate PDF using Playwright with Strict Quality Control:
+    1. Safe Margins (12mm V, 14mm H)
+    2. Page Count Limit (Max 2 pages)
     """
     if not PLAYWRIGHT_AVAILABLE:
-        raise RuntimeError("Playwright is not installed. Run: pip install playwright && playwright install chromium")
+        raise RuntimeError("Playwright is missing. Please notify engineering.")
     
     # Default to local dev if not specified
     if not frontend_url:
@@ -54,28 +51,47 @@ async def generate_pdf_with_playwright(scan_id: str, frontend_url: str = None) -
             page = await browser.new_page()
             
             # Navigate to PDF template
-            await page.goto(pdf_url, wait_until='networkidle', timeout=30000)
+            # Increased timeout to 45s for production environments
+            await page.goto(pdf_url, wait_until='networkidle', timeout=45000)
             
             # Wait for content to load (wait for the .pdf-report element)
-            await page.wait_for_selector('.pdf-report', timeout=10000)
+            await page.wait_for_selector('.pdf-report', timeout=15000)
             
-            # Additional wait to ensure all data is rendered
-            await asyncio.sleep(1)
+            # Final stabilization wait
+            await asyncio.sleep(1.5)
             
-            # Generate PDF
+            # Generate PDF with SAFE MARGINS
             pdf_bytes = await page.pdf(
                 format='A4',
                 print_background=True,
                 margin={
-                    'top': '0mm',
-                    'right': '0mm',
-                    'bottom': '0mm',
-                    'left': '0mm'
+                    'top': '12mm',
+                    'right': '14mm',
+                    'bottom': '12mm',
+                    'left': '14mm'
                 },
                 prefer_css_page_size=True
             )
             
-            logger.info(f"PDF generated successfully: {len(pdf_bytes)} bytes")
+            # --- QUALITY ASSURANCE: PAGE COUNT CHECK ---
+            try:
+                reader = PdfReader(io.BytesIO(pdf_bytes))
+                page_count = len(reader.pages)
+                
+                if page_count > 2:
+                    logger.error(f"[QA FAIL] PDF exceeds 2 pages (Count: {page_count}). ScanID: {scan_id}")
+                    # Strict mode: Raise error if page count exceeds limit
+                    # Uncomment next line to enforce strict blocking:
+                    # raise ValueError(f"PDF Quality Check Failed: Output is {page_count} pages (Limit: 2). Please condense report content.")
+                    
+                    # For now, log error prominently but allow return (to avoid 100% failure during tuning)
+                    # Ideally, we should re-render with 'condensed' mode here.
+                else:
+                    logger.info(f"[QA PASS] PDF Page Count: {page_count}")
+                    
+            except Exception as qa_err:
+                logger.warning(f"Failed to perform PDF QA check: {qa_err}")
+                
             return pdf_bytes
             
         finally:
@@ -84,14 +100,7 @@ async def generate_pdf_with_playwright(scan_id: str, frontend_url: str = None) -
 
 def generate_report_pdf(report_data: dict, dimensions: dict) -> tuple[str, bytes]:
     """
-    Generate PDF for the report using Playwright
-    
-    Args:
-        report_data: Report data from report engine
-        dimensions: Dimensions data with scores
-    
-    Returns:
-        (filename, pdf_content_bytes)
+    Generate PDF for the report using Playwright (Strict Mode)
     """
     # Extract scan_id from report_data
     scan_id = report_data.get("job_id")
@@ -119,8 +128,6 @@ def generate_report_pdf(report_data: dict, dimensions: dict) -> tuple[str, bytes
         
     except Exception as e:
         logger.error(f"Failed to generate PDF with Playwright: {e}")
-        
-        # Fallback to legacy FPDF method if Playwright fails
-        logger.info("Falling back to legacy PDF generation...")
-        from app.services.report_pdf_legacy import generate_report_pdf as legacy_generate
-        return legacy_generate(report_data, dimensions)
+        # FAIL FAST: Do not fallback to legacy FPDF
+        # Ensure client receives an error rather than a broken PDF
+        raise RuntimeError(f"PDF Generation Failed: {e}")

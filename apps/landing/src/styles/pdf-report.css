@@ -5,10 +5,15 @@
    - 專業、簡約、現代
    ============================================ */
 
-/* 強制 Light Theme */
-.pdf-report,
-.pdf-report * {
-    color-scheme: light !important;
+/* 強制 Light Theme - 優化寫法 (避免暴力覆蓋導致 icon 消失) */
+:root {
+    color-scheme: light;
+}
+
+.pdf-report {
+    color-scheme: light;
+    background-color: #ffffff;
+    color: #1f2937;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
 }

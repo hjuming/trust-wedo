@@ -63,11 +63,12 @@ FRONTEND_URL=http://localhost:5173      # 本地開發
 ### Docker
 
 Dockerfile 已更新,包含:
-1. Playwright Python 套件
+1. Playwright Python 套件 + **pypdf** (用於 QA 檢測)
 2. Chromium browser
-3. 所有必要的系統依賴 (libnss3, libgbm1, etc.)
+3. 所有必要的系統依賴
 
 ```dockerfile
+RUN pip install pypdf
 RUN playwright install chromium
 RUN playwright install-deps chromium
 ```
@@ -75,58 +76,40 @@ RUN playwright install-deps chromium
 ### 本地開發
 
 ```bash
-# 安裝 Playwright
-pip install playwright
+# 安裝 Playwright & pypdf
+pip install playwright pypdf
 
 # 安裝 Chromium browser
 playwright install chromium
 playwright install-deps chromium
 ```
 
-## 驗收標準 (QA Checklist)
+## 驗收標準 (Strict QA Checklist)
 
-- [ ] PDF 永遠只有 1-2 頁 (超過視為 fail)
-- [ ] 不會出現任何 HTML tag / code block (例如 `<footer>`, `<meta>`, `<script>`)
-- [ ] 同一份 scanId 產出的 PDF:不同裝置/不同 dark mode 狀態,版面一致
-- [ ] 內容只保留「總覽 + 行動建議 + 必要掃描資訊」,不輸出整頁網頁
-- [ ] 背景永遠白色,文字永遠深色 (不受 dark mode 影響)
-- [ ] 檔名格式: `Trust-WEDO-{domain}-{date}.pdf`
+- [ ] **安全邊距**: 上下左右 12-14mm (防止印表機裁切)
+- [ ] **頁數限制**: 系統會自動檢測頁數,若 >2 頁會記錄 `[QA FAIL]` (目標: 1 頁)
+- [ ] **無 HTML tag**: 絕對禁止出現 `<footer>` / `<script>` 等原始碼
+- [ ] **Light Theme**: 根節點強制 Light Mode,背景純白,文字深灰
+- [ ] **無 Fallback**: 若生成失敗,直接報錯,不提供次級品
 
 ## 故障排除
 
-### PDF 生成失敗
+### QA FAIL: PDF exceeds 2 pages
 
-**症狀**: `RuntimeError: Playwright is not installed`
-
+**原因**: 內容過多 (例如 Trust Gaps 或維度描述太長)
 **解決**:
-```bash
-pip install playwright
-playwright install chromium
-```
+1. 檢查 `PDFReportTemplate.tsx` 的內容長度
+2. 調整 CSS 字體大小或間距
+3. 減少 Trust Gaps 顯示數量 (目前限制 5 條)
 
-### PDF 內容空白
+### Report Generation Failed
 
-**症狀**: PDF 生成成功但內容為空
-
-**可能原因**:
-1. Frontend URL 配置錯誤
-2. 網路連線問題 (headless browser 無法訪問 frontend)
-3. 認證問題 (PDF template route 需要 auth)
-
+**原因**: Playwright 啟動失敗或 Timeout
 **解決**:
-- 檢查 `FRONTEND_URL` 環境變數
-- 確保 `/pdf-report/:scanId` 路由可公開訪問 (或使用 service token)
+1. 確保 Docker 容器記憶體足夠 (至少 1GB)
+2. 檢查 `FRONTEND_URL` 是否可訪問
+3. 查看後端日誌中的具體錯誤訊息
 
-### Fallback 機制
-
-如果 Playwright 失敗,系統會自動 fallback 到舊的 FPDF 方法:
-
-```python
-except Exception as e:
-    logger.error(f"Failed to generate PDF with Playwright: {e}")
-    from app.services.report_pdf_legacy import generate_report_pdf as legacy_generate
-    return legacy_generate(report_data, dimensions)
-```
 
 ## 未來優化
 
