@@ -70,7 +70,9 @@ class SiteParser:
                 print(f"[INFO] Initialized Playwright parser for {self.base_url}")
             except Exception as e:
                 print(f"[ERROR] Failed to init Playwright: {e}")
-                playwright_parser = None
+                # In strict mode, we should probably fail here instead of falling back
+                # to static parsing which we know will give poor results for SPAs.
+                raise RuntimeError(f"Playwright initialization failed: {e}") from e
 
         try:
             async with httpx.AsyncClient(follow_redirects=True, headers=self.headers, timeout=30.0) as client:
@@ -197,8 +199,8 @@ class SiteParser:
             except Exception as e:
                 print(f"[WARN] Playwright error for {url}: {e}")
 
-        # 2. Fallback to httpx if not fetched
-        if not fetched:
+        # 2. Fallback to httpx if not fetched and playwright NOT attempted
+        if not fetched and not (playwright_parser and not url.startswith("file://")):
             if url.startswith("file://"):
                 try:
                     with open(url[7:], "rb") as f:
