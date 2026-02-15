@@ -209,6 +209,7 @@ export default function Report() {
   return (
     <div className="max-w-4xl mx-auto py-10 px-6">
       <header className="mb-10 flex items-center justify-between">
+
         <Link to="/dashboard" className="no-print inline-flex items-center gap-2 text-brand-blue font-bold hover:translate-x-[-4px] transition-transform">
           ← 返回健檢列表
         </Link>

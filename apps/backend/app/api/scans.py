@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks, Request
 from app.core.dependencies import get_current_user, get_current_org
 from app.core.supabase import supabase
 from pydantic import BaseModel, HttpUrl
@@ -6,7 +6,7 @@ import subprocess
 import json
 import os
 from pathlib import Path
-from typing import List
+from typing import List, Any
 from datetime import datetime
 import asyncio
 from trust_wedo.parsers.site_parser import SiteParser
@@ -21,7 +21,7 @@ router = APIRouter()
 class ScanCreate(BaseModel):
     url: HttpUrl
 
-async def run_scan_pipeline(job_id: str, url: str):
+async def run_scan_pipeline(job_id: str, url: str, browser: Any = None):
     """背景任務：執行 CLI pipeline（直接調用庫，無需 CLI）"""
     async def update_progress(percent: int, message: str):
         try:
@@ -50,8 +50,8 @@ async def run_scan_pipeline(job_id: str, url: str):
         # 2. 執行 SiteParser (Core Logic)
         await update_progress(5, "正在讀取網站結構...")
         
-        # Direct Library Call with Progress Callback
-        parser = SiteParser(url, max_pages=10, progress_callback=update_progress)
+        # Direct Library Call with Progress Callback and Shared Browser
+        parser = SiteParser(url, max_pages=10, progress_callback=update_progress, browser=browser)
         
         try:
             # 設置 180 秒超時 (Playwright 較慢)
@@ -113,6 +113,7 @@ async def run_scan_pipeline(job_id: str, url: str):
 
 @router.post("")
 def create_scan(
+    request: Request,
     scan_data: ScanCreate,
     background_tasks: BackgroundTasks,
     user = Depends(get_current_user),
@@ -122,19 +123,26 @@ def create_scan(
     # 建立 scan job
     result = supabase.table("scan_jobs").insert({
         "org_id": org_id,
-        "user_id": user.id,
+        "user_id": str(user.id),
         "url": str(scan_data.url),
         "status": "pending",
         "progress_stage": "排隊中..."
     }).execute()
     
-    if not result.data:
+    inserted_rows = result.data
+    if not inserted_rows or len(inserted_rows) == 0:
          raise HTTPException(status_code=500, detail="Failed to create scan job")
          
-    job_id = result.data[0]["id"]
+    job_id = inserted_rows[0].get("id")
+    if not job_id:
+         raise HTTPException(status_code=500, detail="Scan job ID missing from database response")
+
+    
+    # Get browser from app state
+    browser = getattr(request.app.state, "browser", None)
     
     # 加入背景任務
-    background_tasks.add_task(run_scan_pipeline, job_id, str(scan_data.url))
+    background_tasks.add_task(run_scan_pipeline, job_id, str(scan_data.url), browser)
     
     return result.data[0]
 

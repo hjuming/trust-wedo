@@ -21,14 +21,15 @@ except ImportError:
 class SiteParser:
     """Parser for scanning websites."""
 
-    def __init__(self, base_url: str, max_pages: int = 10, use_playwright: bool = True, progress_callback: Optional[Callable[[int, str], Awaitable[None]]] = None):
+    def __init__(self, base_url: str, max_pages: int = 10, use_playwright: bool = True, progress_callback: Optional[Callable[[int, str], Awaitable[None]]] = None, browser: Optional[Any] = None):
         self.base_url = base_url.rstrip("/")
         self.max_pages = max_pages
         self.progress_callback = progress_callback
         self.pages: List[Dict[str, Any]] = []
         self.checks = {"robots_ok": False, "sitemap_ok": False}
         self.visited_urls = set()
-        self.use_playwright = use_playwright and PLAYWRIGHT_AVAILABLE
+        self.use_playwright = use_playwright and (PLAYWRIGHT_AVAILABLE or browser is not None)
+        self.browser = browser
         
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
@@ -68,9 +69,9 @@ class SiteParser:
         # Initialize Playwright if enabled
         if self.use_playwright:
             try:
-                playwright_parser = PlaywrightParser()
+                playwright_parser = PlaywrightParser(browser=self.browser)
                 await playwright_parser.__aenter__()
-                print(f"[INFO] Initialized Playwright parser for {self.base_url}")
+                print(f"[INFO] Initialized Playwright parser for {self.base_url} (Shared Browser: {self.browser is not None})")
             except Exception as e:
                 print(f"[ERROR] Failed to init Playwright: {e}")
                 # In strict mode, we should probably fail here instead of falling back

@@ -37,20 +37,15 @@
     color: black !important;
   }
 
-  /* 報告容器 - 最大化利用空間 */
-  .print-container {
+  /* 報告內容主要區域 - 最大化利用空間並移除縮進 */
+  main {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
+    margin-left: 0 !important;
     padding: 0 !important;
     position: static !important;
     display: block !important;
-  }
-
-  /* 調整側邊欄縮進 */
-  main {
-    margin-left: 0 !important;
-    padding: 0 !important;
   }
 
   /* 緊湊間距 - 關鍵優化 */

@@ -1,12 +1,34 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import auth, users, scans, reports
 from app.config import settings
+from trust_wedo.parsers.playwright_parser import async_playwright
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Initialize global playwright browser
+    print("[INFO] Starting global Playwright browser...")
+    app.state.playwright = await async_playwright().start()
+    app.state.browser = await app.state.playwright.chromium.launch(
+        headless=True,
+        args=[
+            '--no-sandbox', 
+            '--disable-setuid-sandbox',
+            '--disable-blink-features=AutomationControlled'
+        ]
+    )
+    yield
+    # Shutdown: Close browser
+    print("[INFO] Closing global Playwright browser...")
+    await app.state.browser.close()
+    await app.state.playwright.stop()
 
 app = FastAPI(
     title="Trust WEDO API",
     version="1.0.0",
-    description="Trust WEDO SaaS Platform API"
+    description="Trust WEDO SaaS Platform API",
+    lifespan=lifespan
 )
 
 # CORS 設定

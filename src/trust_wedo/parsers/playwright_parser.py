@@ -20,35 +20,39 @@ USER_AGENTS = [
 class PlaywrightParser:
     """Parser that uses headless Chromium to render JS-heavy websites."""
 
-    def __init__(self):
+    def __init__(self, browser: Optional[Browser] = None):
         self.playwright = None
-        self.browser: Optional[Browser] = None
+        self.browser: Optional[Browser] = browser
+        self._owns_browser = browser is None
 
     async def __aenter__(self):
-        """Initialize Playwright and launch browser."""
-        try:
-            self.playwright = await async_playwright().start()
-            self.browser = await self.playwright.chromium.launch(
-                headless=True,
-                args=[
-                    '--no-sandbox', 
-                    '--disable-setuid-sandbox',
-                    '--disable-blink-features=AutomationControlled'  # Stealth: Hide webdriver
-                ]
-            )
-            return self
-        except Exception as e:
-            logger.error(f"Failed to initialize Playwright: {e}")
-            if self.playwright:
-                await self.playwright.stop()
-            raise
+        """Initialize Playwright and launch browser if not provided."""
+        if not self.browser:
+            try:
+                self.playwright = await async_playwright().start()
+                self.browser = await self.playwright.chromium.launch(
+                    headless=True,
+                    args=[
+                        '--no-sandbox', 
+                        '--disable-setuid-sandbox',
+                        '--disable-blink-features=AutomationControlled'  # Stealth: Hide webdriver
+                    ]
+                )
+                self._owns_browser = True
+            except Exception as e:
+                logger.error(f"Failed to initialize Playwright: {e}")
+                if self.playwright:
+                    await self.playwright.stop()
+                raise
+        return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        """Cleanup browser and Playwright resources."""
-        if self.browser:
-            await self.browser.close()
-        if self.playwright:
-            await self.playwright.stop()
+        """Cleanup browser and Playwright resources if owned."""
+        if self._owns_browser:
+            if self.browser:
+                await self.browser.close()
+            if self.playwright:
+                await self.playwright.stop()
 
     async def fetch_content(self, url: str, timeout: int = 45000) -> Optional[str]:
         """
