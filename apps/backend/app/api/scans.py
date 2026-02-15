@@ -92,7 +92,7 @@ async def run_scan_pipeline(job_id: str, url: str):
             "status": "completed",
             "progress_stage": "分析完成",
             "completed_at": "now()",
-            "result": result_data # 儲存計算結果
+            # "result": result_data # 暫時註釋: 請先在 Supabase 執行 ALTER TABLE scan_jobs ADD COLUMN result JSONB;
         }).eq("id", job_id).execute()
         
     except Exception as e:
