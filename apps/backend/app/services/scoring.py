@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 def score_to_grade(score: int) -> str:
     """
-    評級標準 (配合新權重 - Scheme B)
+    評級標準 (配合 Scoring 2.0)
     A: 80-100 (優秀)
     B: 60-79 (良好)
     C: 40-59 (及格)
@@ -22,279 +22,179 @@ def score_to_grade(score: int) -> str:
 
 def calculate_score_v2(signals: SiteSignals) -> Dict[str, Any]:
     """
-    新版評分系統 (2.0) - Scheme B
-    調整權重分配以解決高權威網站(如 Wikipedia)低分問題
+    新版評分系統 (2.0) - Scheme B Revised
     
-    Weights:
-    - AI Discoverability: 25% (Title 15, Desc 5, Favicon 5)
-    - Content Structure: 25% (JSON-LD 10, Variety 10, Quality 5)
-    - Technical Basis: 20% (HTTPS 15, Usability 5)
-    - Social Trust: 30% (Ext Links 20, Social Links 10)
+    Dimensions (Total 100):
+    1. 結構化 (Structure): 30% (Deep Schema Analysis)
+    2. 可發現性 (Discoverability): 20% (Title 8, Desc 7, Favicon 5)
+    3. 信任訊號 (Trust): 20% (HTTPS 10, Performance 10)
+    4. 技術基礎 (Technical): 15% (Mobile 10, Basic 5)
+    5. 身份識別 (Identity): 15% (About/Contact 10, Social 5)
     """
     
-    # 1. AI 可發現性 (25 分)
+    # 1. 結構化 (30 分) - 核心權重
+    analysis = getattr(signals, 'schema_analysis', {})
+    structure_score = analysis.get('score', 0) if analysis else 0
+    structure_items = []
+    
+    if analysis and analysis.get('details'):
+        for detail in analysis.get('details', []):
+            structure_items.append({
+                'name': 'schema_detail',
+                'score': 0,
+                'status': 'pass',
+                'details': detail
+            })
+    else:
+        # Fallback for legacy signals or empty analysis
+        if signals.has_jsonld or signals.schema_count > 0:
+            structure_score = 10 # Basic score
+            structure_items.append({'name': 'basic_schema', 'score': 10, 'status': 'pass', 'details': '基本結構化資料'})
+        else:
+            structure_items.append({
+                'name': 'schema_missing',
+                'score': 0,
+                'status': 'fail',
+                'suggestion': '加入 Schema.org 結構化資料以大幅提升 AI 理解度'
+            })
+    
+    # 2. 可發現性 (20 分)
     discoverability_score = 0
     discoverability_items = []
     
     if signals.has_title:
-        discoverability_score += 15
-        discoverability_items.append({
-            'name': 'title',
-            'score': 15,
-            'status': 'pass',
-            'details': '已設置'
-        })
+        discoverability_score += 8
+        discoverability_items.append({'name': 'title', 'score': 8, 'status': 'pass', 'details': '已設置'})
     else:
-        discoverability_items.append({
-            'name': 'title',
-            'score': 0,
-            'status': 'fail',
-            'suggestion': '在 <head> 加入 <title> 標籤'
-        })
-    
+        discoverability_items.append({'name': 'title', 'score': 0, 'status': 'fail', 'suggestion': '設置網頁標題 <title>'})
+        
     if signals.has_description:
-        discoverability_score += 5
-        discoverability_items.append({
-            'name': 'description',
-            'score': 5,
-            'status': 'pass',
-            'details': '已設置'
-        })
+        discoverability_score += 7
+        discoverability_items.append({'name': 'description', 'score': 7, 'status': 'pass', 'details': '已設置'})
     else:
-        discoverability_items.append({
-            'name': 'description',
-            'score': 0,
-            'status': 'fail',
-            'suggestion': '在 <head> 加入 <meta name="description">'
-        })
-    
+        discoverability_items.append({'name': 'description', 'score': 0, 'status': 'fail', 'suggestion': '設置 Meta Description'})
+        
     if signals.has_favicon:
         discoverability_score += 5
-        discoverability_items.append({
-            'name': 'favicon',
-            'score': 5,
-            'status': 'pass',
-            'details': '已設置'
-        })
+        discoverability_items.append({'name': 'favicon', 'score': 5, 'status': 'pass', 'details': '已設置'})
     else:
-        discoverability_items.append({
-            'name': 'favicon',
-            'score': 0,
-            'status': 'fail',
-            'suggestion': '加入 favicon.ico 或 <link rel="icon">'
-        })
+        discoverability_items.append({'name': 'favicon', 'score': 0, 'status': 'fail', 'suggestion': '設置網站圖示 (Favicon)'})
+
+    # 3. 信任訊號 (20 分)
+    trust_score = 0
+    trust_items = []
     
-    # 2. 內容結構化 (25 分)
-    structure_score = 0
-    structure_items = []
-    
-    # 有 JSON-LD (10 分)
-    if signals.has_jsonld or signals.schema_count > 0:
-        structure_score += 10
-        structure_items.append({
-            'name': 'has_jsonld',
-            'score': 10,
-            'status': 'pass',
-            'details': '已啟用'
-        })
+    # HTTPS (10)
+    if signals.has_https:
+        trust_score += 10
+        trust_items.append({'name': 'https', 'score': 10, 'status': 'pass', 'details': '已啟用 SSL'})
     else:
-        structure_items.append({
-            'name': 'has_jsonld',
-            'score': 0,
-            'status': 'fail',
-            'suggestion': '加入 JSON-LD 結構化資料'
-        })
-    
-    # Schema 多樣性 (Max 10 分)
-    schema_count = signals.schema_count
-    if schema_count == 0 and signals.has_jsonld:
-         schema_count = 1
-         
-    if schema_count >= 3:
-        schema_variety_score = 10
-    elif schema_count == 2:
-        schema_variety_score = 7
-    elif schema_count == 1:
-        schema_variety_score = 5
+        trust_items.append({'name': 'https', 'score': 0, 'status': 'fail', 'suggestion': '啟用 HTTPS 加密連線'})
+        
+    # Performance (10)
+    load_time = getattr(signals, 'page_load_time', None)
+    if load_time is not None:
+        if load_time < 2.0:
+            trust_score += 10
+            trust_items.append({'name': 'performance', 'score': 10, 'status': 'pass', 'details': f'載入速度極快 ({load_time:.2f}s)'})
+        elif load_time < 4.0:
+            trust_score += 5
+            trust_items.append({'name': 'performance', 'score': 5, 'status': 'pass', 'details': f'載入速度尚可 ({load_time:.2f}s)'})
+        else:
+            trust_items.append({'name': 'performance', 'score': 0, 'status': 'fail', 'suggestion': f'優化網站效能 (目前 {load_time:.2f}s)'})
     else:
-        schema_variety_score = 0
-    structure_score += schema_variety_score
-    
-    structure_items.append({
-        'name': 'schema_variety',
-        'score': schema_variety_score,
-        'status': 'pass' if schema_variety_score > 0 else 'fail',
-        'details': f"{schema_count} 種類型" if signals.schema_types else "一般",
-    })
-    
-    # Schema 質量 (5 分)
-    high_value_schemas = {'Organization', 'Person', 'Product', 'Article', 'WebSite', 'BreadcrumbList'}
-    has_high_value = any(t in high_value_schemas for t in signals.schema_types)
-    
-    if schema_count >= 2 or has_high_value:
-        structure_score += 5
-        structure_items.append({
-            'name': 'schema_quality',
-            'score': 5,
-            'status': 'pass',
-            'details': '結構豐富'
-        })
-    else:
-        structure_items.append({
-            'name': 'schema_quality',
-            'score': 0,
-            'status': 'fail',
-            'suggestion': '建議使用多種 Schema 類型'
-        })
-    
-    # 3. 技術基礎 (20 分)
+        # If load time unavailable (legacy), give partial score
+        trust_score += 5
+        trust_items.append({'name': 'performance', 'score': 5, 'status': 'partial', 'details': '無法測量，給予預設分數'})
+
+    # 4. 技術基礎 (15 分)
     technical_score = 0
     technical_items = []
     
-    if signals.has_https:
-        technical_score += 15
-        technical_items.append({
-            'name': 'https',
-            'score': 15,
-            'status': 'pass',
-            'details': '已啟用'
-        })
+    # Mobile Friendly (10)
+    is_mobile = getattr(signals, 'is_mobile_friendly', False)
+    if is_mobile:
+        technical_score += 10
+        technical_items.append({'name': 'mobile_friendly', 'score': 10, 'status': 'pass', 'details': '適配行動裝置'})
     else:
-        technical_items.append({
-            'name': 'https',
-            'score': 0,
-            'status': 'fail',
-            'suggestion': '啟用 HTTPS 加密連線'
-        })
-    
-    # 基本可用性 (5 分)
+        technical_items.append({'name': 'mobile_friendly', 'score': 0, 'status': 'fail', 'suggestion': '設定 Viewport Meta Tag 適配行動裝置'})
+        
+    # Basic Usability (5)
     if signals.has_title or signals.has_description:
         technical_score += 5
-        technical_items.append({
-            'name': 'basic_usability',
-            'score': 5,
-            'status': 'pass',
-            'details': '正常存取'
-        })
+        technical_items.append({'name': 'basic_usability', 'score': 5, 'status': 'pass', 'details': '基礎結構正常'})
     else:
-        technical_items.append({
-            'name': 'basic_usability',
-            'score': 0,
-            'status': 'fail'
-        })
+        technical_items.append({'name': 'basic_usability', 'score': 0, 'status': 'fail'})
+
+    # 5. 身份識別 (15 分)
+    identity_score = 0
+    identity_items = []
     
-    # 4. 社群信任 (30 分) - 權重提升
-    social_score = 0
-    social_items = []
-    
-    # 社群連結 (10 分)
-    social_count = signals.social_links_count
-    if social_count >= 2:
-        social_score += 10
-        social_items.append({
-            'name': 'social_links',
-            'score': 10,
-            'status': 'pass',
-            'details': f"{social_count} 個平台"
-        })
-    elif social_count == 1:
-        social_score += 5
-        social_items.append({
-            'name': 'social_links',
-            'score': 5,
-            'status': 'partial',
-            'details': "1 個平台",
-            'suggestion': '建議至少連結 2 個社群平台'
-        })
+    # About/Contact (10)
+    if signals.has_about_page or signals.has_contact:
+        identity_score += 10
+        identity_items.append({'name': 'identity_page', 'score': 10, 'status': 'pass', 'details': '有關於/聯繫頁面'})
+    elif getattr(signals, 'has_author', False):
+         identity_score += 5
+         identity_items.append({'name': 'identity_page', 'score': 5, 'status': 'partial', 'details': '僅有作者資訊', 'suggestion': '建議新增關於/聯繫頁面'})
     else:
-        social_items.append({
-            'name': 'social_links',
-            'score': 0,
-            'status': 'fail',
-            'suggestion': '在頁尾加入社群連結'
-        })
-    
-    # 權威連結 (20 分) - 只要有夠多外部鏈接就給高分
-    outbound_count = signals.outbound_links_count
-    if outbound_count >= 20:
-        social_score += 20
-        social_items.append({
-            'name': 'authority_links',
-            'score': 20,
-            'status': 'pass',
-            'details': f"{outbound_count}+ 條外部連結"
-        })
-    elif outbound_count >= 10:
-        social_score += 15
-        social_items.append({
-            'name': 'authority_links',
-            'score': 15,
-            'status': 'pass',
-            'details': f"{outbound_count} 條外部連結"
-        })
-    elif outbound_count >= 5:
-        social_score += 10
-        social_items.append({
-            'name': 'authority_links',
-            'score': 10,
-            'status': 'partial',
-            'details': f"{outbound_count} 條外部連結",
-            'suggestion': '增加外部權威引用以提升信任度'
-        })
-    elif outbound_count >= 1:
-        social_score += 5
-        social_items.append({
-            'name': 'authority_links',
-            'score': 5,
-            'status': 'partial',
-            'details': f"{outbound_count} 條外部連結",
-            'suggestion': '建議增加更多外部權威引用'
-        })
+        identity_items.append({'name': 'identity_page', 'score': 0, 'status': 'fail', 'suggestion': '建立關於我們或聯繫頁面'})
+        
+    # Social Links (5)
+    social_count = getattr(signals, 'social_links_count', 0)
+    if social_count >= 1:
+        identity_score += 5
+        identity_items.append({'name': 'social_presence', 'score': 5, 'status': 'pass', 'details': f'{social_count} 個社群連結'})
     else:
-        social_items.append({
-            'name': 'authority_links',
-            'score': 0,
-            'status': 'fail',
-            'suggestion': '適當引用權威網站資源'
-        })
-    
-    # 計算總分
+        identity_items.append({'name': 'social_presence', 'score': 0, 'status': 'fail', 'suggestion': '連結社群媒體帳號'})
+
+    # Calculate Total
     total_score = (
-        discoverability_score +  # 最多 25
-        structure_score +        # 最多 25
-        technical_score +        # 最多 20
-        social_score             # 最多 30
+        structure_score +        # Max 30
+        discoverability_score +  # Max 20
+        trust_score +            # Max 20
+        technical_score +        # Max 15
+        identity_score           # Max 15
     )
     
     return {
         'score': min(total_score, 100),
         'grade': score_to_grade(total_score),
         'dimensions': {
-            'discoverability': {
-                'score': discoverability_score,
-                'max': 25,
-                'items': discoverability_items
-            },
             'structure': {
+                'name': '結構化',
                 'score': structure_score,
-                'max': 25,
+                'max': 30,
+                'percentage': int((structure_score / 30) * 100) if structure_score > 0 else 0,
                 'items': structure_items
             },
-            'technical': {
-                'score': technical_score,
+            'discoverability': {
+                'name': '可發現性',
+                'score': discoverability_score,
                 'max': 20,
+                'percentage': int((discoverability_score / 20) * 100) if discoverability_score > 0 else 0,
+                'items': discoverability_items
+            },
+            'trust': {
+                'name': '信任訊號',
+                'score': trust_score,
+                'max': 20,
+                'percentage': int((trust_score / 20) * 100) if trust_score > 0 else 0,
+                'items': trust_items
+            },
+            'technical': {
+                'name': '技術體質',
+                'score': technical_score,
+                'max': 15,
+                'percentage': int((technical_score / 15) * 100) if technical_score > 0 else 0,
                 'items': technical_items
             },
-            'social': {
-                'score': social_score,
-                'max': 30,
-                'items': social_items
-            },
             'identity': {
-                'score': 0,
-                'max': 0,
-                'percentage': 0,
-                'items': []
+                'name': '身份識別',
+                'score': identity_score,
+                'max': 15,
+                'percentage': int((identity_score / 15) * 100) if identity_score > 0 else 0,
+                'items': identity_items
             }
         }
     }

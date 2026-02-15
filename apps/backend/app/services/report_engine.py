@@ -3,6 +3,7 @@ from app.models.signals import SiteSignals
 from app.services.scoring import calculate_weighted_score, score_to_grade, calculate_dimension_scores
 from app.services.site_classifier import classify_site_type, generate_custom_suggestions
 from app.constants.difficult_sites import check_difficult_site, get_estimated_dimensions
+from app.services.schema_analyzer import SchemaAnalyzer
 
 class Rule:
     """單一規則"""
@@ -202,9 +203,15 @@ class ReportEngine:
         signals.has_title = not first_page.get('title_missing', True)
         signals.has_description = not first_page.get('meta_missing', True)
         signals.has_favicon = first_page.get('has_favicon', False)
+        signals.page_load_time = first_page.get('load_time')
+        signals.is_mobile_friendly = first_page.get('has_viewport')
         
         # 2. Schema.org 檢測
         self._extract_schema_types(first_page, signals)
+        
+        # 2.1 Deep Schema Analysis
+        raw_schemas = first_page.get('schemas', [])
+        signals.schema_analysis = SchemaAnalyzer.analyze(raw_schemas)
         
         # 3. 作者資訊提取
         self._extract_author_info(first_page, signals)

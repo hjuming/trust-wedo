@@ -46,6 +46,7 @@ def get_report(
             "job_id": job_id,
             "url": job['url'],
             "status": job['status'],
+            "progress_stage": job.get('progress_stage', '分析失敗'),
             "summary": {
                 "conclusion": f"❌ 分析失敗: {job.get('error_message', '原因未知')}",
                 "grade": "F"
@@ -59,6 +60,7 @@ def get_report(
             "job_id": job_id,
             "url": job['url'],
             "status": job['status'],
+            "progress_stage": job.get('progress_stage', '排隊中...'),
             "summary": {
                 "conclusion": "⏳ 報告正在生成中，請稍候...",
                 "grade": "P"
@@ -132,21 +134,13 @@ def get_report_dimensions(
     quick_wins = generate_quick_wins(signals, dimension_scores)
     
     # 7. 格式化維度資料 (加入中文名稱與百分比)
-    dimension_names = {
-        'discoverability': 'AI可發現性',
-        'identity': '身分可信度',
-        'structure': '內容結構化',
-        'social': '社群信任',
-        'technical': '技術基礎'
-    }
-    
     formatted_dimensions = {}
     for key, data in dimension_scores.items():
         formatted_dimensions[key] = {
-            'name': dimension_names.get(key, key),
+            'name': data.get('name', key),
             'score': data['score'],
             'max': data['max'],
-            'percentage': int((data['score'] / data['max']) * 100) if data['max'] > 0 else 0,
+            'percentage': data.get('percentage', 0),
             'items': data['items']
         }
     

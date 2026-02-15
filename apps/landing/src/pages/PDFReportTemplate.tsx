@@ -27,6 +27,7 @@ interface ReportData {
     scan_id: string
     engine_version: string
     scan_date: string
+    signals?: any
 }
 
 export default function PDFReportTemplate() {
@@ -59,11 +60,13 @@ export default function PDFReportTemplate() {
 
             // Extract trust gaps (top 5)
             const gaps: string[] = []
-            if (!reportData.has_title) gaps.push('缺少網站標題')
-            if (!reportData.has_description) gaps.push('缺少網站描述')
-            if (!reportData.has_schema) gaps.push('缺少結構化資料')
-            if (!reportData.has_author && !reportData.has_organization) gaps.push('缺少作者/組織資訊')
-            if (!reportData.has_social_links) gaps.push('社群證明不足')
+            const s = reportData.signals || {}
+
+            if (!s.has_title) gaps.push('缺少網站標題')
+            if (!s.has_description) gaps.push('缺少網站描述')
+            if (!s.has_jsonld && (s.schema_count || 0) === 0) gaps.push('缺少結構化資料')
+            if (!s.has_author && !s.has_organization && !s.has_about_page) gaps.push('缺少作者/組織資訊')
+            if (!s.has_social_proof && (s.social_links_count || 0) < 2) gaps.push('社群證明不足')
 
             setReport({
                 url: reportData.url,

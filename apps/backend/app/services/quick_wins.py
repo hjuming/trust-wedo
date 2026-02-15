@@ -18,7 +18,8 @@ def generate_quick_wins(signals: SiteSignals, dimension_scores: Dict[str, Dict])
     # 從各維度找出失分項目
     for dim_key, dim_data in dimension_scores.items():
         for item in dim_data['items']:
-            if item['status'] == 'fail' and item['score'] == 0:
+            # Check fail or partial status where score < max potential
+            if item['status'] in ['fail', 'partial']:
                 suggestion = _create_suggestion(dim_key, item, signals)
                 if suggestion:
                     suggestions.append(suggestion)
@@ -33,19 +34,12 @@ def generate_quick_wins(signals: SiteSignals, dimension_scores: Dict[str, Dict])
 def _create_suggestion(dimension: str, item: Dict, signals: SiteSignals) -> Dict[str, Any]:
     """為單一失分項目建立建議"""
     
-    # 計算該項目的最大分數 (失分量)
-    potential_gain = 10 if 'organization' in item['name'] else \
-                    10 if 'author' in item['name'] else \
-                    10 if 'description' in item['name'] else \
-                    10 if 'social_links' in item['name'] else \
-                    7 if 'description' in item['name'] else \
-                    5 if 'has_jsonld' in item['name'] or 'schema_quality' in item['name'] or 'contact' in item['name'] or 'authority_links' in item['name'] else \
-                    3
+    name = item['name']
     
-    # Description 建議
-    if item['name'] == 'description':
+    # Description 建議 (Discoverability)
+    if name == 'description':
         return {
-            'title': '加上網站描述',
+            'title': '加上網站描述 (Meta Description)',
             'impact_score': 7,
             'impact': '+7分',
             'effort': '5分鐘',
@@ -55,12 +49,12 @@ def _create_suggestion(dimension: str, item: Dict, signals: SiteSignals) -> Dict
             'priority': 1
         }
     
-    # Favicon 建議
-    elif item['name'] == 'favicon':
+    # Favicon 建議 (Discoverability)
+    elif name == 'favicon':
         return {
-            'title': '加上網站圖示',
-            'impact_score': 3,
-            'impact': '+3分',
+            'title': '加上網站圖示 (Favicon)',
+            'impact_score': 5,
+            'impact': '+5分',
             'effort': '3分鐘',
             'dimension': dimension,
             'instructions': '在 <head> 區塊加入 <link rel="icon">',
@@ -68,64 +62,15 @@ def _create_suggestion(dimension: str, item: Dict, signals: SiteSignals) -> Dict
             'priority': 3
         }
     
-    # Organization Schema 建議
-    elif item['name'] == 'organization':
+    # Schema Missing 建議 (Structure)
+    elif name == 'schema_missing':
         return {
-            'title': '加上組織資訊 (Schema.org)',
-            'impact_score': 10,
-            'impact': '+10分',
-            'effort': '10分鐘',
+            'title': '加入 Schema.org 結構化資料',
+            'impact_score': 30, # High impact as it unlocks deep analysis
+            'impact': '大幅提升',
+            'effort': '15分鐘',
             'dimension': dimension,
-            'instructions': '在 <head> 或 <body> 加入 Organization JSON-LD',
-            'code_snippet': '''<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "您的組織名稱",
-  "url": "https://yoursite.com"
-}
-</script>''',
-            'priority': 2
-        }
-    
-    # Social Links 建議
-    elif item['name'] == 'social_links':
-        return {
-            'title': '連結至少 2 個社群平台',
-            'impact_score': 10,
-            'impact': '+10分',
-            'effort': '10分鐘',
-            'dimension': dimension,
-            'instructions': '在頁尾加入 Facebook, Twitter, LinkedIn 等連結',
-            'code_snippet': '''<footer>
-  <a href="https://facebook.com/yourpage">Facebook</a>
-  <a href="https://twitter.com/yourhandle">Twitter</a>
-</footer>''',
-            'priority': 2
-        }
-    
-    # Author 建議
-    elif item['name'] == 'author':
-        return {
-            'title': '加上作者資訊',
-            'impact_score': 10,
-            'impact': '+10分',
-            'effort': '5分鐘',
-            'dimension': dimension,
-            'instructions': '在 <head> 加入 <meta name="author">',
-            'code_snippet': '<meta name="author" content="作者名稱">',
-            'priority': 3
-        }
-    
-    # JSON-LD 建議
-    elif item['name'] == 'has_jsonld':
-        return {
-            'title': '加上基本 Schema.org 結構化資料',
-            'impact_score': 5,
-            'impact': '+5分',
-            'effort': '10分鐘',
-            'dimension': dimension,
-            'instructions': '在 <head> 或 <body> 加入 WebSite JSON-LD',
+            'instructions': '在 <head> 或 <body> 加入 WebSite 或 Organization JSON-LD',
             'code_snippet': '''<script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -137,16 +82,68 @@ def _create_suggestion(dimension: str, item: Dict, signals: SiteSignals) -> Dict
             'priority': 1
         }
     
-    # Contact 建議
-    elif item['name'] == 'contact':
+    # Social Presence 建議 (Identity)
+    elif name == 'social_presence':
         return {
-            'title': '加上聯絡資訊頁面',
+            'title': '連結社群媒體帳號',
             'impact_score': 5,
             'impact': '+5分',
-            'effort': '15分鐘',
+            'effort': '10分鐘',
             'dimension': dimension,
-            'instructions': '建立 /contact 頁面或在首頁加入聯絡資訊',
-            'priority': 3
+            'instructions': '在頁尾加入 Facebook, Twitter, LinkedIn 等連結',
+            'code_snippet': '''<footer>
+  <a href="https://facebook.com/yourpage" target="_blank">Facebook</a>
+  <a href="https://instagram.com/yourhandle" target="_blank">Instagram</a>
+</footer>''',
+            'priority': 2
+        }
+
+    # Identity Page 建議 (Identity)
+    elif name == 'identity_page':
+        if item.get('status') == 'partial':
+             return {
+                'title': '建立完整的「關於我們」頁面',
+                'impact_score': 5,
+                'impact': '+5分',
+                'effort': '30分鐘',
+                'dimension': dimension,
+                'instructions': '建立 /about 或 /contact 頁面，增強品牌信任度',
+                'priority': 3
+            }
+        else:
+             return {
+                'title': '建立關於或聯繫頁面',
+                'impact_score': 10,
+                'impact': '+10分',
+                'effort': '30分鐘',
+                'dimension': dimension,
+                'instructions': '建立 /about 或 /contact 頁面，並在首頁加入連結',
+                'priority': 2
+            }
+            
+    # HTTPS 建議 (Trust)
+    elif name == 'https':
+        return {
+            'title': '啟用 HTTPS 加密連線',
+            'impact_score': 10,
+            'impact': '+10分',
+            'effort': '20分鐘',
+            'dimension': dimension,
+            'instructions': '申請 SSL 憑證並強制將 HTTP 重定向至 HTTPS',
+            'priority': 1
+        }
+
+    # Mobile Friendly (Technical)
+    elif name == 'mobile_friendly':
+        return {
+            'title': '設定 Viewport 適配行動裝置',
+            'impact_score': 10,
+            'impact': '+10分',
+            'effort': '1分鐘',
+            'dimension': dimension,
+            'instructions': '在 <head> 加入 viewport meta tag',
+            'code_snippet': '<meta name="viewport" content="width=device-width, initial-scale=1">',
+            'priority': 1
         }
     
     return None

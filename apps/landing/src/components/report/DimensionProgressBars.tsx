@@ -2,8 +2,9 @@ interface DimensionItem {
     name: string;
     score: number;
     max: number;
-    status: 'pass' | 'fail' | 'unknown';
+    status: 'pass' | 'fail' | 'unknown' | 'partial';
     details?: string;
+    suggestion?: string;
 }
 
 interface DimensionData {
@@ -44,19 +45,38 @@ export function DimensionProgressBars({ dimensions }: DimensionProgressBarsProps
                     </div>
 
                     {/* 明細項目 */}
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                         {dim.items.map((item, idx) => (
-                            <div key={idx} className="flex items-center justify-between text-sm">
-                                <span className="flex items-center gap-2">
-                                    <span className="text-lg">
-                                        {item.status === 'pass' ? '✅' : item.status === 'fail' ? '❌' : '❓'}
+                            <div key={idx} className="flex items-start justify-between text-sm py-1 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 rounded-lg px-2 -mx-2 transition-colors">
+                                <div className="flex items-start gap-3 flex-1">
+                                    <span className="text-lg leading-none mt-0.5" title={item.status}>
+                                        {item.status === 'pass' ? '✅' : item.status === 'partial' ? '⚠️' : '❌'}
                                     </span>
-                                    <span className="text-gray-700">{getItemDisplayName(item.name)}</span>
-                                </span>
-                                <span className="text-gray-600">
-                                    +{item.score}
-                                    {item.details && <span className="ml-1 text-xs">({item.details})</span>}
-                                </span>
+                                    <div>
+                                        <div className="text-gray-900 font-medium">{getItemDisplayName(item.name)}</div>
+                                        {/* Show suggestion for fail/partial */}
+                                        {(item.status === 'fail' || item.status === 'partial') && item.suggestion && (
+                                            <div className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                                                <span>💡</span>
+                                                {item.suggestion}
+                                            </div>
+                                        )}
+                                        {/* Show details for pass (or fail if available) */}
+                                        {item.details && (
+                                            <div className="text-xs text-gray-500 mt-0.5">
+                                                {item.details}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="text-right ml-4 shrink-0">
+                                    <span className={`font-bold ${item.score > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                                        {item.score > 0 ? `+${item.score}` : '0'}
+                                    </span>
+                                    <div className="text-[10px] text-gray-400 uppercase tracking-wider">
+                                        Score
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -83,17 +103,19 @@ function getItemDisplayName(name: string): string {
         'title': '網站標題',
         'description': '網站描述',
         'favicon': '網站圖示',
+        'https': 'HTTPS 加密連線',
+        'performance': '頁面載入速度',
+        'mobile_friendly': '行動裝置適配',
+        'basic_usability': '基礎可用性',
+        'identity_page': '關於/聯繫頁面',
+        'social_presence': '社群連結',
+        'schema_missing': 'Schema.org 結構化資料',
+        'basic_schema': '基礎 Schema 設定',
+        'schema_detail': 'Schema 深度分析',
         'organization': '組織資訊',
         'author': '作者資訊',
         'contact': '聯絡資訊',
         'has_jsonld': 'Schema.org 結構化資料',
-        'schema_variety': 'Schema 多樣性',
-        'schema_quality': 'Schema 質量',
-        'social_links': '社群連結',
-        'authority_links': '外部引用連結',
-        'https': 'HTTPS 安全協定',
-        'performance': '頁面載入速度',
-        'basic_usability': '網站基本可用性'
     };
 
     return nameMap[name] || name;

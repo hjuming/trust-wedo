@@ -23,36 +23,44 @@ class ScanCreate(BaseModel):
 
 async def run_scan_pipeline(job_id: str, url: str):
     """背景任務：執行 CLI pipeline（直接調用庫，無需 CLI）"""
+    async def update_progress(percent: int, message: str):
+        try:
+            # Update progress_stage with percentage prefix for frontend parsing
+            stage_text = f"[{percent}%] {message}"
+            supabase.table("scan_jobs").update({
+                "progress_stage": stage_text,
+                "updated_at": "now()"
+            }).eq("id", job_id).execute()
+        except Exception as e:
+            print(f"Failed to update progress for job {job_id}: {e}")
+
     try:
-        # 1. 更新狀態為 processing - 階段 1
+        # 1. 更新狀態為 processing (0%)
         supabase.table("scan_jobs").update({
             "status": "processing",
-            "progress_stage": "正在讀取網站內容...",
             "started_at": "now()"
         }).eq("id", job_id).execute()
+        
+        await update_progress(0, "正在初始化分析引擎...")
         
         # 建立輸出目錄
         output_dir = Path(f"output/{job_id}")
         output_dir.mkdir(parents=True, exist_ok=True)
         
         # 2. 執行 SiteParser (Core Logic)
-        supabase.table("scan_jobs").update({
-            "progress_stage": "正在分析 AI 識別特徵..."
-        }).eq("id", job_id).execute()
+        await update_progress(5, "正在讀取網站結構...")
         
-        # Direct Library Call
-        parser = SiteParser(url, max_pages=10)
+        # Direct Library Call with Progress Callback
+        parser = SiteParser(url, max_pages=10, progress_callback=update_progress)
         
         try:
-            # 設置 120 秒超時
-            site_data = await asyncio.wait_for(parser.scan(), timeout=120)
+            # 設置 180 秒超時 (Playwright 較慢)
+            site_data = await asyncio.wait_for(parser.scan(), timeout=180)
         except asyncio.TimeoutError:
-            raise Exception("分析超時（超過 120 秒）")
+            raise Exception("分析超時（超過 3 分鐘）")
         
         # 3. 儲存成果 (File + DB)
-        supabase.table("scan_jobs").update({
-            "progress_stage": "正在產生成信度報告..."
-        }).eq("id", job_id).execute()
+        await update_progress(90, "正在計算網站成信度分數...")
         
         # Write to file (local persistence in container, for debugging)
         target_site_json = output_dir / "site.json"
@@ -72,6 +80,7 @@ async def run_scan_pipeline(job_id: str, url: str):
         
         # 計算分數 (新增邏輯)
         try:
+            await update_progress(95, "正在生成最終報告...")
             signals = engine.extract_signals([artifact_payload])
             dimension_scores = calculate_dimension_scores(signals)
             total_score = sum(d['score'] for d in dimension_scores.values())
@@ -90,7 +99,7 @@ async def run_scan_pipeline(job_id: str, url: str):
         # 5. 更新狀態為 completed
         supabase.table("scan_jobs").update({
             "status": "completed",
-            "progress_stage": "分析完成",
+            "progress_stage": "[100%] 分析完成",
             "completed_at": "now()",
             "result": result_data # 儲存計算結果
         }).eq("id", job_id).execute()

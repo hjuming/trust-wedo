@@ -98,10 +98,10 @@ export function QuickWins({ quickWins }: QuickWinsProps) {
 function getDimensionName(dimension: string): string {
     const nameMap: Record<string, string> = {
         'discoverability': 'AI可發現性',
-        'identity': '身分可信度',
+        'identity': '身份識別',
         'structure': '內容結構化',
-        'social': '社群信任',
-        'technical': '技術基礎'
+        'trust': '信任訊號',
+        'technical': '技術體質'
     };
 
     return nameMap[dimension] || dimension;

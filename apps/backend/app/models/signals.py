@@ -15,6 +15,7 @@ class SiteSignals(BaseModel):
     # Schema.org 信號
     schema_count: int = 0
     schema_types: List[str] = []
+    schema_analysis: Dict[str, Any] = {}
     has_organization: bool = False
     has_person: bool = False
     has_website: bool = False

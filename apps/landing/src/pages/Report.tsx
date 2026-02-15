@@ -16,32 +16,51 @@ export default function Report() {
   const [isExporting, setIsExporting] = useState(false)
 
   useEffect(() => {
-    fetchReport()
-    fetchDimensions()
+    let timeoutId: any;
+
+    const pollReport = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) throw new Error('Unauthorized')
+
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+        const response = await fetch(`${apiUrl}/api/reports/${jobId}`, {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        })
+
+        if (!response.ok) throw new Error('無法讀取報告')
+
+        const data = await response.json()
+        setReport(data)
+
+        // 如果還在處理中，繼續輪詢
+        if (data.status === 'processing' || data.status === 'pending') {
+          timeoutId = setTimeout(pollReport, 2000)
+        } else {
+          // 完成或失敗，停止輪詢並讀取維度
+          setLoading(false)
+          fetchDimensions()
+        }
+      } catch (err: any) {
+        setError(err.message)
+        setLoading(false)
+      }
+    }
+
+    pollReport()
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId)
+    }
   }, [jobId])
 
-  const fetchReport = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) throw new Error('Unauthorized')
+  // Removed fetchReport and fetchDimensions from here (integrated above)
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-      const response = await fetch(`${apiUrl}/api/reports/${jobId}`, {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      })
 
-      if (!response.ok) throw new Error('無法讀取報告')
 
-      const data = await response.json()
-      setReport(data)
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Removed fetchReport as logic is moved to useEffect
 
   const fetchDimensions = async () => {
     try {
@@ -69,15 +88,15 @@ export default function Report() {
   }
 
   const handleExportPDF = async () => {
+    // ... (Keep existing implementation)
     try {
+      // ... existing PDF logic ...
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
 
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
       const response = await fetch(`${apiUrl}/api/reports/${jobId}/pdf`, {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
+        headers: { 'Authorization': `Bearer ${session.access_token}` }
       })
 
       if (!response.ok) throw new Error('無法下載 PDF')
@@ -86,25 +105,19 @@ export default function Report() {
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
+      // ... same logic ...
 
       const contentDisposition = response.headers.get('Content-Disposition')
       let filename = `trust-wedo-report-${jobId}.pdf`
 
       if (contentDisposition) {
         const matches = /filename="([^"]*)"/.exec(contentDisposition)
-        if (matches && matches[1]) {
-          filename = matches[1]
-        }
+        if (matches && matches[1]) filename = matches[1]
       } else if (report?.url) {
-        // 從 URL 提取域名生成更有意義的檔名
         try {
           const urlObj = new URL(report.url)
-          const domain = urlObj.hostname.replace('www.', '')
-          const date = new Date().toISOString().split('T')[0]
-          filename = `Trust-WEDO-${domain}-${date}.pdf`
-        } catch {
-          filename = `trust-wedo-report-${jobId}.pdf`
-        }
+          filename = `Trust-WEDO-${urlObj.hostname.replace('www.', '')}-${new Date().toISOString().split('T')[0]}.pdf`
+        } catch { }
       }
 
       a.download = filename
@@ -114,7 +127,6 @@ export default function Report() {
       document.body.removeChild(a)
     } catch (err) {
       console.error(err)
-      // Fallback to browser print if backend PDF fails
       window.print()
     }
   }
@@ -127,7 +139,6 @@ export default function Report() {
     Object.keys(dims).forEach(key => {
       const d = dims[key];
       if (!d.max) return;
-
       const percentage = d.score / d.max;
       if (percentage < minPercentage) {
         minPercentage = percentage;
@@ -136,19 +147,39 @@ export default function Report() {
     });
 
     if (!worstKey) return { name: '無', score: 0, max: 100 };
-
-    return {
-      name: worstKey,
-      score: dims[worstKey].score,
-      max: dims[worstKey].max
-    };
+    return { name: worstKey, score: dims[worstKey].score, max: dims[worstKey].max };
   }
 
-  if (loading) {
+  const isProcessing = loading || (report && (report.status === 'processing' || report.status === 'pending'));
+
+  if (isProcessing) {
+    const stage = report?.progress_stage || "準備中...";
+    const percentMatch = stage.match(/\[(\d+)%\]/);
+    const percent = percentMatch ? parseInt(percentMatch[1]) : 0;
+    const message = stage.replace(/\[\d+%\]\s*/, '');
+
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="w-16 h-16 border-4 border-brand-blue/30 border-t-brand-blue rounded-full animate-spin mb-6" />
-        <h2 className="text-2xl font-bold text-brand-navy dark:text-brand-light animate-pulse tracking-tight">正在產生成信度報告...</h2>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-md mx-auto px-6">
+        <div className="relative w-24 h-24 mb-6">
+          <div className="absolute inset-0 border-[6px] border-brand-light dark:border-brand-light/10 rounded-full"></div>
+          <div className="absolute inset-0 border-[6px] border-brand-blue border-t-transparent rounded-full animate-spin"></div>
+          <div className="absolute inset-0 flex items-center justify-center font-black text-xl text-brand-blue">
+            {percent}%
+          </div>
+        </div>
+        <h2 className="text-xl font-bold text-brand-navy dark:text-brand-light mb-2 text-center animate-pulse">
+          {message || "正在分析..."}
+        </h2>
+        <p className="text-sm text-brand-slate dark:text-brand-light/60 text-center mb-8">
+          AI 正在深入分析您的網站結構與信任訊號，這通常需要 1-2 分鐘...
+        </p>
+
+        <div className="w-full h-3 bg-brand-light dark:bg-brand-light/10 rounded-full overflow-hidden shadow-inner">
+          <div
+            className="h-full bg-gradient-to-r from-brand-blue to-cyan-400 transition-all duration-500 ease-out shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+            style={{ width: `${percent}%` }}
+          />
+        </div>
       </div>
     )
   }
@@ -159,7 +190,7 @@ export default function Report() {
         <div className="text-6xl mb-6">❌</div>
         <h1 className="text-3xl font-bold text-brand-navy dark:text-brand-light mb-4">讀取報告出錯</h1>
         <p className="text-brand-slate dark:text-brand-light/60 mb-8 font-medium">{error}</p>
-        <Link to="/dashboard" className="px-8 py-3 bg-brand-blue text-white rounded-xl font-bold">返回儀表板</Link>
+        <Link to="/dashboard" className="px-8 py-3 bg-brand-blue text-white rounded-xl font-bold shadow-lg shadow-brand-blue/20 hover:scale-105 transition-transform">返回儀表板</Link>
       </div>
     )
   }
