@@ -12,27 +12,48 @@ from trust_wedo.parsers.playwright_parser import PlaywrightParser
 logging.basicConfig(level=logging.INFO)
 
 async def test_crawl():
-    urls = [
-        "https://example.com",
-        "https://www.wedopr.com/"
+    # Define project_root based on the script's location
+    # Assuming script is in project_root/tests/
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+    test_urls = [
+        "https://www.google.com",
+        "https://en.wikipedia.org/wiki/Main_Page",
+        "https://www.wedopr.com"  # The critical SPA site
     ]
     
-    print("Initializing parser...")
+    print(f"Starting verification of {len(test_urls)} URLs...")
+    
+    # Ensure sys.path includes apps/backend and src
+    sys.path.insert(0, os.path.join(project_root, "apps", "backend"))
+    sys.path.insert(0, os.path.join(project_root, "src"))
+
     try:
-        async with PlaywrightParser() as parser:
-            for url in urls:
-                print(f"\nCrawling {url}...")
-                # Increase timeout to 60s for testing
-                content = await parser.fetch_content(url, timeout=60000)
-                
+        from trust_wedo.parsers.playwright_parser import PlaywrightParser
+        print("[OK] Import successful.")
+    except ImportError as e:
+        print(f"[FAIL] Import failed: {e}")
+        return
+
+    async with PlaywrightParser() as parser:
+        for url in test_urls:
+            print(f"\n--- Testing {url} ---")
+            try:
+                content = await parser.fetch_content(url)
                 if content:
-                    print(f"✅ Success! Content length: {len(content)}")
-                    if "React" in content or "root" in content:
-                        print("   (Contains React/root keywords)")
+                    size_kb = len(content)/1024
+                    has_schema = 'application/ld+json' in content
+                    print(f"[OK] Fetched content. Size: {size_kb:.1f}KB")
+                    print(f"[OK] Schema detection: {'FOUND' if has_schema else 'NOT FOUND'}")
+                    
+                    if has_schema:
+                         print("[SUCCESS] Content rendered correctly.")
+                    elif "wedopr" in url:
+                         print("[WARN] Content fetched but Schema.org MISSING for wedopr. Check hydration buffer.")
                 else:
-                    print(f"❌ Failed to fetch content for {url}")
-    except Exception as e:
-        print(f"Fatal error: {e}")
+                    print(f"[FAIL] Fetched content is None.")
+            except Exception as e:
+                print(f"[ERROR] Exception during fetch: {e}")
 
 if __name__ == "__main__":
     asyncio.run(test_crawl())

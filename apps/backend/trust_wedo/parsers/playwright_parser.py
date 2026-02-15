@@ -68,6 +68,7 @@ class PlaywrightParser:
         context = None
         
         try:
+            logger.info(f"[Playwright] Starting fetch for {url}")
             # Create new context for isolation (cookies, storage, etc.)
             context = await self.browser.new_context(
                 user_agent=random.choice(USER_AGENTS),
@@ -87,49 +88,64 @@ class PlaywrightParser:
             # Navigate
             # networkidle is important for SPAs to finish initial rendering
             try:
+                logger.debug(f"[Playwright] Navigating to {url} (networkidle)...")
                 # 1. Navigation with extended timeout (30s)
                 response = await page.goto(url, wait_until='networkidle', timeout=30000)
                 
                 if not response:
-                    logger.error(f"Playwright received no response for {url}")
+                    logger.error(f"[Playwright] No response for {url}")
                     return None
                     
                 # Handle error status codes
                 if response.status >= 400:
-                    logger.warning(f"Playwright received status {response.status} for {url}")
+                    logger.warning(f"[Playwright] Status {response.status} for {url}")
                     # For 403/401, it's likely blocking. We log it.
                     if response.status in [403, 401]:
-                         logger.warning(f"Access denied (Anti-scraping?) for {url}")
+                         logger.warning(f"[Playwright] Access denied (Anti-scraping?) for {url}")
                          
                 # 2. Explicitly wait for DOM to be present (Hydration check)
                 try:
+                    logger.debug(f"[Playwright] Waiting for 'body' selector...")
                     # Wait for body to be attached to DOM
                     await page.wait_for_selector('body', timeout=10000)
-                except Exception:
-                    logger.warning(f"Timeout waiting for body selector on {url}")
+                except Exception as e:
+                    logger.warning(f"[Playwright] Timeout waiting for body selector on {url}: {e}")
 
                 # 3. Fixed delay for React/Vue hydration (Critical for Scoring 2.0)
                 # Some SPAs render 'body' but content comes later via JS
+                logger.debug(f"[Playwright] Hydration buffer (3s)...")
                 await page.wait_for_timeout(3000)
                 
             except PlaywrightTimeoutError:
-                logger.warning(f"Playwright navigation timeout for {url} (networkidle). Retrying with domcontentloaded.")
+                logger.warning(f"[Playwright] Navigation timeout for {url} (networkidle). Retrying with domcontentloaded.")
                 try:
                      response = await page.goto(url, wait_until='domcontentloaded', timeout=15000)
+                     logger.debug(f"[Playwright] Hydration buffer after retry (3s)...")
                      await page.wait_for_timeout(3000) # Wait for hydration
                 except Exception as e:
-                     logger.error(f"Playwright fallback navigation failed: {e}")
+                     logger.error(f"[Playwright] Fallback navigation failed: {e}")
 
             # Get full rendered HTML (whether fully idle or timed out)
             try:
                 content = await page.content()
+                if content:
+                    size_kb = len(content) / 1024
+                    has_schema = 'application/ld+json' in content
+                    logger.info(f"[Playwright] Successfully fetched {url}. Size: {size_kb:.1f}KB, Has Schema: {has_schema}")
+                    
+                    if len(content) < 1000:
+                        logger.warning(f"[Playwright] Warning: Content size very small ({len(content)} bytes). Might be blocked or empty.")
+                    
+                    if not has_schema and "wedopr" in url:
+                        logger.warning(f"[Playwright] Warning: No Schema.org detected for wedopr. Check hydration.")
+                
                 return content
             except Exception as e:
-                logger.error(f"Failed to get page content: {e}")
+                logger.error(f"[Playwright] Failed to get page content: {e}")
                 return None
             
         except Exception as e:
-            logger.error(f"Playwright page error for {url}: {e}")
+            logger.error(f"[Playwright] Page error for {url}: {e}")
             return None
             
         finally:

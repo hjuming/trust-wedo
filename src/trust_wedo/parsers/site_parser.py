@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import logging
 import time
 from typing import List, Dict, Any, Optional, Set, Callable, Awaitable
 import httpx
@@ -52,6 +53,14 @@ class SiteParser:
             await self.progress_callback(5, "正在初始化爬蟲引擎...")
             
         playwright_parser = None
+        if self.use_playwright:
+            if not PLAYWRIGHT_AVAILABLE:
+                # Use print for critical initialization issues that might happen before logging is fully set up
+                print("[ERROR] Playwright requested but NOT AVAILABLE. Falling back to static HTTP.")
+            else:
+                print(f"[INFO] Strict Mode: Playwright enabled for scan of {self.base_url}")
+        else:
+            print("[INFO] Default Mode: Using static HTTP parser.")
         
         # Initialize Playwright if enabled
         if self.use_playwright:
