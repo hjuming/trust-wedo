@@ -53,6 +53,9 @@ class SiteParser:
             await self.progress_callback(5, "正在初始化爬蟲引擎...")
             
         playwright_parser = None
+        # Parser selection logic
+        # Note: self.use_playwright is already set in __init__ based on input and PLAYWRIGHT_AVAILABLE
+        # The following block adds logging based on that decision.
         if self.use_playwright:
             if not PLAYWRIGHT_AVAILABLE:
                 # Use print for critical initialization issues that might happen before logging is fully set up
@@ -73,6 +76,8 @@ class SiteParser:
                 # In strict mode, we should probably fail here instead of falling back
                 # to static parsing which we know will give poor results for SPAs.
                 raise RuntimeError(f"Playwright initialization failed: {e}") from e
+        elif not PLAYWRIGHT_AVAILABLE:
+             print("[WARN] Playwright not available, using static parser.")
 
         try:
             async with httpx.AsyncClient(follow_redirects=True, headers=self.headers, timeout=30.0) as client:
