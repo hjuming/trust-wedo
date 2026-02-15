@@ -25,15 +25,14 @@ COPY . /app
 RUN pip install --no-cache-dir -e .
 
 # 設定環境變數
-# /app/apps/backend -> 讓 'from app import ...' 工作
-# /app/src -> 讓 'import trust_wedo' 工作 (即使已安裝 -e .)
-ENV PYTHONPATH=/app/apps/backend:/app/src:/app:$PYTHONPATH
+# /app/apps/backend -> 讓 'import app' 找到 /app/apps/backend/app
+# /app/src -> 讓 'import trust_wedo' 找到 /app/src/trust_wedo
+ENV PYTHONPATH=/app/apps/backend:/app/src:$PYTHONPATH
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
 
 EXPOSE 8080
 
 # 啟動命令
-# 這裡指向 apps/backend 內部的 app.main:app
-# /app/apps/backend 在 PYTHONPATH 中，所以 uvicorn app.main:app 能找到它
+# 基於 PYTHONPATH，app.main:app 指向 /app/apps/backend/app/main.py 的 app 實例
 CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
