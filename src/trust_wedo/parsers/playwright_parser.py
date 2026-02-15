@@ -30,7 +30,11 @@ class PlaywrightParser:
             self.playwright = await async_playwright().start()
             self.browser = await self.playwright.chromium.launch(
                 headless=True,
-                args=['--no-sandbox', '--disable-setuid-sandbox']
+                args=[
+                    '--no-sandbox', 
+                    '--disable-setuid-sandbox',
+                    '--disable-blink-features=AutomationControlled'  # Stealth: Hide webdriver
+                ]
             )
             return self
         except Exception as e:
@@ -109,11 +113,20 @@ class PlaywrightParser:
                 await page.wait_for_timeout(3000)
                 
             except PlaywrightTimeoutError:
-                logger.warning(f"Playwright navigation timeout for {url} (networkidle). Returning content loaded so far.")
-            
+                logger.warning(f"Playwright navigation timeout for {url} (networkidle). Retrying with domcontentloaded.")
+                try:
+                     response = await page.goto(url, wait_until='domcontentloaded', timeout=15000)
+                     await page.wait_for_timeout(3000) # Wait for hydration
+                except Exception as e:
+                     logger.error(f"Playwright fallback navigation failed: {e}")
+
             # Get full rendered HTML (whether fully idle or timed out)
-            content = await page.content()
-            return content
+            try:
+                content = await page.content()
+                return content
+            except Exception as e:
+                logger.error(f"Failed to get page content: {e}")
+                return None
             
         except Exception as e:
             logger.error(f"Playwright page error for {url}: {e}")

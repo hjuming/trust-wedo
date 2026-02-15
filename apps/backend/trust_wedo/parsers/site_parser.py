@@ -120,7 +120,8 @@ class SiteParser:
             "site": self.base_url,
             "pages": self.pages,
             "checks": self.checks,
-            "meta": get_meta(self.base_url)
+            "meta": get_meta(self.base_url),
+            "parser_used": "playwright" if playwright_parser else "static"
         }
 
     async def _find_sitemap_urls(self, client: httpx.AsyncClient) -> List[str]:
