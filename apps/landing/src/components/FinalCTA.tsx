@@ -18,12 +18,12 @@ export const FinalCTA = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link to="/signup" className="w-full sm:w-auto px-10 py-5 bg-white text-brand-blue rounded-2xl font-black text-xl hover:scale-105 transition-transform shadow-xl inline-block text-center">
+          <Link to="/entity-check" className="w-full sm:w-auto px-10 py-5 bg-white text-brand-blue rounded-2xl font-black text-xl hover:scale-105 transition-transform shadow-xl inline-block text-center">
             {t('finalCta.primaryCta')}
           </Link>
-          <button className="w-full sm:w-auto px-10 py-5 bg-transparent text-white border-2 border-white/30 rounded-2xl font-black text-xl hover:bg-white/10 transition-colors">
+          <Link to="/docs" className="w-full sm:w-auto px-10 py-5 bg-transparent text-white border-2 border-white/30 rounded-2xl font-black text-xl hover:bg-white/10 transition-colors text-center">
             {t('finalCta.secondaryCta')}
-          </button>
+          </Link>
         </div>
       </div>
       

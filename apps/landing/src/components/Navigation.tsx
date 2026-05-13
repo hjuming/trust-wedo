@@ -13,6 +13,7 @@ export const Navigation = () => {
   const isAuthenticated = !!localStorage.getItem('token')
 
   const navLinks = [
+    { name: t('nav.entityCheck'), href: '/entity-check' },
     { name: t('nav.docs'), href: '/docs' },
     { name: t('nav.pricing'), href: '/pricing' },
     { name: t('nav.playground'), href: '/playground' },

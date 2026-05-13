@@ -1,5 +1,6 @@
 {
     "nav": {
+        "entityCheck": "實體查核",
         "docs": "文件",
         "pricing": "定價",
         "playground": "試用",
@@ -155,7 +156,54 @@
     "footer": {
         "description": "值得信賴的 AI 編碼夥伴，掌控您的程式碼庫並自我驗證每項變更。",
         "product": "產品",
-        "company": "公司",
+        "entityCheck": {
+    "title": "企業實體查核",
+    "subtitle": "輸入公司名稱、統一編號與網站 URL，獲取公開資料版企業信任報告",
+    "form": {
+      "companyName": "公司名稱",
+      "companyNamePlaceholder": "例如：擎天金屬股份有限公司",
+      "taxId": "統一編號",
+      "taxIdPlaceholder": "8 位數字，例如：04595257",
+      "taxIdHelp": "輸入 8 位統一編號，將自動驗證格式",
+      "websiteUrl": "公司網站",
+      "websiteUrlPlaceholder": "https://example.com",
+      "websiteUrlHelp": "選填，用於網站信任度分析",
+      "submit": "開始查核",
+      "checking": "查核中..."
+    },
+    "report": {
+      "title": "企業實體查核報告",
+      "generatedAt": "生成時間",
+      "trustScore": "信任評分",
+      "companyInfo": "公司基本資料",
+      "companyName": "公司名稱",
+      "taxId": "統一編號",
+      "valid": "驗證通過",
+      "invalid": "驗證失敗",
+      "status": "登記狀態",
+      "address": "登記地址",
+      "registerAuthority": "登記機關",
+      "capitalAmount": "資本額",
+      "notAvailable": "資料未提供",
+      "riskSignals": "風險訊號",
+      "noRiskSignals": "未發現顯著風險訊號",
+      "noRiskSignalsDesc": "根據目前查詢的公開資料，未發現重大風險訊號",
+      "websiteAnalysis": "網站分析",
+      "aiReadability": "AI 可讀性",
+      "websiteUrl": "網站 URL",
+      "dataSources": "資料來源",
+      "lastUpdated": "最後更新",
+      "viewSource": "查看來源",
+      "source": "來源",
+      "disclaimer": {
+        "title": "重要聲明",
+        "content": "本報告僅供參考，所有資料均來自公開來源。實際商業決策請諮詢專業顧問。本報告不構成法律意見或投資建議。"
+      }
+    },
+    "error": {
+      "title": "查核失敗"
+    }
+  },
         "community": "社群",
         "features": "功能",
         "pricing": "定價",
