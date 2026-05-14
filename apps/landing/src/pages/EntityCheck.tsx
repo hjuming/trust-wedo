@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import EntityCheckForm from '../components/EntityCheck/EntityCheckForm'
 import EntityCheckReport from '../components/EntityCheck/EntityCheckReport'
+import { Footer } from '../components/Footer'
+import { Navigation } from '../components/Navigation'
 import { getApiBaseUrl } from '../lib/api'
 import { EntityCheckResult } from '../types/entityCheck'
 
@@ -148,49 +150,69 @@ export default function EntityCheck() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-light via-white to-brand-light/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-brand-navy dark:text-brand-light mb-4">
-            {t('entityCheck.title', '企業實體查核')}
-          </h1>
-          <p className="text-xl text-brand-slate dark:text-brand-light/80 max-w-3xl mx-auto">
-            {t('entityCheck.subtitle', '輸入公司名稱、統一編號與網站 URL，獲取公開資料版企業信任報告')}
-          </p>
-        </div>
+    <div className="min-h-screen bg-brand-light dark:bg-brand-navy transition-colors duration-300">
+      <Navigation />
 
-        {/* Form */}
-        <div className="mb-12">
-          <EntityCheckForm onSubmit={handleCheck} loading={loading} />
-        </div>
+      <main>
+        <section className="bg-brand-navy pt-32 pb-16 text-white md:pt-40 md:pb-24">
+          <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-[1fr_0.95fr]">
+            <div>
+              <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-brand-blue/40 bg-brand-blue/10 px-4 py-2 text-sm font-black text-brand-cyan">
+                <span className="h-2 w-2 rounded-full bg-brand-cyan" />
+                WEDO 資料查核 Agent Lab
+              </div>
 
-        {/* Error Display */}
+              <h1 className="max-w-3xl text-5xl font-black leading-[1.05] tracking-tight md:text-7xl">
+                {t('entityCheck.title', '企業實體查核')}
+              </h1>
+              <p className="mt-8 max-w-2xl text-xl leading-relaxed text-brand-light/80 md:text-2xl">
+                {t('entityCheck.subtitle', '輸入公司名稱、統一編號與網站 URL，獲取公開資料版企業信任報告')}
+              </p>
+
+              <div className="mt-10 grid max-w-xl gap-3 sm:grid-cols-3">
+                {[
+                  ['01', '統編驗證'],
+                  ['02', '登記資料'],
+                  ['03', '風險摘要'],
+                ].map(([step, label]) => (
+                  <div key={step} className="border-l-2 border-brand-blue/70 pl-4">
+                    <div className="text-sm font-black text-brand-blue">{step}</div>
+                    <div className="mt-1 text-sm font-bold text-brand-light/70">{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <EntityCheckForm onSubmit={handleCheck} loading={loading} />
+          </div>
+        </section>
+
         {error && (
-          <div className="mb-8 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+          <section className="bg-brand-light px-6 pt-10 dark:bg-brand-navy">
+            <div className="mx-auto max-w-7xl rounded-3xl border border-red-200 bg-red-50 p-5 text-red-800">
+              <div className="flex gap-3">
+                <svg className="mt-0.5 h-5 w-5 flex-none text-red-500" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
-              </div>
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
-                  {t('entityCheck.error.title', '查核失敗')}
-                </h3>
-                <div className="mt-2 text-sm text-red-700 dark:text-red-300">
-                  {error}
+                <div>
+                  <h3 className="text-sm font-black">
+                    {t('entityCheck.error.title', '查核失敗')}
+                  </h3>
+                  <p className="mt-1 text-sm font-medium">{error}</p>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Report */}
         {result && (
-          <EntityCheckReport result={result} />
+          <section className="bg-brand-light px-6 py-14 dark:bg-brand-navy">
+            <EntityCheckReport result={result} />
+          </section>
         )}
-      </div>
+      </main>
+
+      <Footer />
     </div>
   )
 }

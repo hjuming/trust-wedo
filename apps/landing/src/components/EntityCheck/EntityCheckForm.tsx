@@ -31,12 +31,23 @@ export default function EntityCheckForm({ onSubmit, loading }: EntityCheckFormPr
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white dark:bg-brand-navy rounded-2xl shadow-xl p-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Company Name */}
+    <div className="w-full">
+      <div className="bg-white/95 text-brand-navy rounded-3xl border border-white/40 shadow-2xl p-6 md:p-8">
+        <div className="mb-6">
+          <span className="text-xs font-bold tracking-[0.2em] uppercase text-brand-blue">
+            Entity Verification
+          </span>
+          <h2 className="mt-3 text-2xl md:text-3xl font-black tracking-tight">
+            輸入公司資料，啟動公開資料查核
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-brand-slate">
+            系統會先驗證統一編號，再查詢公司登記資料，整理成可引用的初步查核報告。
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="companyName" className="block text-sm font-medium text-brand-navy dark:text-brand-light mb-2">
+            <label htmlFor="companyName" className="mb-2 block text-sm font-bold text-brand-navy/70">
               {t('entityCheck.form.companyName', '公司名稱')} *
             </label>
             <input
@@ -44,15 +55,14 @@ export default function EntityCheckForm({ onSubmit, loading }: EntityCheckFormPr
               id="companyName"
               value={formData.companyName}
               onChange={(e) => handleChange('companyName', e.target.value)}
-              className="w-full px-4 py-3 border border-brand-slate/20 dark:border-brand-light/20 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent bg-white dark:bg-brand-navy text-brand-navy dark:text-brand-light placeholder-brand-slate/60"
+              className="w-full rounded-2xl border border-brand-navy/10 bg-brand-light px-4 py-4 text-base font-semibold text-brand-navy outline-none transition placeholder:text-brand-slate/50 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/15"
               placeholder={t('entityCheck.form.companyNamePlaceholder', '例如：擎天金屬股份有限公司')}
               required
             />
           </div>
 
-          {/* Tax ID */}
           <div>
-            <label htmlFor="taxId" className="block text-sm font-medium text-brand-navy dark:text-brand-light mb-2">
+            <label htmlFor="taxId" className="mb-2 block text-sm font-bold text-brand-navy/70">
               {t('entityCheck.form.taxId', '統一編號')} *
             </label>
             <input
@@ -60,20 +70,19 @@ export default function EntityCheckForm({ onSubmit, loading }: EntityCheckFormPr
               id="taxId"
               value={formData.taxId}
               onChange={(e) => handleChange('taxId', e.target.value)}
-              className="w-full px-4 py-3 border border-brand-slate/20 dark:border-brand-light/20 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent bg-white dark:bg-brand-navy text-brand-navy dark:text-brand-light placeholder-brand-slate/60"
+              className="w-full rounded-2xl border border-brand-navy/10 bg-brand-light px-4 py-4 text-base font-semibold text-brand-navy outline-none transition placeholder:text-brand-slate/50 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/15"
               placeholder={t('entityCheck.form.taxIdPlaceholder', '8 位數字，例如：04595257')}
               pattern="[0-9]{8}"
               maxLength={8}
               required
             />
-            <p className="mt-1 text-sm text-brand-slate dark:text-brand-light/60">
+            <p className="mt-2 text-sm font-medium text-brand-slate">
               {t('entityCheck.form.taxIdHelp', '輸入 8 位統一編號，將自動驗證格式')}
             </p>
           </div>
 
-          {/* Website URL */}
           <div>
-            <label htmlFor="websiteUrl" className="block text-sm font-medium text-brand-navy dark:text-brand-light mb-2">
+            <label htmlFor="websiteUrl" className="mb-2 block text-sm font-bold text-brand-navy/70">
               {t('entityCheck.form.websiteUrl', '公司網站')}
             </label>
             <input
@@ -81,20 +90,19 @@ export default function EntityCheckForm({ onSubmit, loading }: EntityCheckFormPr
               id="websiteUrl"
               value={formData.websiteUrl}
               onChange={(e) => handleChange('websiteUrl', e.target.value)}
-              className="w-full px-4 py-3 border border-brand-slate/20 dark:border-brand-light/20 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent bg-white dark:bg-brand-navy text-brand-navy dark:text-brand-light placeholder-brand-slate/60"
+              className="w-full rounded-2xl border border-brand-navy/10 bg-brand-light px-4 py-4 text-base font-semibold text-brand-navy outline-none transition placeholder:text-brand-slate/50 focus:border-brand-blue focus:ring-4 focus:ring-brand-blue/15"
               placeholder={t('entityCheck.form.websiteUrlPlaceholder', 'https://example.com')}
             />
-            <p className="mt-1 text-sm text-brand-slate dark:text-brand-light/60">
+            <p className="mt-2 text-sm font-medium text-brand-slate">
               {t('entityCheck.form.websiteUrlHelp', '選填，用於網站信任度分析')}
             </p>
           </div>
 
-          {/* Submit Button */}
-          <div className="pt-4">
+          <div className="pt-3">
             <button
               type="submit"
               disabled={loading || !formData.companyName.trim() || !formData.taxId.trim()}
-              className="w-full bg-brand-blue hover:bg-brand-blue/90 disabled:bg-brand-slate/50 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-blue px-6 py-4 text-base font-black text-white shadow-lg shadow-brand-blue/20 transition hover:bg-brand-blue/90 disabled:cursor-not-allowed disabled:bg-brand-slate/40"
             >
               {loading ? (
                 <>
@@ -105,11 +113,20 @@ export default function EntityCheckForm({ onSubmit, loading }: EntityCheckFormPr
                   <span>{t('entityCheck.form.checking', '查核中...')}</span>
                 </>
               ) : (
-                <span>{t('entityCheck.form.submit', '開始查核')}</span>
+                  <span>{t('entityCheck.form.submit', '開始查核')}</span>
               )}
             </button>
           </div>
         </form>
+
+        <div className="mt-6 grid grid-cols-3 gap-3 text-center">
+          {['統編驗證', '公司登記', '風險摘要'].map((item) => (
+            <div key={item} className="rounded-2xl bg-brand-light px-3 py-3">
+              <div className="text-xs font-black text-brand-blue">Ready</div>
+              <div className="mt-1 text-xs font-bold text-brand-slate">{item}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
