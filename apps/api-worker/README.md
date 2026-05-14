@@ -8,10 +8,12 @@ Cloudflare Worker for the Trust WEDO API gateway.
 
 | 項目 | 設定 |
 |------|------|
-| Root directory | `apps/api-worker` |
+| Root directory | 留空或 repo root |
 | Build command | `npm install` |
 | Deploy command | `npx wrangler deploy` |
 | Node.js version | `>=22` |
+
+repo root 的 `wrangler.jsonc` 會指向 `apps/api-worker/src/index.ts`。
 
 ## Variables and Secrets
 

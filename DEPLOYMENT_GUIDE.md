@@ -7,9 +7,9 @@ Trust WEDO 正式部署分成兩個 Cloudflare 服務：
 | 服務 | Cloudflare 類型 | 用途 | Root directory |
 |------|-----------------|------|----------------|
 | `trust-wedo` | Pages | React/Vite 前端 | `apps/landing` |
-| `trust-wedo-api` | Workers | API gateway / Twinkle Hub proxy | `apps/api-worker` |
+| `trust-wedo-api` | Workers | API gateway / Twinkle Hub proxy | repo root |
 
-> 重要：不要在 repo root 直接執行 `npx wrangler deploy`。repo root 會被 Cloudflare 誤判成 Python 專案並安裝 `requirements.txt`，但 Worker 入口其實在 `apps/api-worker`。
+> 重要：Cloudflare Workers 目前會在 repo root 執行 build/deploy。repo root 已提供 `package.json` 與 `wrangler.jsonc`，Worker 程式碼仍集中在 `apps/api-worker`。
 
 ## 前端：Cloudflare Pages
 
@@ -34,10 +34,10 @@ Cloudflare Workers 專案設定如下：
 | 項目 | 設定 |
 |------|------|
 | Cloudflare Worker | `trust-wedo-api` |
-| Root directory | `apps/api-worker` |
+| Root directory | 留空或 repo root |
 | Build command | `npm install` |
 | Deploy command | `npx wrangler deploy` |
-| Wrangler config | `apps/api-worker/wrangler.jsonc` |
+| Wrangler config | `wrangler.jsonc` |
 | Node.js version | `>=22` |
 
 Worker 端點：
@@ -124,7 +124,6 @@ apps/landing/dist
 ## 本地部署前檢查：Worker
 
 ```bash
-cd apps/api-worker
 npm install
 npm run typecheck
 ```

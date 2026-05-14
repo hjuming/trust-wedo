@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "trust-wedo-api",
+  "main": "apps/api-worker/src/index.ts",
+  "compatibility_date": "2026-05-15",
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "TWINKLE_HUB_API_ENDPOINT": "https://api.twinkleai.tw/mcp/"
+  }
+}
