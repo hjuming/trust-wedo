@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 export const PricingSection = () => {
   const { t } = useTranslation()
@@ -26,7 +27,6 @@ export const PricingSection = () => {
               <span className="text-5xl font-black text-brand-blue">
                 {t('pricing.beta.price')}
               </span>
-              <span className="text-brand-slate dark:text-brand-light/60">/month</span>
             </div>
             
             <p className="text-brand-slate dark:text-brand-light/70 mb-8 text-sm leading-relaxed">
@@ -42,9 +42,9 @@ export const PricingSection = () => {
               ))}
             </ul>
             
-            <button className="w-full py-4 bg-brand-blue text-white rounded-2xl font-bold text-lg hover:bg-brand-blue/90 transition-colors shadow-lg shadow-brand-blue/20">
+            <Link to="/entity-check" className="block w-full py-4 bg-brand-blue text-white rounded-2xl font-bold text-lg hover:bg-brand-blue/90 transition-colors shadow-lg shadow-brand-blue/20 text-center">
               {t('pricing.beta.cta')}
-            </button>
+            </Link>
           </div>
         </div>
       </div>

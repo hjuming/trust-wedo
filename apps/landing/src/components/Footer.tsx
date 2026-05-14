@@ -8,19 +8,19 @@ export const Footer = () => {
     {
       title: t('footer.product'),
       links: [
-        { name: t('footer.features'), href: '#' },
-        { name: t('footer.pricing'), href: '#' },
-        { name: t('footer.docs'), href: '#' },
-        { name: t('footer.changelog'), href: '#' },
+        { name: t('nav.entityCheck'), href: '/entity-check' },
+        { name: '研究模組', href: '/#modules' },
+        { name: t('footer.pricing'), href: '/pricing' },
+        { name: 'Agent Lab', href: '/#lab-console' },
       ],
     },
     {
       title: t('footer.company'),
       links: [
-        { name: t('footer.about'), href: '#' },
-        { name: t('footer.blog'), href: '#' },
-        { name: t('footer.privacy'), href: '#' },
-        { name: t('footer.terms'), href: '#' },
+        { name: t('footer.about'), href: '/docs' },
+        { name: t('footer.blog'), href: '/docs' },
+        { name: t('footer.privacy'), href: '/docs' },
+        { name: t('footer.terms'), href: '/docs' },
       ],
     },
     {

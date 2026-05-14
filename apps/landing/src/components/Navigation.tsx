@@ -14,9 +14,9 @@ export const Navigation = () => {
 
   const navLinks = [
     { name: t('nav.entityCheck'), href: '/entity-check' },
-    { name: t('nav.docs'), href: '/docs' },
+    { name: '研究模組', href: '/#modules' },
     { name: t('nav.pricing'), href: '/pricing' },
-    { name: t('nav.playground'), href: '/playground' },
+    { name: 'Agent Lab', href: '/#lab-console' },
   ]
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export const Navigation = () => {
             <span className="text-sm font-medium text-brand-navy dark:text-brand-light">{currentLang}</span>
           </button>
           <Link
-            to={isAuthenticated ? "/dashboard" : "/signup"}
+            to={isAuthenticated ? "/dashboard" : "/entity-check"}
             className="bg-brand-navy dark:bg-brand-light text-white dark:text-brand-navy px-5 py-2 rounded-full text-sm font-bold hover:scale-105 transition-transform"
           >
             {isAuthenticated ? t('dashboard.nav.overview') : t('nav.getStarted')}
@@ -128,7 +128,7 @@ export const Navigation = () => {
             </Link>
           ))}
           <Link
-            to={isAuthenticated ? "/dashboard" : "/signup"}
+            to={isAuthenticated ? "/dashboard" : "/entity-check"}
             onClick={() => setIsOpen(false)}
             className="w-full text-center bg-brand-blue text-white py-4 rounded-xl text-xl font-bold"
           >

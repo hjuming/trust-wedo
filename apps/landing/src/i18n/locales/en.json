@@ -1,5 +1,6 @@
 {
     "nav": {
+        "entityCheck": "Entity Check",
         "docs": "Docs",
         "pricing": "Pricing",
         "playground": "Playground",
@@ -69,14 +70,14 @@
         "beta": {
             "title": "Beta Access",
             "price": "$0/month",
-            "description": "We're currently in closed beta. Join now to get unlimited access to all features while we refine the future of agentic coding.",
+            "description": "Agent Lab is currently in beta. Use entity checks, research modules, and public data workflows to build traceable verification reports.",
             "features": [
-                "Unlimited access to all features",
-                "Automated testing & verification",
-                "Deep codebase understanding",
-                "Priority support"
+                "Entity verification",
+                "Research modules and check paths",
+                "MCP public data queries",
+                "Citation-ready summaries and sources"
             ],
-            "cta": "Request Beta Access"
+            "cta": "Start Free Trial"
         }
     },
     "finalCta": {
@@ -136,7 +137,7 @@
         }
     },
     "footer": {
-        "description": "The trustworthy agentic coding partner that takes ownership of your codebase and self-verifies every change.",
+        "description": "WEDO Data Verification Agent Lab turns public data, research modules, and trust signals into traceable verification workflows.",
         "product": "Product",
         "company": "Company",
         "community": "Community",
