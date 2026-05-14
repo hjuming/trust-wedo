@@ -33,6 +33,7 @@ type QueryRowsRequest = {
 }
 
 const DEFAULT_TWINKLE_ENDPOINT = "https://api.twinkleai.tw/mcp/"
+const MCP_PROTOCOL_VERSION = "2025-03-26"
 
 const STUDY_MODULES: StudyModule[] = [
   {
@@ -197,57 +198,164 @@ const clampLimit = (value: unknown, fallback: number, min: number, max: number) 
   return Math.min(Math.max(Math.trunc(value), min), max)
 }
 
-const invokeTwinkle = async (env: Env, tool: string, input: Record<string, unknown>) => {
+type McpJsonRpcResponse = {
+  result?: {
+    tools?: unknown[]
+    content?: Array<{
+      type?: string
+      text?: string
+    }>
+  }
+  error?: {
+    code?: number
+    message?: string
+  }
+}
+
+const parseMcpResponse = async (response: Response): Promise<McpJsonRpcResponse> => {
+  const body = await response.text()
+  const dataLines = body
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("data:"))
+
+  const payload = dataLines.length > 0 ? dataLines.at(-1)?.replace(/^data:\s*/, "") : body
+
+  if (!payload) {
+    throw new Error("Twinkle Hub returned an empty response")
+  }
+
+  return JSON.parse(payload) as McpJsonRpcResponse
+}
+
+const createTwinkleSession = async (env: Env) => {
   if (!env.TWINKLE_HUB_API_KEY) {
     throw new Error("TWINKLE_HUB_API_KEY is not configured")
   }
 
   const baseUrl = (env.TWINKLE_HUB_API_ENDPOINT || DEFAULT_TWINKLE_ENDPOINT).replace(/\/$/, "")
-  const response = await fetch(`${baseUrl}/invoke`, {
+  const response = await fetch(`${baseUrl}/`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${env.TWINKLE_HUB_API_KEY}`,
+      Accept: "application/json, text/event-stream",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ tool, input }),
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "initialize",
+      params: {
+        protocolVersion: MCP_PROTOCOL_VERSION,
+        capabilities: {},
+        clientInfo: {
+          name: "trust-wedo-api",
+          version: "1.0.0",
+        },
+      },
+    }),
   })
 
   if (!response.ok) {
-    throw new Error(`Twinkle Hub returned HTTP ${response.status}`)
+    throw new Error(`Twinkle Hub initialize returned HTTP ${response.status}`)
   }
 
-  const payload = (await response.json()) as { result?: unknown }
-  return payload.result ?? []
+  const sessionId = response.headers.get("mcp-session-id")
+  if (!sessionId) {
+    throw new Error("Twinkle Hub did not return an MCP session id")
+  }
+
+  const payload = await parseMcpResponse(response)
+  if (payload.error) {
+    throw new Error(payload.error.message || "Twinkle Hub initialize failed")
+  }
+
+  return {
+    baseUrl,
+    sessionId,
+  }
+}
+
+const postMcpJsonRpc = async (
+  env: Env,
+  session: { baseUrl: string; sessionId: string },
+  id: number,
+  method: string,
+  params?: Record<string, unknown>,
+) => {
+  const response = await fetch(`${session.baseUrl}/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${env.TWINKLE_HUB_API_KEY}`,
+      Accept: "application/json, text/event-stream",
+      "Content-Type": "application/json",
+      "mcp-session-id": session.sessionId,
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id,
+      method,
+      ...(params ? { params } : {}),
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Twinkle Hub ${method} returned HTTP ${response.status}`)
+  }
+
+  const payload = await parseMcpResponse(response)
+  if (payload.error) {
+    throw new Error(payload.error.message || `Twinkle Hub ${method} failed`)
+  }
+
+  return payload.result
+}
+
+const callTwinkleTool = async (env: Env, name: string, args: Record<string, unknown>) => {
+  const session = await createTwinkleSession(env)
+  const result = await postMcpJsonRpc(env, session, 2, "tools/call", {
+    name,
+    arguments: args,
+  })
+
+  const text = result?.content?.find((item) => item.type === "text" && item.text)?.text
+  if (!text) {
+    return []
+  }
+
+  return JSON.parse(text) as unknown
+}
+
+const listTwinkleTools = async (env: Env) => {
+  const session = await createTwinkleSession(env)
+  const result = await postMcpJsonRpc(env, session, 2, "tools/list")
+  return result?.tools ?? []
 }
 
 const handleMcpRoute = async (request: Request, env: Env, path: string) => {
   try {
     if (path === "/api/mcp/health" && request.method === "GET") {
-      const baseUrl = (env.TWINKLE_HUB_API_ENDPOINT || DEFAULT_TWINKLE_ENDPOINT).replace(/\/$/, "")
-      const response = await fetch(`${baseUrl}/health`, {
-        headers: env.TWINKLE_HUB_API_KEY
-          ? { Authorization: `Bearer ${env.TWINKLE_HUB_API_KEY}` }
-          : undefined,
-      })
+      const session = await createTwinkleSession(env)
 
       return json(
         {
-          success: response.ok,
-          status: response.ok ? "healthy" : "unhealthy",
+          success: true,
+          status: "healthy",
           endpoint: env.TWINKLE_HUB_API_ENDPOINT || DEFAULT_TWINKLE_ENDPOINT,
+          session: Boolean(session.sessionId),
         },
-        { status: response.ok ? 200 : 503 },
+        {},
         env,
       )
     }
 
     if (path === "/api/mcp/domains" && request.method === "GET") {
-      const domains = await invokeTwinkle(env, "list-domains", {})
+      const domains = await callTwinkleTool(env, "opendata-list_domains", {})
       return json({ success: true, domains, cached: false }, {}, env)
     }
 
     if (path === "/api/mcp/tools" && request.method === "GET") {
-      const tools = await invokeTwinkle(env, "list-tools", {})
+      const tools = await listTwinkleTools(env)
       return json({ success: true, tools, cached: false }, {}, env)
     }
 
@@ -264,7 +372,7 @@ const handleMcpRoute = async (request: Request, env: Env, path: string) => {
         input.query = body.keyword
       }
 
-      const results = await invokeTwinkle(env, "search-datasets", input)
+      const results = await callTwinkleTool(env, "opendata-search_datasets", input)
       const count = Array.isArray(results) ? results.length : 0
       return json({ success: true, results, count }, {}, env)
     }
@@ -281,10 +389,10 @@ const handleMcpRoute = async (request: Request, env: Env, path: string) => {
       }
 
       if (body.query_text) {
-        input.query = body.query_text
+        input.where = body.query_text
       }
 
-      const rows = await invokeTwinkle(env, "query-rows", input)
+      const rows = await callTwinkleTool(env, "opendata-query_rows", input)
       const count = Array.isArray(rows) ? rows.length : 0
       return json({ success: true, rows, count }, {}, env)
     }
