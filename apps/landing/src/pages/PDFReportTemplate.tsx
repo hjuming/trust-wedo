@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { getApiBaseUrl } from '../lib/api'
 import '../styles/pdf-report.css'
 
 interface ReportData {
@@ -44,7 +45,7 @@ export default function PDFReportTemplate() {
             const { data: { session } } = await supabase.auth.getSession()
             if (!session) return
 
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+            const apiUrl = getApiBaseUrl()
 
             // Fetch main report
             const reportRes = await fetch(`${apiUrl}/api/reports/${scanId}`, {

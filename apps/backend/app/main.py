@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import auth, users, scans, reports
+from app.api import auth, users, scans, reports, mcp, research
 from app.config import settings
 from trust_wedo.parsers.playwright_parser import async_playwright
 
@@ -45,6 +45,8 @@ app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(users.router, prefix="/api/users", tags=["users"])
 app.include_router(scans.router, prefix="/api/scans", tags=["scans"])
 app.include_router(reports.router, prefix="/api/reports", tags=["reports"])
+app.include_router(mcp.router, prefix="/api/mcp", tags=["mcp"])
+app.include_router(research.router, prefix="/api/research", tags=["research"])
 
 @app.get("/")
 def read_root():

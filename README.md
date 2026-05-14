@@ -43,7 +43,7 @@ Trust WEDO 透過一系列標準化流程，建立內容的信任度：
 | **Backend** | FastAPI, Python 3.10+ | 位於 `apps/backend`。內嵌核心引擎，處理高併發分析請求。 |
 | **Core** | Trust WEDO Library | 位於 `src/trust_wedo`。核心演算法與 CLI 工具。 |
 | **Database** | Supabase (PostgreSQL) | 儲存使用者資料、掃描任務與 RLS 權限控管。 |
-| **Infra** | Zeabur & Cloudflare | 自動化 CI/CD 部署流程。 |
+| **Infra** | Cloudflare Pages | `apps/landing` 由 Cloudflare Pages 從 `main` 分支自動部署。 |
 
 ---
 

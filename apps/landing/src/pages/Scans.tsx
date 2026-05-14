@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { getApiBaseUrl } from '../lib/api'
 
 interface Scan {
   id: string
@@ -22,7 +23,7 @@ export default function Scans() {
   const fetchScans = async () => {
     try {
       const token = localStorage.getItem('token')
-      const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://trust-wedo.zeabur.app')
+      const apiUrl = getApiBaseUrl()
       const response = await fetch(`${apiUrl}/api/scans`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -45,7 +46,7 @@ export default function Scans() {
 
     try {
       const token = localStorage.getItem('token')
-      const apiUrl = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : 'https://trust-wedo.zeabur.app')
+      const apiUrl = getApiBaseUrl()
       const response = await fetch(`${apiUrl}/api/scans`, {
         method: 'POST',
         headers: {
