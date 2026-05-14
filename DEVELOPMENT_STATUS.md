@@ -41,7 +41,7 @@
 - [x] PDF 輸出樣式優化 (`print.css` + `window.print`)
 Production & Optimization (v1.0)
 - [x] **Report Engine Upgrade**: 擴充 Schema.org 檢測與加權評分。
-- [x] **Deployment**: Zeabur (Backend) + Cloudflare (Frontend) 全自動部署。
+- [x] **Deployment**: Cloudflare Pages (Frontend) + Cloudflare Workers (API) 自動部署架構。
 - [x] **Stability Fixes**: 解決 CORS, Redirects, RLS Recursion 等關鍵問題。
 
 ---
