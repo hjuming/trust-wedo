@@ -260,14 +260,14 @@ const createTwinkleSession = async (env: Env) => {
     throw new Error(`Twinkle Hub initialize returned HTTP ${response.status}`)
   }
 
-  const sessionId = response.headers.get("mcp-session-id")
-  if (!sessionId) {
-    throw new Error("Twinkle Hub did not return an MCP session id")
-  }
-
   const payload = await parseMcpResponse(response)
   if (payload.error) {
     throw new Error(payload.error.message || "Twinkle Hub initialize failed")
+  }
+
+  const sessionId = response.headers.get("mcp-session-id")
+  if (!sessionId) {
+    throw new Error("Twinkle Hub did not return an MCP session id")
   }
 
   return {
