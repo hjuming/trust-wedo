@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import EntityCheckForm from '../components/EntityCheck/EntityCheckForm'
 import EntityCheckReport from '../components/EntityCheck/EntityCheckReport'
+import { getApiBaseUrl } from '../lib/api'
 import { EntityCheckResult } from '../types/entityCheck'
 
 export default function EntityCheck() {
@@ -20,8 +21,12 @@ export default function EntityCheck() {
     setResult(null)
 
     try {
-      // Call Twinkle Lab API
-      const response = await fetch('http://localhost:3001/api/trust/entity-check', {
+      const apiUrl = getApiBaseUrl()
+      if (!apiUrl) {
+        throw new Error('VITE_API_URL is not configured')
+      }
+
+      const response = await fetch(`${apiUrl}/api/trust/entity-check`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

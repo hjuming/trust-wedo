@@ -32,6 +32,12 @@ type QueryRowsRequest = {
   limit?: number
 }
 
+type EntityCheckRequest = {
+  tax_id?: string
+  company_name?: string
+  website_url?: string
+}
+
 const DEFAULT_TWINKLE_ENDPOINT = "https://api.twinkleai.tw/mcp/"
 const MCP_PROTOCOL_VERSION = "2025-03-26"
 
@@ -493,6 +499,57 @@ const handleResearchRoute = async (request: Request, env: Env, path: string) => 
   return errorJson("Not found", 404, env)
 }
 
+const handleTrustRoute = async (request: Request, env: Env, path: string) => {
+  if (path !== "/api/trust/entity-check" || request.method !== "POST") {
+    return errorJson("Not found", 404, env)
+  }
+
+  let body: EntityCheckRequest
+  try {
+    body = await parseJson<EntityCheckRequest>(request)
+  } catch {
+    return errorJson("Invalid JSON body", 400, env)
+  }
+
+  if (!body.tax_id) {
+    return errorJson("tax_id is required", 400, env)
+  }
+
+  try {
+    const [validation, company] = await Promise.all([
+      callTwinkleTool(env, "twtools-validate_tax_id_number", {
+        tax_id: body.tax_id,
+      }),
+      callTwinkleTool(env, "twtools-lookup_company_by_tax_id", {
+        tax_id: body.tax_id,
+      }),
+    ])
+
+    return json(
+      {
+        success: true,
+        data: {
+          validation,
+          company: {
+            ...(company && typeof company === "object" ? company : {}),
+            company_name:
+              company && typeof company === "object" && "company_name" in company
+                ? (company as { company_name?: string }).company_name
+                : body.company_name,
+          },
+          website_url: body.website_url || "",
+        },
+      },
+      {},
+      env,
+    )
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Entity check failed"
+    const status = message.includes("not configured") ? 503 : 502
+    return errorJson(message, status, env)
+  }
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
@@ -527,6 +584,10 @@ export default {
 
     if (url.pathname.startsWith("/api/research/")) {
       return handleResearchRoute(request, env, url.pathname)
+    }
+
+    if (url.pathname.startsWith("/api/trust/")) {
+      return handleTrustRoute(request, env, url.pathname)
     }
 
     return errorJson("Not found", 404, env)
