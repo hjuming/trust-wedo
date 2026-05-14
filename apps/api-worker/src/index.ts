@@ -265,32 +265,32 @@ const createTwinkleSession = async (env: Env) => {
     throw new Error(payload.error.message || "Twinkle Hub initialize failed")
   }
 
-  const sessionId = response.headers.get("mcp-session-id")
-  if (!sessionId) {
-    throw new Error("Twinkle Hub did not return an MCP session id")
-  }
-
   return {
     baseUrl,
-    sessionId,
+    sessionId: response.headers.get("mcp-session-id") || undefined,
   }
 }
 
 const postMcpJsonRpc = async (
   env: Env,
-  session: { baseUrl: string; sessionId: string },
+  session: { baseUrl: string; sessionId?: string },
   id: number,
   method: string,
   params?: Record<string, unknown>,
 ) => {
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${env.TWINKLE_HUB_API_KEY}`,
+    Accept: "application/json, text/event-stream",
+    "Content-Type": "application/json",
+  }
+
+  if (session.sessionId) {
+    headers["mcp-session-id"] = session.sessionId
+  }
+
   const response = await fetch(`${session.baseUrl}/`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${env.TWINKLE_HUB_API_KEY}`,
-      Accept: "application/json, text/event-stream",
-      "Content-Type": "application/json",
-      "mcp-session-id": session.sessionId,
-    },
+    headers,
     body: JSON.stringify({
       jsonrpc: "2.0",
       id,
