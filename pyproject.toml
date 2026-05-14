@@ -30,7 +30,6 @@ dependencies = [
     "jsonschema>=4.20.0",
     "lxml>=5.0.0",
     "mcp>=0.1.0",
-    "stdio-client>=0.1.0",
 ]
 
 [project.optional-dependencies]
