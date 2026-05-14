@@ -1,154 +1,120 @@
-# Trust WEDO Landing Page
+# WEDO Data Verification Agent Lab Frontend
 
-> **目標：** 將 CLI 工具轉化為「可被看懂、可被試用、可被升級」的產品入口
+`apps/landing` 是 Cloudflare Pages 前台，包含首頁、定價資訊、研究模組入口與企業實體查核頁。
 
----
+正式網址：
 
-## 快速開始
-
-### 本地開發
-
-```bash
-# 安裝依賴
-npm install
-
-# 啟動開發伺服器
-npm run dev
-
-# 開啟瀏覽器
-# http://localhost:5173
+```text
+https://trust.wedopr.com
+https://trust.wedopr.com/entity-check
+https://trust.wedopr.com/pricing
 ```
 
-### 建置
+## 目前頁面
+
+| Route | 狀態 | 說明 |
+|-------|------|------|
+| `/` | Production | WEDO 資料查核 Agent Lab 首頁，串接研究模組與 MCP domains。 |
+| `/entity-check` | Production Beta | 企業實體查核，呼叫 Worker `/api/trust/entity-check`。 |
+| `/pricing` | Production Beta | Beta 測試版免費方案，保留前一版定價內容。 |
+| `/login`, `/signup`, `/dashboard` | Beta / Reserved | 保留 Supabase Auth 與後續工作台入口。 |
+
+## 本地開發
 
 ```bash
-# 建置生產版本
-npm run build
+npm install
+npm run dev
+```
 
-# 預覽建置結果
+預設網址：
+
+```text
+http://localhost:5173
+```
+
+## 建置
+
+```bash
+npm run build
 npm run preview
 ```
 
----
-
 ## 技術棧
 
-- **框架：** Vite + React 18 + TypeScript
-- **樣式：** Tailwind CSS
-- **路由：** React Router v6
-- **部署：** Cloudflare Pages
+- Vite
+- React 19
+- React Router 7
+- TypeScript
+- Tailwind CSS
+- Supabase client
 
----
+## Cloudflare Pages 設定
 
-## 專案結構
+| 項目 | 設定 |
+|------|------|
+| Project | `trust-wedo` |
+| Production branch | `main` |
+| Root directory | `apps/landing` |
+| Build command | `npm install && npm run build` |
+| Build output directory | `dist` |
 
-```
+## 環境變數
+
+| 變數 | 用途 |
+|------|------|
+| `VITE_API_URL` | API Worker base URL，例如 `https://trust-wedo-api.hjuming.workers.dev` |
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon key，需搭配 RLS |
+
+不要在前端環境變數放入：
+
+- `TWINKLE_HUB_API_KEY`
+- `SUPABASE_SERVICE_KEY`
+- `DATABASE_URL`
+- `SECRET_KEY`
+
+## 主要結構
+
+```text
 apps/landing/
 ├── src/
-│   ├── components/          # React 元件
-│   │   ├── Hero.tsx
-│   │   ├── ProblemSolution.tsx
-│   │   ├── HowItWorks.tsx
-│   │   ├── Demo.tsx
-│   │   ├── TrustSignals.tsx
-│   │   ├── Personas.tsx
-│   │   ├── FAQ.tsx
+│   ├── components/
+│   │   ├── EntityCheck/
 │   │   ├── Footer.tsx
-│   │   └── Navigation.tsx
-│   ├── pages/               # 頁面
+│   │   ├── Navigation.tsx
+│   │   └── PricingSection.tsx
+│   ├── pages/
 │   │   ├── Home.tsx
+│   │   ├── EntityCheck.tsx
 │   │   ├── Pricing.tsx
-│   │   ├── Docs.tsx
-│   │   └── Playground.tsx
-│   ├── styles/              # 樣式
-│   │   └── globals.css
-│   ├── App.tsx
+│   │   └── Dashboard.tsx
+│   ├── contexts/
+│   ├── i18n/
 │   └── main.tsx
-├── public/                  # 靜態資源
-│   ├── demo.gif
-│   ├── logo.svg
+├── public/
 │   └── _redirects
-├── index.html
-├── vite.config.ts
-├── tailwind.config.js
-├── package.json
-└── README.md
+└── package.json
 ```
 
----
+## Entity Check Flow
 
-## Cloudflare Pages 部署
-
-### Build 設定
-
-```
-Framework preset: Vite
-Root directory: apps/landing
-Build command: npm install && npm run build
-Build output directory: dist
-```
-
-### 環境變數
-
-```
-NODE_VERSION=18
-```
-
-### 自訂網域
-
-```
-trust.wedopr.com → trust-wedo.pages.dev
-```
-
----
-
-## 開發指南
-
-### 新增頁面
-
-1. 在 `src/pages/` 建立新檔案
-2. 在 `App.tsx` 新增路由
-3. 在 `Navigation.tsx` 新增連結
-
-### 新增元件
-
-1. 在 `src/components/` 建立新檔案
-2. 使用 Tailwind CSS 樣式
-3. 確保響應式設計（mobile-first）
-
-### 樣式規範
-
-- 使用 Tailwind utility classes
-- 遵循品牌色票（見 `tailwind.config.js`）
-- 確保無障礙（aria labels, focus states）
-
----
+1. 使用者輸入公司名稱、統一編號與網站 URL。
+2. 前端驗證統一編號格式。
+3. 前端呼叫 `${VITE_API_URL}/api/trust/entity-check`。
+4. Worker 查詢 Twinkle Hub 公開資料。
+5. 前端顯示查核報告、風險訊號、網站訊號與資料來源。
 
 ## 驗收標準
 
-### Lighthouse 分數
+- 首頁可載入研究模組與資料領域。
+- `/entity-check` 可完成查核流程。
+- `/pricing` 可直接看到 Beta 免費方案。
+- 報告在 mobile / desktop 都不溢位。
+- Browser console 不出現 CORS、mixed content 或缺少 env 的錯誤。
+- 不在前端 bundle 內出現任何 secret。
 
-- Performance ≥ 85
-- SEO ≥ 90
-- Accessibility ≥ 90
-- Best Practices ≥ 90
+## 下一階段建議
 
-### 功能檢查
-
-- [ ] 所有 CTA 可點擊
-- [ ] Mobile 導覽列正常
-- [ ] FAQ 可展開/收合
-- [ ] Footer 顯示版本號
-
----
-
-## 相關連結
-
-- [開發計畫](../../.gemini/antigravity/brain/dfa9363c-c85a-469e-98ff-fd575642905c/implementation_plan.md)
-- [CLI 工具](../../README.md)
-- [技術規範](../../docs/technical-specs/README.md)
-
----
-
-**版本：** Landing v1.0（對應 CLI v0.4.0）  
-**授權：** MIT
+- 將 Entity Check 報告支援 PDF / Markdown export。
+- 補 Playwright E2E：首頁 smoke、實體查核 happy path、API fail state、定價頁 smoke。
+- 整理 i18n namespace，讓 `entityCheck` 文案集中維護。

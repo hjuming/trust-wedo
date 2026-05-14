@@ -8,15 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial project structure
-- Core documentation (README.md, PRODUCT.md, CLI.md, ACCEPTANCE_TESTS.md)
-- JSON Schema definitions for all data structures
-- Sample data files and expected outputs
-- CLI framework with 6 core commands
-- Python package configuration (pyproject.toml)
+- Cloudflare Worker API gateway for Twinkle Hub MCP proxy.
+- WEDO Data Verification Agent Lab homepage.
+- Entity Check page connected to `/api/trust/entity-check`.
+- Standalone Pricing page with Beta free plan.
+- Updated Cloudflare deployment documentation and current development status.
 
 ### Changed
-- N/A
+- README now reflects the current Cloudflare Pages + Workers production architecture.
+- Development status now tracks the Agent Lab roadmap instead of the legacy CLI-only roadmap.
 
 ### Deprecated
 - N/A

@@ -69,15 +69,16 @@
         "title": "Pricing",
         "beta": {
             "title": "Beta Access",
-            "price": "$0/month",
-            "description": "Agent Lab is currently in beta. Use entity checks, research modules, and public data workflows to build traceable verification reports.",
+            "price": "Free",
+            "period": "/month",
+            "description": "We are currently in closed beta. Join now and use all features for free while we improve the next generation of agentic coding technology.",
             "features": [
-                "Entity verification",
-                "Research modules and check paths",
-                "MCP public data queries",
-                "Citation-ready summaries and sources"
+                "Unlimited access to all features",
+                "Automated testing and verification",
+                "Deep codebase understanding",
+                "Priority support"
             ],
-            "cta": "Start Free Trial"
+            "cta": "Apply for Beta"
         }
     },
     "finalCta": {

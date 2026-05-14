@@ -53,6 +53,7 @@ Worker 端點：
 | `GET /api/research/modules` | 列舉研究模組 |
 | `GET /api/research/modules/{id}` | 取得單一研究模組 |
 | `POST /api/research/path` | 生成研究路徑 |
+| `POST /api/trust/entity-check` | 企業實體查核 |
 
 ## 前端環境變數
 
@@ -135,7 +136,7 @@ npm run typecheck
 | 檢查項目 | 方法 |
 |----------|------|
 | 首頁載入 | 開啟 Cloudflare Pages production URL |
-| SPA 路由 | 直接開啟 `/dashboard`、`/entity-check` 等路由 |
+| SPA 路由 | 直接開啟 `/entity-check`、`/pricing`、`/dashboard` 等路由 |
 | Supabase env | 登入 / 查詢功能是否正常 |
 | API env | 需要後端 API 的頁面是否呼叫正確 `VITE_API_URL` |
 | Console | Browser console 無舊平台 URL 或 mixed-content 錯誤 |
@@ -147,6 +148,14 @@ curl https://trust-wedo-api.<account>.workers.dev/health
 curl https://trust-wedo-api.<account>.workers.dev/api/research/modules
 curl https://trust-wedo-api.<account>.workers.dev/api/mcp/health
 ```
+
+前台功能驗證：
+
+| 檢查項目 | 預期結果 |
+|----------|----------|
+| `/` | 顯示 WEDO 資料查核 Agent Lab 首頁，研究模組與資料領域可載入 |
+| `/entity-check` | 可輸入公司名稱、統編與網站 URL，成功顯示查核報告 |
+| `/pricing` | 顯示 Beta 測試版免費方案 |
 
 ## SPA 路由設定
 

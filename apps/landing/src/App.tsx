@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import EntityCheck from './pages/EntityCheck'
+import Pricing from './pages/Pricing'
 import DashboardLayout from './components/DashboardLayout'
 import Dashboard from './pages/Dashboard'
 import Scans from './pages/Scans'
@@ -45,7 +46,7 @@ function App() {
           <Route path="/entity-check" element={<EntityCheck />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/docs" element={<Home />} /> {/* Placeholder */}
-          <Route path="/pricing" element={<Home />} /> {/* Placeholder */}
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/playground" element={<Home />} /> {/* Placeholder */}
 
           {/* PDF Report Template (for PDF generation) */}
