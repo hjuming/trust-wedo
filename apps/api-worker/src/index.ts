@@ -198,6 +198,36 @@ const clampLimit = (value: unknown, fallback: number, min: number, max: number) 
   return Math.min(Math.max(Math.trunc(value), min), max)
 }
 
+const getResultCount = (value: unknown) => {
+  if (Array.isArray(value)) {
+    return value.length
+  }
+
+  if (value && typeof value === "object") {
+    const payload = value as {
+      count?: unknown
+      row_count_returned?: unknown
+      hits?: unknown
+      rows?: unknown
+    }
+
+    if (typeof payload.count === "number") {
+      return payload.count
+    }
+    if (typeof payload.row_count_returned === "number") {
+      return payload.row_count_returned
+    }
+    if (Array.isArray(payload.hits)) {
+      return payload.hits.length
+    }
+    if (Array.isArray(payload.rows)) {
+      return payload.rows.length
+    }
+  }
+
+  return 0
+}
+
 type McpJsonRpcResponse = {
   result?: {
     tools?: unknown[]
@@ -373,7 +403,7 @@ const handleMcpRoute = async (request: Request, env: Env, path: string) => {
       }
 
       const results = await callTwinkleTool(env, "opendata-search_datasets", input)
-      const count = Array.isArray(results) ? results.length : 0
+      const count = getResultCount(results)
       return json({ success: true, results, count }, {}, env)
     }
 
@@ -393,7 +423,7 @@ const handleMcpRoute = async (request: Request, env: Env, path: string) => {
       }
 
       const rows = await callTwinkleTool(env, "opendata-query_rows", input)
-      const count = Array.isArray(rows) ? rows.length : 0
+      const count = getResultCount(rows)
       return json({ success: true, rows, count }, {}, env)
     }
   } catch (error) {
