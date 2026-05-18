@@ -69,6 +69,7 @@ const categoryStyle: Record<string, { dot: string; label: string }> = {
 }
 
 const defaultCategoryStyle = { dot: '#8f6a45', label: '書店' }
+const bookPickupCover = '/bookstores/cover-711-bookstore.svg'
 
 function normalize(value: string) {
   return value.replace(/臺/g, '台').toLowerCase().trim()
@@ -94,6 +95,12 @@ function hasGeo(item: BookstoreLocation) {
 function openMaps(item: BookstoreLocation) {
   const query = encodeURIComponent(`${item.name} ${item.address}`)
   window.open(item.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${query}`, '_blank', 'noopener,noreferrer')
+}
+
+function getCoverImage(item: BookstoreLocation) {
+  if (item.image) return item.image
+  if (item.category === '書香取書門市' || item.chain.includes('7-ELEVEN')) return bookPickupCover
+  return ''
 }
 
 function filterItems(
@@ -424,12 +431,13 @@ function MiniStat({ label, value }: { label: string; value: number }) {
 function BookstoreCard({ item, onOpenMap }: { item: BookstoreLocation; onOpenMap: () => void }) {
   const phone = firstPhone(item.phone)
   const style = categoryStyle[item.category] ?? defaultCategoryStyle
+  const coverImage = getCoverImage(item)
 
   return (
     <article className="overflow-hidden rounded-[24px] border border-[#e2d5c1] bg-white shadow-sm active:scale-[0.99]">
       <button type="button" onClick={onOpenMap} className="relative block h-36 w-full overflow-hidden text-left">
-        {item.image ? (
-          <img src={item.image} alt={item.name} loading="lazy" className="h-full w-full object-cover" />
+        {coverImage ? (
+          <img src={coverImage} alt={item.name} loading="lazy" className="h-full w-full object-cover" />
         ) : (
           <div className="grid h-full place-items-center bg-gradient-to-br from-[#e8dfcf] to-[#cfdccf] text-2xl font-black text-[#2f684f]">
             {style.label}
@@ -471,6 +479,7 @@ function BookstoreCard({ item, onOpenMap }: { item: BookstoreLocation; onOpenMap
 function MapSheet({ item, onClose }: { item: BookstoreLocation; onClose: () => void }) {
   const style = categoryStyle[item.category] ?? defaultCategoryStyle
   const phone = firstPhone(item.phone)
+  const coverImage = getCoverImage(item)
 
   return (
     <div className="absolute bottom-8 left-4 right-4 z-[520] rounded-[28px] bg-white p-4 shadow-2xl">
@@ -483,8 +492,8 @@ function MapSheet({ item, onClose }: { item: BookstoreLocation; onClose: () => v
       </button>
 
       <div className="flex gap-4 pr-10">
-        {item.image ? (
-          <img src={item.image} alt={item.name} className="h-24 w-24 flex-none rounded-[24px] object-cover" />
+        {coverImage ? (
+          <img src={coverImage} alt={item.name} className="h-24 w-24 flex-none rounded-[24px] object-cover" />
         ) : (
           <div className="grid h-24 w-24 flex-none place-items-center rounded-[24px] bg-[#e8dfcf] font-black text-[#2f684f]">
             {style.label}
