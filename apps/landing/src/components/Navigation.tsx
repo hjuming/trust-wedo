@@ -14,6 +14,7 @@ export const Navigation = () => {
 
   const navLinks = [
     { name: t('nav.entityCheck'), href: '/entity-check' },
+    { name: '書店地圖', href: '/bookstores' },
     { name: '研究模組', href: '/#modules' },
     { name: t('nav.pricing'), href: '/pricing' },
     { name: 'Agent Lab', href: '/#lab-console' },

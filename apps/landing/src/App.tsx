@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import EntityCheck from './pages/EntityCheck'
 import Pricing from './pages/Pricing'
+import BookstoreMap from './pages/BookstoreMap'
 import DashboardLayout from './components/DashboardLayout'
 import Dashboard from './pages/Dashboard'
 import Scans from './pages/Scans'
@@ -47,6 +48,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/docs" element={<Home />} /> {/* Placeholder */}
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/bookstores" element={<BookstoreMap />} />
           <Route path="/playground" element={<Home />} /> {/* Placeholder */}
 
           {/* PDF Report Template (for PDF generation) */}
