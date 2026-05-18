@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { type SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 type BookstoreCategory =
@@ -69,7 +69,21 @@ const categoryStyle: Record<string, { dot: string; label: string }> = {
 }
 
 const defaultCategoryStyle = { dot: '#8f6a45', label: '書店' }
-const bookPickupCover = '/bookstores/cover-711-bookstore.svg'
+const heroCover = '/bookstores/cover-bookstore.png'
+const coverByCategory: Record<BookstoreCategory, string> = {
+  大型連鎖書店: '/bookstores/cover-chain-bookstore.png',
+  獨立特色書店: '/bookstores/cover-independent-bookstore.png',
+  經銷書店: '/bookstores/cover-distributor-bookstore.png',
+  書香取書門市: '/bookstores/cover-711-book-pickup.png',
+  公立圖書館: '/bookstores/cover-public-library.png',
+  大學圖書館: '/bookstores/cover-university-library.png',
+  國家圖書館: '/bookstores/cover-national-library.png',
+}
+
+const pageMeta = {
+  title: '台灣實體書店查詢地圖｜Trust WEDO × Book WEDO',
+  description: '查詢全台大型連鎖書店、獨立書店、7-11 書香門市、經銷書店與圖書館，支援地區、品牌、分類與 Google Maps 導航。',
+}
 
 function normalize(value: string) {
   return value.replace(/臺/g, '台').toLowerCase().trim()
@@ -97,10 +111,49 @@ function openMaps(item: BookstoreLocation) {
   window.open(item.mapsUrl || `https://www.google.com/maps/search/?api=1&query=${query}`, '_blank', 'noopener,noreferrer')
 }
 
+function isBookPickupStore(item: BookstoreLocation) {
+  return item.category === '書香取書門市' || item.chain.includes('7-ELEVEN')
+}
+
+function getFallbackCoverImage(item: BookstoreLocation) {
+  if (isBookPickupStore(item)) return coverByCategory['書香取書門市']
+  return coverByCategory[item.category] ?? heroCover
+}
+
 function getCoverImage(item: BookstoreLocation) {
-  if (item.image) return item.image
-  if (item.category === '書香取書門市' || item.chain.includes('7-ELEVEN')) return bookPickupCover
-  return ''
+  if (isBookPickupStore(item)) return coverByCategory['書香取書門市']
+  return item.image || getFallbackCoverImage(item)
+}
+
+function handleCoverError(event: SyntheticEvent<HTMLImageElement>, item: BookstoreLocation) {
+  if (event.currentTarget.dataset.fallbackApplied === 'true') return
+  event.currentTarget.dataset.fallbackApplied = 'true'
+  event.currentTarget.src = getFallbackCoverImage(item)
+}
+
+function upsertMeta(attribute: 'name' | 'property', key: string, content: string) {
+  let element = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`)
+  const previous = element?.getAttribute('content') ?? null
+  const created = !element
+
+  if (!element) {
+    element = document.createElement('meta')
+    element.setAttribute(attribute, key)
+    document.head.appendChild(element)
+  }
+
+  element.setAttribute('content', content)
+
+  return () => {
+    if (created) {
+      element?.remove()
+      return
+    }
+
+    if (previous !== null) {
+      element?.setAttribute('content', previous)
+    }
+  }
 }
 
 function filterItems(
@@ -150,6 +203,32 @@ export default function BookstoreMap() {
   const [leafletLoaded, setLeafletLoaded] = useState(false)
   const mapRef = useRef<any>(null)
   const markerRefs = useRef<any[]>([])
+
+  useEffect(() => {
+    const previousTitle = document.title
+    const origin = window.location.origin
+    const shareImage = `${origin}${heroCover}`
+    const restoreMeta = [
+      upsertMeta('name', 'title', pageMeta.title),
+      upsertMeta('name', 'description', pageMeta.description),
+      upsertMeta('property', 'og:type', 'website'),
+      upsertMeta('property', 'og:url', `${origin}/bookstores`),
+      upsertMeta('property', 'og:title', pageMeta.title),
+      upsertMeta('property', 'og:description', pageMeta.description),
+      upsertMeta('property', 'og:image', shareImage),
+      upsertMeta('property', 'twitter:card', 'summary_large_image'),
+      upsertMeta('property', 'twitter:title', pageMeta.title),
+      upsertMeta('property', 'twitter:description', pageMeta.description),
+      upsertMeta('property', 'twitter:image', shareImage),
+    ]
+
+    document.title = pageMeta.title
+
+    return () => {
+      document.title = previousTitle
+      restoreMeta.forEach((restore) => restore())
+    }
+  }, [])
 
   useEffect(() => {
     fetch('/bookstores/bookstores.json')
@@ -296,6 +375,10 @@ export default function BookstoreMap() {
             </Link>
           </div>
 
+          <div className="mb-4 overflow-hidden rounded-[24px] border border-[#eadcc8] bg-[#f4eadb] shadow-sm">
+            <img src={heroCover} alt="台灣實體書店查詢地圖" className="h-28 w-full object-cover" />
+          </div>
+
           <label className="flex h-12 items-center gap-3 rounded-full border border-[#dfd3c1] bg-[#fbf7ef] px-4">
             <span className="text-xl text-[#8f8373]">⌕</span>
             <input
@@ -437,7 +520,13 @@ function BookstoreCard({ item, onOpenMap }: { item: BookstoreLocation; onOpenMap
     <article className="overflow-hidden rounded-[24px] border border-[#e2d5c1] bg-white shadow-sm active:scale-[0.99]">
       <button type="button" onClick={onOpenMap} className="relative block h-36 w-full overflow-hidden text-left">
         {coverImage ? (
-          <img src={coverImage} alt={item.name} loading="lazy" className="h-full w-full object-cover" />
+          <img
+            src={coverImage}
+            alt={item.name}
+            loading="lazy"
+            onError={(event) => handleCoverError(event, item)}
+            className="h-full w-full object-cover"
+          />
         ) : (
           <div className="grid h-full place-items-center bg-gradient-to-br from-[#e8dfcf] to-[#cfdccf] text-2xl font-black text-[#2f684f]">
             {style.label}
@@ -493,7 +582,12 @@ function MapSheet({ item, onClose }: { item: BookstoreLocation; onClose: () => v
 
       <div className="flex gap-4 pr-10">
         {coverImage ? (
-          <img src={coverImage} alt={item.name} className="h-24 w-24 flex-none rounded-[24px] object-cover" />
+          <img
+            src={coverImage}
+            alt={item.name}
+            onError={(event) => handleCoverError(event, item)}
+            className="h-24 w-24 flex-none rounded-[24px] object-cover"
+          />
         ) : (
           <div className="grid h-24 w-24 flex-none place-items-center rounded-[24px] bg-[#e8dfcf] font-black text-[#2f684f]">
             {style.label}
