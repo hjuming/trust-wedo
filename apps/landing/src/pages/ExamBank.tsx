@@ -30,38 +30,60 @@ type ExamSearchResponse = {
   detail?: string
 }
 
-const referenceImage = '/exam-bank/twinkle-hub-exam-bank-reference.jpg'
-
 const sampleHits: ExamQuestionHit[] = [
   {
-    paper_id: 'sample-108-703-08',
-    exam_year: '108',
-    exam_year_西元: 2019,
-    exam_name: '公務人員特種考試警察人員考試、鐵路人員考試',
-    subject_name: '電力系統',
-    question_no: 1,
+    paper_id: 'sample-admin-law-01',
+    exam_year: '112',
+    exam_year_西元: 2023,
+    exam_name: '公務人員高等考試三級考試暨普通考試',
+    subject_name: '行政法',
+    question_no: 2,
     question_type: '申論題',
-    stem: '在三相平衡電路中，電源相電壓有效值為 350 伏特。試計算電源線電流、負載三相總有效功率、無效功率、視在功率與功率因數。',
+    stem: '某市政府核發營業許可後，發現原處分作成時所依據之事實認定有誤。試說明行政機關得否撤銷該授益行政處分、應考量之信賴保護原則，以及可能涉及之補償問題。',
     answer: null,
-    similarity: 0.739,
+    similarity: 0.812,
   },
   {
-    paper_id: 'sample-114-443-05',
-    exam_year: '114',
-    exam_year_西元: 2025,
-    exam_name: '公務人員高等考試三級考試暨普通考試',
-    subject_name: '船用電學與自動控制概要',
-    question_no: 1,
-    question_type: '申論題',
-    stem: '在使用交流電系統時，請說明有效功率、虛功率、視在功率的物理意義、數學方程式以及三者之間的關係。',
-    answer: null,
-    similarity: 0.734,
+    paper_id: 'sample-admin-law-02',
+    exam_year: '110',
+    exam_year_西元: 2021,
+    exam_name: '地方政府公務人員特種考試',
+    subject_name: '行政法概要',
+    question_no: 12,
+    question_type: '測驗題',
+    stem: '下列何者最符合行政程序法有關違法行政處分撤銷之敘述？',
+    options: {
+      A: '授益處分一律不得撤銷',
+      B: '撤銷時應兼顧公益與人民信賴利益',
+      C: '只要違法即不得給予補償',
+      D: '行政機關撤銷處分無須說明理由',
+    },
+    answer: 'B',
+    similarity: 0.786,
   },
 ]
 
-const quickQueries = ['三相電路 有效功率', '公司法 董事責任', '行政處分 撤銷', '土壤液化 計算']
+const quickQueries = ['行政處分 撤銷', '民法 侵權行為', '刑法 正當防衛', '公司法 董事責任']
 const examTypes = ['全部', '高等考試', '普通考試', '司法官', '律師', '地方特考', '鐵路人員']
-const subjects = ['全部', '電力系統', '行政法', '民法', '刑法', '公司法', '土壤力學']
+const subjects = ['全部', '行政法', '民法', '刑法', '公司法', '憲法', '英文']
+
+const labSteps = [
+  {
+    label: '01',
+    title: '題目定位',
+    body: '用概念、法條或爭點搜尋，不必先知道完整年度與試卷名稱。',
+  },
+  {
+    label: '02',
+    title: '脈絡整理',
+    body: '把年度、考科、題型、題號與 paper_id 放在同一個查詢結果裡。',
+  },
+  {
+    label: '03',
+    title: '複習提問',
+    body: '將相似題整理成練習路徑，再交給 Agent 拆考點與建立答題架構。',
+  },
+]
 
 function displayYear(hit: ExamQuestionHit) {
   if (hit.exam_year_西元) return hit.exam_year_西元
@@ -89,7 +111,7 @@ function apiPath(path: string) {
 }
 
 export default function ExamBank() {
-  const [query, setQuery] = useState('三相電路 有效功率')
+  const [query, setQuery] = useState('行政處分 撤銷')
   const [examType, setExamType] = useState('全部')
   const [subject, setSubject] = useState('全部')
   const [questionType, setQuestionType] = useState('全部')
@@ -98,7 +120,7 @@ export default function ExamBank() {
   const [hits, setHits] = useState<ExamQuestionHit[]>(sampleHits)
   const [selectedKey, setSelectedKey] = useState(hitKey(sampleHits[0]))
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
-  const [message, setMessage] = useState('目前顯示示範結果；送出查詢後會透過 Trust WEDO API 呼叫 Twinkle Hub。')
+  const [message, setMessage] = useState('目前顯示示範結果；送出查詢後會透過 Trust WEDO API 呼叫國考題庫索引。')
   const [corpusCount, setCorpusCount] = useState(320663)
 
   const selected = useMemo(
@@ -116,7 +138,7 @@ export default function ExamBank() {
     }
 
     setStatus('loading')
-    setMessage('正在透過 Trust WEDO API 呼叫 Twinkle Hub 國考題目級語意搜尋...')
+    setMessage('正在透過 Trust WEDO API 查詢國考題目級語意索引...')
 
     try {
       const response = await fetch(apiPath('/api/mcp/exam/questions'), {
@@ -143,7 +165,7 @@ export default function ExamBank() {
       setSelectedKey(nextHits[0] ? hitKey(nextHits[0]) : '')
       setCorpusCount(payload.n_corpus || corpusCount)
       setStatus('ready')
-      setMessage(`已查詢 Twinkle Hub 國考題庫：回傳 ${payload.n_returned ?? nextHits.length} 題，語料庫 ${Number(payload.n_corpus || corpusCount).toLocaleString()} 題。`)
+      setMessage(`已查詢國考題庫：回傳 ${payload.n_returned ?? nextHits.length} 題，語料庫 ${Number(payload.n_corpus || corpusCount).toLocaleString()} 題。`)
     } catch (error) {
       setStatus('error')
       setMessage(error instanceof Error ? error.message : '國考題庫 API 暫時無法查詢。')
@@ -164,7 +186,7 @@ export default function ExamBank() {
               國考題庫 Agent Lab
             </h1>
             <p className="mt-6 max-w-2xl break-words text-lg leading-relaxed text-brand-slate">
-              串接 Twinkle Hub 國家考試題庫，支援 2012-2025 試卷與題目級語意搜尋，讓考生與研究團隊快速定位題目、整理引用與建立複習路徑。
+              串接國家考試題庫索引，支援 2012-2025 試卷與題目級語意搜尋，讓考生與研究團隊快速定位題目、整理引用與建立複習路徑。
             </p>
             <div className="mt-8 grid min-w-0 gap-3 sm:grid-cols-3">
               <Metric label="試卷" value="64,815" />
@@ -182,13 +204,13 @@ export default function ExamBank() {
             </div>
             <div className="grid min-w-0 gap-4 p-4 sm:p-5">
               <div className="max-w-full break-words rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm sm:justify-self-end">
-                請查國考中有關三相電路的問題
+                請找行政法中有關行政處分撤銷的題目
               </div>
               {['定位相關題目與試卷', '保留來源、年份與題號', '產出可引用查詢摘要'].map((item) => (
                 <article key={item} className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
                   <b className="text-sm text-sky-300">{item}</b>
                   <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                    由後端代理呼叫 Hub，避免前端暴露任何金鑰。
+                    由後端代理呼叫題庫索引，避免前端暴露任何金鑰。
                   </p>
                 </article>
               ))}
@@ -265,7 +287,7 @@ export default function ExamBank() {
               <div>
                 <h2 className="text-2xl font-black">{hits.length} 題符合條件</h2>
                 <p className="text-sm font-semibold text-brand-slate">
-                  資料來源：考選部公開試題，經 Twinkle Hub 題目級索引處理。
+                  資料來源：考選部公開試題，經國考題庫 Agent Lab 題目級索引處理。
                 </p>
               </div>
               <Link to="/" className="text-sm font-black text-brand-blue">
@@ -347,8 +369,30 @@ export default function ExamBank() {
         </section>
 
         <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6">
-          <div className="overflow-hidden rounded-2xl border border-black/10 bg-white">
-            <img src={referenceImage} alt="Twinkle Hub 國考題庫參考圖" className="h-72 w-full object-cover object-left-top" />
+          <div className="grid gap-6 rounded-2xl border border-black/10 bg-white p-5 shadow-xl shadow-slate-900/5 md:grid-cols-[0.9fr_1.1fr] md:p-8">
+            <div className="min-w-0">
+              <div className="text-xs font-black uppercase text-brand-blue">Agent Lab Method</div>
+              <h2 className="mt-4 text-3xl font-black leading-tight text-brand-navy md:text-4xl">
+                從一個爭點，展開一組可練習的國考題
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-brand-slate">
+                國考題庫 Agent Lab 的重點不是只列出 PDF，而是把題目拆成可搜尋、可引用、可延伸提問的學習單元。考生可以從常見爭點出發，快速找到相似題，再整理成自己的複習筆記。
+              </p>
+            </div>
+
+            <div className="grid gap-3">
+              {labSteps.map((step) => (
+                <article key={step.label} className="grid gap-3 rounded-2xl border border-brand-navy/10 bg-brand-light p-4 sm:grid-cols-[64px_minmax(0,1fr)]">
+                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-navy text-sm font-black text-white">
+                    {step.label}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-base font-black text-brand-navy">{step.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-brand-slate">{step.body}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
       </main>
