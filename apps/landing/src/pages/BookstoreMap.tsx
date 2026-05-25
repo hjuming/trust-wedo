@@ -41,9 +41,43 @@ type BookstoreDataset = {
   items: BookstoreLocation[]
 }
 
+type LeafletCoordinate = [number, number]
+type LeafletMapInstance = {
+  flyTo: (coordinate: LeafletCoordinate, zoom: number, options?: { duration?: number }) => void
+  fitBounds: (bounds: LeafletBounds, options?: { padding?: LeafletCoordinate; maxZoom?: number }) => void
+  remove: () => void
+  setView: (coordinate: LeafletCoordinate, zoom: number) => LeafletMapInstance
+}
+type LeafletBounds = {
+  extend: (coordinate: LeafletCoordinate) => void
+}
+type LeafletMarker = {
+  addTo: (map: LeafletMapInstance) => LeafletMarker
+  on: (event: 'click', handler: () => void) => void
+  remove: () => void
+}
+type LeafletLayer = {
+  addTo: (map: LeafletMapInstance) => void
+}
+type LeafletApi = {
+  map: (id: string, options: { zoomControl: boolean; attributionControl: boolean }) => LeafletMapInstance
+  tileLayer: (url: string, options: { maxZoom: number }) => LeafletLayer
+  control: {
+    zoom: (options: { position: string }) => LeafletLayer
+  }
+  marker: (coordinate: LeafletCoordinate, options: { icon: unknown }) => LeafletMarker
+  divIcon: (options: {
+    className: string
+    html: string
+    iconSize: LeafletCoordinate
+    iconAnchor: LeafletCoordinate
+  }) => unknown
+  latLngBounds: () => LeafletBounds
+}
+
 declare global {
   interface Window {
-    L?: any
+    L?: LeafletApi
   }
 }
 
@@ -200,9 +234,9 @@ export default function BookstoreMap() {
   const [chain, setChain] = useState('全部')
   const [mode, setMode] = useState<'list' | 'map'>('list')
   const [selected, setSelected] = useState<BookstoreLocation | null>(null)
-  const [leafletLoaded, setLeafletLoaded] = useState(false)
-  const mapRef = useRef<any>(null)
-  const markerRefs = useRef<any[]>([])
+  const [leafletLoaded, setLeafletLoaded] = useState(() => Boolean(window.L))
+  const mapRef = useRef<LeafletMapInstance | null>(null)
+  const markerRefs = useRef<LeafletMarker[]>([])
 
   useEffect(() => {
     const previousTitle = document.title
@@ -245,7 +279,6 @@ export default function BookstoreMap() {
 
   useEffect(() => {
     if (window.L) {
-      setLeafletLoaded(true)
       return
     }
 
@@ -266,7 +299,7 @@ export default function BookstoreMap() {
     }
   }, [])
 
-  const allItems = dataset?.items ?? []
+  const allItems = useMemo(() => dataset?.items ?? [], [dataset])
   const items = useMemo(
     () => filterItems(allItems, query, category, city, chain),
     [allItems, query, category, city, chain],
@@ -275,25 +308,24 @@ export default function BookstoreMap() {
   const cityOptions = useMemo(() => ['全部', ...unique(allItems.map((item) => item.city))], [allItems])
   const chainOptions = useMemo(() => ['全部', ...unique(allItems.map((item) => item.chain))], [allItems])
   const counts = dataset?.metadata.countsByCategory ?? {}
+  const selectedItem = useMemo(
+    () => (selected && items.some((item) => item.id === selected.id) ? selected : items.find(hasGeo) ?? items[0] ?? null),
+    [items, selected],
+  )
 
   useEffect(() => {
-    if (!selected || !items.some((item) => item.id === selected.id)) {
-      setSelected(items.find(hasGeo) ?? items[0] ?? null)
-    }
-  }, [items, selected])
+    const leaflet = window.L
+    if (!leafletLoaded || mode !== 'map' || mapRef.current || !leaflet) return
 
-  useEffect(() => {
-    if (!leafletLoaded || mode !== 'map' || mapRef.current) return
-
-    const map = window.L.map('trust-wedo-bookstore-map', {
+    const map = leaflet.map('trust-wedo-bookstore-map', {
       zoomControl: false,
       attributionControl: false,
     }).setView([23.75, 120.96], 7)
 
-    window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
     }).addTo(map)
-    window.L.control.zoom({ position: 'bottomright' }).addTo(map)
+    leaflet.control.zoom({ position: 'bottomright' }).addTo(map)
     mapRef.current = map
 
     return () => {
@@ -305,7 +337,8 @@ export default function BookstoreMap() {
   }, [leafletLoaded, mode])
 
   useEffect(() => {
-    if (!mapRef.current || mode !== 'map') return
+    const leaflet = window.L
+    if (!mapRef.current || mode !== 'map' || !leaflet) return
     const map = mapRef.current
     const geoItems = items.filter(hasGeo).slice(0, 300)
 
@@ -314,13 +347,13 @@ export default function BookstoreMap() {
 
     if (!geoItems.length) return
 
-    const bounds = window.L.latLngBounds()
+    const bounds = leaflet.latLngBounds()
     geoItems.forEach((item) => {
       const latitude = Number(item.latitude)
       const longitude = Number(item.longitude)
       const style = categoryStyle[item.category] ?? defaultCategoryStyle
-      const marker = window.L.marker([latitude, longitude], {
-        icon: window.L.divIcon({
+      const marker = leaflet.marker([latitude, longitude], {
+        icon: leaflet.divIcon({
           className: 'trust-bookstore-marker',
           html: `<span style="background:${style.dot}"></span>`,
           iconSize: [20, 20],
@@ -449,7 +482,7 @@ export default function BookstoreMap() {
                   </div>
                 ))}
               </div>
-              {selected && <MapSheet item={selected} onClose={() => setSelected(null)} />}
+              {selectedItem && <MapSheet item={selectedItem} onClose={() => setSelected(null)} />}
             </div>
           )}
         </section>

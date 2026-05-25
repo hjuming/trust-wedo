@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { getApiBaseUrl } from '../lib/api'
 
+type ScanJob = {
+  id: string
+  url: string
+  status: 'completed' | 'failed' | 'processing' | 'pending' | string
+  created_at: string
+  error_message?: string
+  progress_stage?: string
+  result?: {
+    total_score?: number
+    grade?: string
+  } | null
+}
+
 export default function Dashboard() {
-  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
 
   const [url, setUrl] = useState(location.state?.prefillUrl || '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [recentScans, setRecentScans] = useState<any[]>([])
+  const [recentScans, setRecentScans] = useState<ScanJob[]>([])
   const [progressStage, setProgressStage] = useState('正在初始化...')
 
   useEffect(() => {
@@ -35,7 +46,7 @@ export default function Dashboard() {
       .order('created_at', { ascending: false })
       .limit(5)
 
-    if (data) setRecentScans(data)
+    if (data) setRecentScans(data as ScanJob[])
   }
 
   const pollJobStatus = async (jobId: string) => {
@@ -56,7 +67,7 @@ export default function Dashboard() {
             'Authorization': `Bearer ${session.access_token}`
           }
         })
-        const job = await response.json()
+        const job = await response.json() as ScanJob
 
         if (job.progress_stage) {
           setProgressStage(job.progress_stage)
@@ -110,11 +121,11 @@ export default function Dashboard() {
         throw new Error('建立健檢失敗')
       }
 
-      const job = await response.json()
+      const job = await response.json() as ScanJob
       pollJobStatus(job.id)
 
-    } catch (err: any) {
-      setError(err.message || '分析失敗，請稍後再試')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '分析失敗，請稍後再試')
       setLoading(false)
     }
   }

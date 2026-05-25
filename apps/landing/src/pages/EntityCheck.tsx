@@ -7,6 +7,55 @@ import { Navigation } from '../components/Navigation'
 import { getApiBaseUrl } from '../lib/api'
 import { EntityCheckResult } from '../types/entityCheck'
 
+type ApiRecord = Record<string, unknown>
+
+type EntityApiResponse = {
+  success?: boolean
+  error?: string
+  data?: {
+    company?: unknown
+    validation?: unknown
+  }
+}
+
+function isApiRecord(value: unknown): value is ApiRecord {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+}
+
+function safeJsonParse(raw: unknown) {
+  if (typeof raw !== 'string') return null
+  try {
+    const parsed = JSON.parse(raw)
+    return isApiRecord(parsed) ? parsed : null
+  } catch {
+    return null
+  }
+}
+
+function normalizeApiContent(source: unknown): ApiRecord | null {
+  if (!isApiRecord(source)) return null
+  const content = source.content
+  if (Array.isArray(content) && isApiRecord(content[0]) && typeof content[0].text === 'string') {
+    return safeJsonParse(content[0].text)
+  }
+  return source
+}
+
+function readString(source: ApiRecord | null, key: string, fallback = '') {
+  const value = source?.[key]
+  return typeof value === 'string' ? value : fallback
+}
+
+function readBoolean(source: ApiRecord | null, key: string, fallback = false) {
+  const value = source?.[key]
+  return typeof value === 'boolean' ? value : fallback
+}
+
+function readNumber(source: ApiRecord | null, key: string) {
+  const value = source?.[key]
+  return typeof value === 'number' ? value : undefined
+}
+
 export default function EntityCheck() {
   const { t } = useTranslation()
   const [result, setResult] = useState<EntityCheckResult | null>(null)
@@ -44,46 +93,28 @@ export default function EntityCheck() {
         throw new Error(`API request failed: ${response.status}`)
       }
 
-      const apiResult = await response.json()
+      const apiResult = await response.json() as EntityApiResponse
 
       if (!apiResult.success) {
         throw new Error(apiResult.error || 'Entity check failed')
-      }
-
-      const safeJsonParse = (raw: unknown) => {
-        if (typeof raw !== 'string') return null
-        try {
-          return JSON.parse(raw)
-        } catch {
-          return null
-        }
-      }
-
-      const normalizeApiContent = (source: unknown) => {
-        if (!source || typeof source !== 'object') return null
-        const content = (source as any).content
-        if (Array.isArray(content) && content[0]?.text) {
-          return safeJsonParse(content[0].text) || null
-        }
-        return source
       }
 
       const companyPayload = normalizeApiContent(apiResult.data?.company)
       const validationPayload = normalizeApiContent(apiResult.data?.validation)
 
       const companyInfo = {
-        name: companyPayload?.company_name || data.companyName,
+        name: readString(companyPayload, 'company_name', data.companyName),
         taxId: data.taxId,
-        status: companyPayload?.status || '未知',
-        address: companyPayload?.address || '',
-        registerAuthority: companyPayload?.register_authority || '',
-        capitalAmount: companyPayload?.capital_amount,
-        responsibleName: companyPayload?.responsible_name || '',
+        status: readString(companyPayload, 'status', '未知'),
+        address: readString(companyPayload, 'address'),
+        registerAuthority: readString(companyPayload, 'register_authority'),
+        capitalAmount: readNumber(companyPayload, 'capital_amount'),
+        responsibleName: readString(companyPayload, 'responsible_name'),
       }
 
       const validationInfo = {
-        taxIdValid: validationPayload?.valid || false,
-        rule: validationPayload?.rule || '',
+        taxIdValid: readBoolean(validationPayload, 'valid'),
+        rule: readString(validationPayload, 'rule'),
       }
 
       const riskSignals = [] as EntityCheckResult['riskSignals']

@@ -1,10 +1,5 @@
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
-interface DimensionData {
-    name: string;
-    percentage: number;
-}
-
 interface ReportRadarChartProps {
     dimensions: Record<string, {
         name: string;
@@ -16,7 +11,7 @@ interface ReportRadarChartProps {
 
 export function ReportRadarChart({ dimensions }: ReportRadarChartProps) {
     // 轉換資料格式供 Recharts 使用
-    const data = Object.entries(dimensions).map(([key, dim]) => ({
+    const data = Object.entries(dimensions).map(([, dim]) => ({
         dimension: dim.name,
         score: dim.percentage,
         fullMark: 100

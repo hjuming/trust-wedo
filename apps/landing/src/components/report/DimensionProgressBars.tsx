@@ -20,7 +20,7 @@ interface DimensionProgressBarsProps {
 }
 
 export function DimensionProgressBars({ dimensions }: DimensionProgressBarsProps) {
-    const validDims = Object.entries(dimensions).filter(([_, dim]) => dim.max > 0);
+    const validDims = Object.entries(dimensions).filter(([, dim]) => dim.max > 0);
 
     return (
         <div className="space-y-6">

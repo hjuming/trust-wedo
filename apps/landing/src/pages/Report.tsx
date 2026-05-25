@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { ReportRadarChart } from '../components/report/ReportRadarChart'
@@ -7,17 +7,138 @@ import { QuickWins } from '../components/report/QuickWins'
 import { ReportSummaryCard } from '../components/report/ReportSummaryCard'
 import { getApiBaseUrl } from '../lib/api'
 
+type ReportStatus = 'pending' | 'processing' | 'completed' | 'failed' | string
+
+type ReportSignals = {
+  schema_types?: string[]
+  has_author?: boolean
+  author_count?: number
+  outbound_links_count?: number
+  has_social_proof?: boolean
+}
+
+type ReportIssue = {
+  title: string
+  description: string
+  severity: 'high' | 'medium' | 'low' | string
+}
+
+type ReportSuggestion = {
+  action: string
+  impact?: string
+  impact_desc?: string
+  how_to?: string[]
+}
+
+type DimensionItem = {
+  name: string
+  score: number
+  max: number
+  status: 'pass' | 'fail' | 'unknown' | 'partial'
+  details?: string
+  suggestion?: string
+}
+
+type DimensionData = {
+  name: string
+  score: number
+  max: number
+  percentage: number
+  items: DimensionItem[]
+}
+
+type QuickWin = {
+  title: string
+  impact: string
+  effort: string
+  dimension: string
+  instructions: string
+  code_snippet?: string
+  priority: number
+}
+
+type DifficultSiteInfo = {
+  name: string
+  name_zh: string
+  reason: string
+  estimated_score: number
+  estimated_grade: string
+  note: string
+}
+
+type EstimatedDimensions = {
+  discoverability: number
+  structure: number
+  technical: number
+  social: number
+}
+
+type DimensionsResponse = {
+  total_score: number
+  grade: string
+  dimensions: Record<string, DimensionData>
+  quick_wins?: QuickWin[]
+}
+
+type TrustReport = {
+  url: string
+  status?: ReportStatus
+  progress_stage?: string
+  issues?: ReportIssue[]
+  suggestions?: ReportSuggestion[]
+  signals?: ReportSignals
+  site_type?: string
+  site_type_confidence?: number
+  is_difficult_site?: boolean
+  difficult_site_info?: DifficultSiteInfo
+  estimated_score?: number
+  estimated_grade?: string
+  estimated_dimensions?: EstimatedDimensions
+  detection_message?: string
+  report_version?: string
+  job_id?: string
+}
+
+const defaultSignals: Required<ReportSignals> = {
+  schema_types: [],
+  has_author: false,
+  author_count: 0,
+  outbound_links_count: 0,
+  has_social_proof: false,
+}
+
 export default function Report() {
   const { jobId } = useParams()
   const navigate = useNavigate()
-  const [report, setReport] = useState<any>(null)
-  const [dimensions, setDimensions] = useState<any>(null)
+  const [report, setReport] = useState<TrustReport | null>(null)
+  const [dimensions, setDimensions] = useState<DimensionsResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [isExporting, setIsExporting] = useState(false)
 
+  const fetchDimensions = useCallback(async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const apiUrl = getApiBaseUrl()
+      const response = await fetch(`${apiUrl}/api/reports/${jobId}/dimensions`, {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json() as DimensionsResponse
+        setDimensions(data)
+      }
+    } catch (err) {
+      console.error('無法讀取維度資料:', err)
+    }
+  }, [jobId])
+
   useEffect(() => {
-    let timeoutId: any;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
 
     const pollReport = async () => {
       try {
@@ -33,7 +154,7 @@ export default function Report() {
 
         if (!response.ok) throw new Error('無法讀取報告')
 
-        const data = await response.json()
+        const data = await response.json() as TrustReport
         setReport(data)
 
         // 如果還在處理中，繼續輪詢
@@ -44,8 +165,8 @@ export default function Report() {
           setLoading(false)
           fetchDimensions()
         }
-      } catch (err: any) {
-        setError(err.message)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : '無法讀取報告')
         setLoading(false)
       }
     }
@@ -55,43 +176,16 @@ export default function Report() {
     return () => {
       if (timeoutId) clearTimeout(timeoutId)
     }
-  }, [jobId])
-
-  // Removed fetchReport and fetchDimensions from here (integrated above)
-
-
-
-  // Removed fetchReport as logic is moved to useEffect
-
-  const fetchDimensions = async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) return
-
-      const apiUrl = getApiBaseUrl()
-      const response = await fetch(`${apiUrl}/api/reports/${jobId}/dimensions`, {
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setDimensions(data)
-      }
-    } catch (err) {
-      console.error('無法讀取維度資料:', err)
-    }
-  }
+  }, [fetchDimensions, jobId])
 
   const handleReAudit = () => {
+    if (!report) return
     navigate('/dashboard', { state: { prefillUrl: report.url } })
   }
 
   const handleExportPDF = async () => {
-    // ... (Keep existing implementation)
+    setIsExporting(true)
     try {
-      // ... existing PDF logic ...
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) return
 
@@ -106,7 +200,6 @@ export default function Report() {
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      // ... same logic ...
 
       const contentDisposition = response.headers.get('Content-Disposition')
       let filename = `trust-wedo-report-${jobId}.pdf`
@@ -118,7 +211,9 @@ export default function Report() {
         try {
           const urlObj = new URL(report.url)
           filename = `Trust-WEDO-${urlObj.hostname.replace('www.', '')}-${new Date().toISOString().split('T')[0]}.pdf`
-        } catch { }
+        } catch {
+          filename = `trust-wedo-report-${jobId}.pdf`
+        }
       }
 
       a.download = filename
@@ -129,10 +224,12 @@ export default function Report() {
     } catch (err) {
       console.error(err)
       window.print()
+    } finally {
+      setIsExporting(false)
     }
   }
 
-  const getWorstDimension = (dims: any) => {
+  const getWorstDimension = (dims: Record<string, DimensionData>) => {
     if (!dims) return { name: '未知', score: 0, max: 100 };
     let worstKey = '';
     let minPercentage = 200;
@@ -196,10 +293,16 @@ export default function Report() {
     )
   }
 
-  const { issues, suggestions, signals, site_type, site_type_confidence } = report
+  const {
+    issues = [],
+    suggestions = [],
+    site_type = 'unknown',
+    site_type_confidence = 0,
+  } = report
+  const signals = { ...defaultSignals, ...report.signals }
   const worstDimension = dimensions ? getWorstDimension(dimensions.dimensions) : { name: '', score: 0, max: 0 };
 
-  const siteTypeNames: any = {
+  const siteTypeNames: Record<string, string> = {
     'ecommerce': '電商網站',
     'blog': '部落格 / 內容網站',
     'corporate': '企業官方網站',
@@ -379,7 +482,7 @@ export default function Report() {
             <p className="text-brand-success font-bold py-4">✨ 恭喜！目前未偵測到重大結構問題。</p>
           ) : (
             <ul className="space-y-6">
-              {issues.map((issue: any, i: number) => (
+              {issues.map((issue, i) => (
                 <li key={i} className="flex items-start gap-4">
                   <span className="text-3xl">
                     {issue.severity === 'high' ? '🔴' : '🟡'}
@@ -407,7 +510,7 @@ export default function Report() {
             <p className="text-brand-slate dark:text-brand-light/60 py-4">暫無特定建議。</p>
           ) : (
             <ul className="space-y-6">
-              {suggestions.map((suggestion: any, i: number) => (
+              {suggestions.map((suggestion, i) => (
                 <li key={i} className="flex items-start gap-4">
                   <span className="text-2xl text-brand-success font-black">0{i + 1}</span>
                   <div>

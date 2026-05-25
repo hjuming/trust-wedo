@@ -1,9 +1,20 @@
-import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { getApiBaseUrl } from '../lib/api'
 import '../styles/pdf-report.css'
+
+interface ReportSignals {
+    has_title?: boolean
+    has_description?: boolean
+    has_jsonld?: boolean
+    schema_count?: number
+    has_author?: boolean
+    has_organization?: boolean
+    has_about_page?: boolean
+    has_social_proof?: boolean
+    social_links_count?: number
+}
 
 interface ReportData {
     url: string
@@ -28,7 +39,22 @@ interface ReportData {
     scan_id: string
     engine_version: string
     scan_date: string
-    signals?: any
+    signals?: ReportSignals
+}
+
+interface ReportApiResponse {
+    url?: string
+    signals?: ReportSignals
+    summary?: {
+        conclusion?: string
+    }
+}
+
+interface DimensionsApiResponse {
+    total_score: number
+    grade: string
+    dimensions: ReportData['dimensions']
+    quick_wins?: ReportData['quick_wins']
 }
 
 export default function PDFReportTemplate() {
@@ -37,56 +63,56 @@ export default function PDFReportTemplate() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        const fetchReportData = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession()
+                if (!session) return
+
+                const apiUrl = getApiBaseUrl()
+
+                // Fetch main report
+                const reportRes = await fetch(`${apiUrl}/api/reports/${scanId}`, {
+                    headers: { 'Authorization': `Bearer ${session.access_token}` }
+                })
+                const reportData = await reportRes.json() as ReportApiResponse
+
+                // Fetch dimensions
+                const dimsRes = await fetch(`${apiUrl}/api/reports/${scanId}/dimensions`, {
+                    headers: { 'Authorization': `Bearer ${session.access_token}` }
+                })
+                const dimsData = await dimsRes.json() as DimensionsApiResponse
+
+                // Extract trust gaps (top 5)
+                const gaps: string[] = []
+                const s = reportData.signals || {}
+
+                if (!s.has_title) gaps.push('缺少網站標題')
+                if (!s.has_description) gaps.push('缺少網站描述')
+                if (!s.has_jsonld && (s.schema_count || 0) === 0) gaps.push('缺少結構化資料')
+                if (!s.has_author && !s.has_organization && !s.has_about_page) gaps.push('缺少作者/組織資訊')
+                if (!s.has_social_proof && (s.social_links_count || 0) < 2) gaps.push('社群證明不足')
+
+                setReport({
+                    url: reportData.url || '',
+                    total_score: dimsData.total_score,
+                    grade: dimsData.grade,
+                    conclusion: reportData.summary?.conclusion || '分析完成',
+                    dimensions: dimsData.dimensions,
+                    quick_wins: (dimsData.quick_wins || []).slice(0, 3), // Top 3 only
+                    trust_gaps: gaps.slice(0, 5),
+                    scan_id: scanId || '',
+                    engine_version: 'r2.0',
+                    scan_date: new Date().toLocaleDateString('zh-TW')
+                })
+                setLoading(false)
+            } catch (error) {
+                console.error('Failed to fetch report:', error)
+                setLoading(false)
+            }
+        }
+
         fetchReportData()
     }, [scanId])
-
-    const fetchReportData = async () => {
-        try {
-            const { data: { session } } = await supabase.auth.getSession()
-            if (!session) return
-
-            const apiUrl = getApiBaseUrl()
-
-            // Fetch main report
-            const reportRes = await fetch(`${apiUrl}/api/reports/${scanId}`, {
-                headers: { 'Authorization': `Bearer ${session.access_token}` }
-            })
-            const reportData = await reportRes.json()
-
-            // Fetch dimensions
-            const dimsRes = await fetch(`${apiUrl}/api/reports/${scanId}/dimensions`, {
-                headers: { 'Authorization': `Bearer ${session.access_token}` }
-            })
-            const dimsData = await dimsRes.json()
-
-            // Extract trust gaps (top 5)
-            const gaps: string[] = []
-            const s = reportData.signals || {}
-
-            if (!s.has_title) gaps.push('缺少網站標題')
-            if (!s.has_description) gaps.push('缺少網站描述')
-            if (!s.has_jsonld && (s.schema_count || 0) === 0) gaps.push('缺少結構化資料')
-            if (!s.has_author && !s.has_organization && !s.has_about_page) gaps.push('缺少作者/組織資訊')
-            if (!s.has_social_proof && (s.social_links_count || 0) < 2) gaps.push('社群證明不足')
-
-            setReport({
-                url: reportData.url,
-                total_score: dimsData.total_score,
-                grade: dimsData.grade,
-                conclusion: reportData.summary?.conclusion || '分析完成',
-                dimensions: dimsData.dimensions,
-                quick_wins: (dimsData.quick_wins || []).slice(0, 3), // Top 3 only
-                trust_gaps: gaps.slice(0, 5),
-                scan_id: scanId || '',
-                engine_version: 'r2.0',
-                scan_date: new Date().toLocaleDateString('zh-TW')
-            })
-            setLoading(false)
-        } catch (error) {
-            console.error('Failed to fetch report:', error)
-            setLoading(false)
-        }
-    }
 
     if (loading) {
         return <div className="pdf-loading">載入中...</div>

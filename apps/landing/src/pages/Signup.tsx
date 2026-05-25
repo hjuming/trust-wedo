@@ -35,8 +35,8 @@ export default function Signup() {
       // Supabase by default requires email confirmation
       alert(t('auth.signup.successMessage') || 'Check your email for the confirmation link!')
       navigate('/login')
-    } catch (err: any) {
-      setError(err.message || 'Registration failed')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {
       setLoading(false)
     }

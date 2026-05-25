@@ -1,18 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
-
-interface AuthContextType {
-  user: User | null
-  loading: boolean
-  signOut: () => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  loading: true,
-  signOut: async () => {}
-})
+import { AuthContext } from './authContextValue'
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
@@ -44,5 +33,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     </AuthContext.Provider>
   )
 }
-
-export const useAuth = () => useContext(AuthContext)
