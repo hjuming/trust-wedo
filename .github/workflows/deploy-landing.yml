@@ -23,7 +23,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '22'
         cache: 'npm'
         cache-dependency-path: 'apps/landing/package-lock.json'
     
@@ -39,7 +39,20 @@ jobs:
         VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         VITE_API_URL: ${{ secrets.VITE_API_URL }}
     
+    - name: Check Cloudflare deploy secrets
+      id: deploy-secrets
+      run: |
+        if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+          echo "available=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "available=false" >> "$GITHUB_OUTPUT"
+        fi
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
     - name: Deploy to Cloudflare Pages
+      if: steps.deploy-secrets.outputs.available == 'true'
       uses: cloudflare/wrangler-action@v3
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -47,3 +60,7 @@ jobs:
         command: pages deploy dist --project-name=trust-wedo
       env:
         WRANGLER_WORKING_DIRECTORY: apps/landing
+
+    - name: Skip Cloudflare Pages deploy
+      if: steps.deploy-secrets.outputs.available != 'true'
+      run: echo "Cloudflare deploy secrets are not configured; relying on Cloudflare Pages Git integration."
