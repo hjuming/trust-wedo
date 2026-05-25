@@ -47,6 +47,27 @@ const workflowSteps = [
   },
 ]
 
+const serviceCards = [
+  {
+    title: '實體信任查核',
+    href: '/entity-check',
+    label: 'Trust Check',
+    description: '用統編、公司名稱與網站線索整理公開資料信任訊號。',
+  },
+  {
+    title: '國考題庫 Agent Lab',
+    href: '/exam-bank',
+    label: 'Exam Bank',
+    description: '串接 Twinkle Hub 國考題目級語意搜尋，快速定位試題、題號與來源。',
+  },
+  {
+    title: '全台實體書店地圖',
+    href: '/bookstores',
+    label: 'Book WEDO',
+    description: '整理可檢索的全台書店與圖書館據點，支援出版與學習研究。',
+  },
+]
+
 function getDomainLabel(domain: DataDomain) {
   return domain.name_zh || domain.name || domain.title || domain.key || domain.id || '資料領域'
 }
@@ -245,6 +266,43 @@ function ModulesSection({
   )
 }
 
+function ServicesSection() {
+  return (
+    <section className="bg-white py-20 dark:bg-brand-navy/50">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="max-w-3xl">
+          <span className="text-sm font-black tracking-[0.2em] text-brand-blue uppercase">
+            Trust WEDO Services
+          </span>
+          <h2 className="mt-4 text-3xl md:text-5xl font-black tracking-tight text-brand-navy dark:text-brand-light">
+            從查核、題庫到知識地圖，形成服務矩陣
+          </h2>
+        </div>
+
+        <div className="mt-10 grid gap-4 md:grid-cols-3">
+          {serviceCards.map((service) => (
+            <Link
+              key={service.href}
+              to={service.href}
+              className="rounded-3xl border border-brand-navy/10 bg-brand-light p-6 transition hover:-translate-y-1 hover:border-brand-blue/40 hover:shadow-xl dark:border-brand-light/10 dark:bg-brand-navy/70"
+            >
+              <span className="text-xs font-black uppercase tracking-[0.18em] text-brand-blue">
+                {service.label}
+              </span>
+              <h3 className="mt-4 text-2xl font-black text-brand-navy dark:text-brand-light">
+                {service.title}
+              </h3>
+              <p className="mt-4 text-sm leading-relaxed text-brand-slate dark:text-brand-light/70">
+                {service.description}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function WorkflowSection() {
   return (
     <section className="bg-brand-light py-20 dark:bg-brand-navy">
@@ -361,6 +419,7 @@ export default function Home() {
           </div>
         </section>
 
+        <ServicesSection />
         <ModulesSection modules={modules} domains={domains} />
         <WorkflowSection />
         <PricingSection />

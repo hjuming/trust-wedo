@@ -50,6 +50,7 @@ apps/api-worker/src/index.ts
 | `/api/mcp/tools` | GET | 列舉 MCP tools |
 | `/api/mcp/search` | POST | 搜尋資料集 |
 | `/api/mcp/query` | POST | 查詢資料列 |
+| `/api/mcp/exam/questions` | POST | 國考題目級語意搜尋 |
 | `/api/trust/entity-check` | POST | 企業實體查核 |
 | `/api/research/modules` | GET | 列舉研究模組 |
 | `/api/research/modules/:id` | GET | 取得特定研究模組 |

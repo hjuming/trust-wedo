@@ -50,6 +50,7 @@ Worker 端點：
 | `GET /api/mcp/tools` | 列舉 MCP tools |
 | `POST /api/mcp/search` | 搜尋資料集 |
 | `POST /api/mcp/query` | 查詢資料列 |
+| `POST /api/mcp/exam/questions` | 國考題目級語意搜尋 |
 | `GET /api/research/modules` | 列舉研究模組 |
 | `GET /api/research/modules/{id}` | 取得單一研究模組 |
 | `POST /api/research/path` | 生成研究路徑 |
@@ -155,6 +156,7 @@ curl https://trust-wedo-api.<account>.workers.dev/api/mcp/health
 |----------|----------|
 | `/` | 顯示 WEDO 資料查核 Agent Lab 首頁，研究模組與資料領域可載入 |
 | `/entity-check` | 可輸入公司名稱、統編與網站 URL，成功顯示查核報告 |
+| `/exam-bank` | 可查詢國考題庫，並顯示題目、年份、科目與 paper_id |
 | `/pricing` | 顯示 Beta 測試版免費方案 |
 
 ## SPA 路由設定

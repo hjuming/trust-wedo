@@ -32,6 +32,17 @@ type QueryRowsRequest = {
   limit?: number
 }
 
+type ExamQuestionsRequest = {
+  query?: string
+  stem_contains?: string
+  exam_name_contains?: string
+  subject_contains?: string
+  question_type?: string
+  year_from?: number
+  year_to?: number
+  limit?: number
+}
+
 type EntityCheckRequest = {
   tax_id?: string
   company_name?: string
@@ -431,6 +442,54 @@ const handleMcpRoute = async (request: Request, env: Env, path: string) => {
       const rows = await callTwinkleTool(env, "opendata-query_rows", input)
       const count = getResultCount(rows)
       return json({ success: true, rows, count }, {}, env)
+    }
+
+    if (path === "/api/mcp/exam/questions" && request.method === "POST") {
+      const body = await parseJson<ExamQuestionsRequest>(request)
+      const query = body.query?.trim()
+      if (!query) {
+        return errorJson("query is required", 400, env)
+      }
+
+      const input: Record<string, unknown> = {
+        query,
+        limit: clampLimit(body.limit, 12, 1, 50),
+      }
+
+      if (body.stem_contains?.trim()) {
+        input.stem_contains = body.stem_contains.trim()
+      }
+      if (body.exam_name_contains?.trim()) {
+        input.exam_name_contains = body.exam_name_contains.trim()
+      }
+      if (body.subject_contains?.trim()) {
+        input.subject_contains = body.subject_contains.trim()
+      }
+      if (body.question_type?.trim()) {
+        input.question_type = body.question_type.trim()
+      }
+      if (typeof body.year_from === "number") {
+        input.year_from = body.year_from
+      }
+      if (typeof body.year_to === "number") {
+        input.year_to = body.year_to
+      }
+
+      const payload = await callTwinkleTool(env, "opendata-search_exam_questions", input)
+      const hits =
+        payload && typeof payload === "object" && Array.isArray((payload as { hits?: unknown }).hits)
+          ? (payload as { hits: unknown[] }).hits
+          : []
+
+      return json(
+        {
+          success: true,
+          ...(payload && typeof payload === "object" ? payload : { data: payload }),
+          count: hits.length,
+        },
+        {},
+        env,
+      )
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "MCP request failed"

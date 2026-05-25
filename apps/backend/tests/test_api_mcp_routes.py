@@ -37,6 +37,32 @@ class FakeMCPClient:
             "count": 1,
         }
 
+    async def search_exam_questions(
+        self,
+        query,
+        stem_contains=None,
+        exam_name_contains=None,
+        subject_contains=None,
+        question_type=None,
+        year_from=None,
+        year_to=None,
+        limit=12,
+    ):
+        return {
+            "success": True,
+            "n_corpus": 320663,
+            "n_returned": 1,
+            "query": query,
+            "hits": [
+                {
+                    "paper_id": "108_108070_703_08",
+                    "subject_name": subject_contains or "電力系統",
+                    "question_type": question_type or "申論題",
+                }
+            ],
+            "count": 1,
+        }
+
     async def list_tools(self):
         return {
             "success": True,
@@ -107,6 +133,24 @@ def test_query_route_passes_request_to_mcp_client():
         "query_text": "WEDO",
         "limit": 3,
     }
+
+
+def test_exam_questions_route_passes_request_to_mcp_client():
+    client = make_client()
+
+    response = client.post(
+        "/api/mcp/exam/questions",
+        json={
+            "query": "三相電路 有效功率",
+            "subject_contains": "電力系統",
+            "question_type": "申論題",
+            "limit": 3,
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["n_corpus"] == 320663
+    assert response.json()["hits"][0]["subject_name"] == "電力系統"
 
 
 def test_tools_route_returns_tool_list():

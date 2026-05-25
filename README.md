@@ -8,6 +8,7 @@ WEDO 資料查核 Agent Lab 是一個部署在 Cloudflare 的公開資料查核�
 |------|-----|
 | 前台 | https://trust.wedopr.com |
 | 實體查核 | https://trust.wedopr.com/entity-check |
+| 國考題庫 | https://trust.wedopr.com/exam-bank |
 | 定價方案 | https://trust.wedopr.com/pricing |
 | API Worker | https://trust-wedo-api.hjuming.workers.dev |
 
@@ -21,6 +22,7 @@ WEDO 資料查核 Agent Lab 是一個部署在 Cloudflare 的公開資料查核�
 |------|------|------|
 | 首頁 | 已上線 | 已改版為 WEDO 資料查核 Agent Lab 風格，保留頁首、頁尾、定價方案與研究模組入口。 |
 | 企業實體查核 | 已上線 | `/entity-check` 可輸入公司名稱、統一編號與網站 URL，串接 Worker 查詢公開資料。 |
+| 國考題庫 Agent Lab | 已整合 | `/exam-bank` 串接 Twinkle Hub 國考題目級語意搜尋，涵蓋 2012-2025 國家考試題庫。 |
 | 定價方案 | 已上線 | `/pricing` 已恢復 Beta 測試版免費方案內容。 |
 | API Worker | 已上線 | `trust-wedo-api` 提供 Twinkle Hub MCP proxy、研究模組與實體查核端點。 |
 | Twinkle Hub MCP | 已接通 | Worker 透過 MCP JSON-RPC / SSE 流程呼叫 Twinkle Hub，不讓前端直接持有 API key。 |
@@ -45,7 +47,14 @@ WEDO 資料查核 Agent Lab 是一個部署在 Cloudflare 的公開資料查核�
 - 呼叫 `/api/mcp/domains` 載入 Twinkle Hub 可用資料領域。
 - 保留頁首導航、頁尾資訊、CTA 與 Beta 定價方案。
 
-### 3. MCP API Proxy
+### 3. 國考題庫 Agent Lab
+
+- 路由：`/exam-bank`
+- 使用 Trust WEDO API 呼叫 Twinkle Hub `opendata-search_exam_questions`。
+- 支援查詢詞、考試類別、考科、題型與年份範圍。
+- 顯示題目、年度、科目、題型、相關度、paper_id 與引用限制。
+
+### 4. MCP API Proxy
 
 前端不直接呼叫 Twinkle Hub。所有 MCP 查詢都經由 Cloudflare Worker：
 
@@ -57,6 +66,7 @@ WEDO 資料查核 Agent Lab 是一個部署在 Cloudflare 的公開資料查核�
 | `GET /api/mcp/tools` | 列舉 MCP tools |
 | `POST /api/mcp/search` | 搜尋資料集 |
 | `POST /api/mcp/query` | 查詢資料列 |
+| `POST /api/mcp/exam/questions` | 國考題目級語意搜尋 |
 | `POST /api/trust/entity-check` | 企業實體查核 |
 | `GET /api/research/modules` | 列舉研究模組 |
 | `GET /api/research/modules/:id` | 取得單一研究模組 |

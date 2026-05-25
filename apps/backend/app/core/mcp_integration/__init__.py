@@ -3,6 +3,7 @@ MCP Integration Layer - Twinkle Hub Client
 Connects to Twinkle Hub MCP endpoint for data queries
 """
 
+import json
 import logging
 import os
 from datetime import datetime, timedelta
@@ -20,8 +21,12 @@ class TwinkleMCPClient:
     """
 
     def __init__(self, api_endpoint: str = "https://api.twinkleai.tw/mcp/"):
-        self.api_endpoint = api_endpoint
-        self.api_key = os.getenv("TWINKLE_HUB_API_KEY", "")
+        self.api_endpoint = (
+            os.getenv("TWINKLE_HUB_API_ENDPOINT", api_endpoint).rstrip("/") + "/"
+        )
+        self.api_key = os.getenv("TWINKLE_HUB_API_KEY") or os.getenv(
+            "TWINKLE_HUB_TOKEN", ""
+        )
         self.client = httpx.AsyncClient(
             base_url=self.api_endpoint,
             headers={
@@ -35,6 +40,7 @@ class TwinkleMCPClient:
             "domains": 3600,  # 1 hour
             "tools": 86400,  # 24 hours
         }
+        self._request_id = 0
 
     async def _get_cached(self, key: str) -> Any | None:
         """Check if cached data is still valid"""
@@ -51,6 +57,111 @@ class TwinkleMCPClient:
         """Store data in cache"""
         expiry = datetime.now() + timedelta(seconds=ttl)
         self._cache[key] = (data, expiry)
+
+    def _next_request_id(self) -> int:
+        self._request_id += 1
+        return self._request_id
+
+    @staticmethod
+    def _parse_mcp_response_text(body: str) -> dict[str, Any]:
+        """Parse plain JSON or SSE-style MCP JSON-RPC response."""
+        data_lines = [
+            line.strip()[5:].strip()
+            for line in body.splitlines()
+            if line.strip().startswith("data:")
+        ]
+        payload = data_lines[-1] if data_lines else body
+        return json.loads(payload)
+
+    async def _send_json_rpc(
+        self, method: str, params: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
+        if not self.api_key:
+            raise RuntimeError("TWINKLE_HUB_API_KEY is not configured")
+
+        body: dict[str, Any] = {
+            "jsonrpc": "2.0",
+            "id": self._next_request_id(),
+            "method": method,
+        }
+        if params is not None:
+            body["params"] = params
+
+        response = await self.client.post(
+            "",
+            headers={"Accept": "application/json, text/event-stream"},
+            json=body,
+        )
+        response.raise_for_status()
+        payload = self._parse_mcp_response_text(response.text)
+        if payload.get("error"):
+            raise RuntimeError(payload["error"].get("message", "MCP request failed"))
+        return payload.get("result", {})
+
+    async def _initialize_json_rpc(self) -> None:
+        await self._send_json_rpc(
+            "initialize",
+            {
+                "protocolVersion": "2025-03-26",
+                "capabilities": {},
+                "clientInfo": {
+                    "name": "trust-wedo-backend",
+                    "version": "1.0.0",
+                },
+            },
+        )
+
+    async def call_tool(self, name: str, args: dict[str, Any]) -> Any:
+        """Call a Twinkle Hub MCP tool through Streamable HTTP JSON-RPC."""
+        await self._initialize_json_rpc()
+        result = await self._send_json_rpc(
+            "tools/call",
+            {
+                "name": name,
+                "arguments": args,
+            },
+        )
+        content = result.get("content", [])
+        text = "\n".join(
+            item.get("text", "")
+            for item in content
+            if item.get("type") == "text" and item.get("text")
+        )
+        return json.loads(text) if text else {}
+
+    async def search_exam_questions(
+        self,
+        query: str,
+        stem_contains: str | None = None,
+        exam_name_contains: str | None = None,
+        subject_contains: str | None = None,
+        question_type: str | None = None,
+        year_from: int | None = None,
+        year_to: int | None = None,
+        limit: int = 12,
+    ) -> dict[str, Any]:
+        """Search Taiwan national exam questions from Twinkle Hub."""
+        args: dict[str, Any] = {"query": query, "limit": limit}
+        if stem_contains:
+            args["stem_contains"] = stem_contains
+        if exam_name_contains:
+            args["exam_name_contains"] = exam_name_contains
+        if subject_contains:
+            args["subject_contains"] = subject_contains
+        if question_type:
+            args["question_type"] = question_type
+        if year_from is not None:
+            args["year_from"] = year_from
+        if year_to is not None:
+            args["year_to"] = year_to
+
+        payload = await self.call_tool("opendata-search_exam_questions", args)
+        hits = payload.get("hits", []) if isinstance(payload, dict) else []
+        return {
+            "success": True,
+            **(payload if isinstance(payload, dict) else {"data": payload}),
+            "count": len(hits),
+        }
 
     async def list_domains(self) -> dict[str, Any]:
         """

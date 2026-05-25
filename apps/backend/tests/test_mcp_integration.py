@@ -1,4 +1,5 @@
 import asyncio
+import json as jsonlib
 from datetime import datetime, timedelta
 
 from app.core.mcp_integration import TwinkleMCPClient
@@ -12,6 +13,10 @@ class FakeResponse:
     def json(self):
         return self.payload
 
+    @property
+    def text(self):
+        return jsonlib.dumps(self.payload)
+
     def raise_for_status(self):
         if self.status_code >= 400:
             raise RuntimeError(f"HTTP {self.status_code}")
@@ -23,8 +28,35 @@ class FakeAsyncClient:
         self.gets = []
         self.closed = False
 
-    async def post(self, path, json):
+    async def post(self, path, json, headers=None):
         self.posts.append((path, json))
+        if json.get("method") == "initialize":
+            return FakeResponse({"result": {}})
+        if json.get("method") == "tools/call":
+            tool = json["params"]["name"]
+            if tool == "opendata-search_exam_questions":
+                exam_payload = {
+                    "n_corpus": 320663,
+                    "n_returned": 1,
+                    "query": "三相電路",
+                    "hits": [{"paper_id": "108_108070_703_08"}],
+                }
+                return FakeResponse(
+                    {
+                        "result": {
+                            "content": [
+                                {
+                                    "type": "text",
+                                    "text": jsonlib.dumps(
+                                        exam_payload,
+                                        ensure_ascii=False,
+                                    ),
+                                }
+                            ]
+                        }
+                    }
+                )
+
         tool = json["tool"]
         payloads = {
             "list-domains": {
@@ -160,6 +192,26 @@ def test_query_rows_sends_expected_payload():
             },
         },
     )
+
+
+def test_search_exam_questions_calls_json_rpc_tool():
+    client, fake_http = make_client()
+    client.api_key = "test-token"
+
+    result = asyncio.run(
+        client.search_exam_questions(
+            query="三相電路",
+            subject_contains="電力系統",
+            limit=3,
+        )
+    )
+
+    assert result["success"] is True
+    assert result["n_corpus"] == 320663
+    assert result["hits"][0]["paper_id"] == "108_108070_703_08"
+    assert fake_http.posts[0][1]["method"] == "initialize"
+    assert fake_http.posts[1][1]["params"]["name"] == "opendata-search_exam_questions"
+    assert fake_http.posts[1][1]["params"]["arguments"]["subject_contains"] == "電力系統"
 
 
 def test_health_check_reports_healthy_endpoint():

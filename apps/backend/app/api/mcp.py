@@ -72,6 +72,31 @@ class QueryRowsResponse(BaseModel):
     error: str | None = None
 
 
+class ExamQuestionsRequest(BaseModel):
+    """Request for Taiwan national exam question search"""
+
+    query: str = Field(..., min_length=1)
+    stem_contains: str | None = None
+    exam_name_contains: str | None = None
+    subject_contains: str | None = None
+    question_type: str | None = None
+    year_from: int | None = Field(default=None, ge=2012, le=2026)
+    year_to: int | None = Field(default=None, ge=2012, le=2026)
+    limit: int = Field(default=12, ge=1, le=50)
+
+
+class ExamQuestionsResponse(BaseModel):
+    """Response for Taiwan national exam question search"""
+
+    success: bool
+    n_corpus: int | None = None
+    n_returned: int | None = None
+    query: str | None = None
+    hits: list[dict] = Field(default_factory=list)
+    count: int = 0
+    error: str | None = None
+
+
 class HealthCheckResponse(BaseModel):
     """Response for health check"""
 
@@ -179,6 +204,49 @@ async def query_rows(
             detail=f"Failed to query rows: {result.get('error', 'Unknown error')}",
         )
     return QueryRowsResponse(**result)
+
+
+@router.post(
+    "/exam/questions",
+    response_model=ExamQuestionsResponse,
+    summary="Search Taiwan national exam questions",
+    tags=["MCP - National Exam Bank"],
+)
+async def search_exam_questions(
+    request: ExamQuestionsRequest,
+    mcp_client: TwinkleMCPClient = Depends(get_mcp_client),
+) -> ExamQuestionsResponse:
+    """
+    Search Taiwan national exam questions through Twinkle Hub.
+
+    The endpoint keeps Twinkle Hub credentials on the server side and returns
+    question-level semantic search hits from the 2012-2025 national exam corpus.
+    """
+    logger.info(
+        "Searching exam questions: query=%s, subject=%s, exam=%s",
+        request.query,
+        request.subject_contains,
+        request.exam_name_contains,
+    )
+    try:
+        result = await mcp_client.search_exam_questions(
+            query=request.query.strip(),
+            stem_contains=request.stem_contains,
+            exam_name_contains=request.exam_name_contains,
+            subject_contains=request.subject_contains,
+            question_type=request.question_type,
+            year_from=request.year_from,
+            year_to=request.year_to,
+            limit=request.limit,
+        )
+    except Exception as exc:
+        logger.exception("Failed to search exam questions")
+        raise HTTPException(
+            status_code=503,
+            detail=f"Failed to search exam questions: {exc}",
+        ) from exc
+
+    return ExamQuestionsResponse(**result)
 
 
 @router.get(

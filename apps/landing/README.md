@@ -16,6 +16,7 @@ https://trust.wedopr.com/pricing
 |-------|------|------|
 | `/` | Production | WEDO 資料查核 Agent Lab 首頁，串接研究模組與 MCP domains。 |
 | `/entity-check` | Production Beta | 企業實體查核，呼叫 Worker `/api/trust/entity-check`。 |
+| `/exam-bank` | Production Beta | 國考題庫 Agent Lab，呼叫 Worker `/api/mcp/exam/questions`。 |
 | `/pricing` | Production Beta | Beta 測試版免費方案，保留前一版定價內容。 |
 | `/login`, `/signup`, `/dashboard` | Beta / Reserved | 保留 Supabase Auth 與後續工作台入口。 |
 

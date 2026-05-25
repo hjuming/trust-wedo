@@ -14,6 +14,7 @@ export const Navigation = () => {
 
   const navLinks = [
     { name: t('nav.entityCheck'), href: '/entity-check' },
+    { name: '國考題庫', href: '/exam-bank' },
     { name: '書店地圖', href: '/bookstores' },
     { name: '研究模組', href: '/#modules' },
     { name: t('nav.pricing'), href: '/pricing' },
@@ -35,11 +36,11 @@ export const Navigation = () => {
         : 'py-6 bg-transparent'
         }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <img src="/logo-icon.svg" alt="Logo" className="w-8 h-8 group-hover:rotate-12 transition-transform" />
-          <span className="text-xl font-black tracking-tighter text-brand-navy dark:text-brand-light">
+        <Link to="/" className="group flex min-w-0 items-center gap-2">
+          <img src="/logo-icon.svg" alt="Logo" className="h-7 w-7 shrink-0 transition-transform group-hover:rotate-12 sm:h-8 sm:w-8" />
+          <span className="truncate text-lg font-black text-brand-navy dark:text-brand-light sm:text-xl">
             Trust <span className="text-brand-blue">WEDO</span>
           </span>
         </Link>
@@ -80,21 +81,21 @@ export const Navigation = () => {
         </div>
 
         {/* Mobile Toggle */}
-        <div className="md:hidden flex items-center gap-4">
+        <div className="flex shrink-0 items-center gap-2 md:hidden sm:gap-4">
           <button
             onClick={toggleDarkMode}
-            className="p-2 rounded-full"
+            className="hidden rounded-full p-2 sm:block"
             aria-label="Toggle dark mode"
           >
             {isDark ? '🌞' : '🌙'}
           </button>
           <button
             onClick={toggleLanguage}
-            className="px-2 py-1 rounded-full flex items-center gap-1"
+            className="hidden items-center gap-1 rounded-full px-2 py-1 sm:flex"
             aria-label="Toggle language"
           >
             <span>🌐</span>
-            <span className="text-sm font-medium text-brand-navy dark:text-brand-light">{currentLang}</span>
+            <span className="hidden text-sm font-medium text-brand-navy dark:text-brand-light sm:inline">{currentLang}</span>
           </button>
           <button
             onClick={() => setIsOpen(!isOpen)}
